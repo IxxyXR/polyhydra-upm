@@ -9,10 +9,10 @@
     }],
     ["@semantic-release/npm", { 
       "npmPublish": false,
-      "pkgRoot":"XYZ1"
+      "pkgRoot":"Packages/Polyhydra"
     }],
     ["@semantic-release/git", {
-      "assets": ["XYZ2", "XYZ3"],
+      "assets": ["Packages/Polyhydra/package.json", "Packages/Polyhydra/CHANGELOG.md"],
       "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
     }],
     "@semantic-release/github"
