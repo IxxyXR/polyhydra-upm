@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Conway;
 using UnityEngine;
 using Wythoff;
+using Face = Conway.Face;
 
-namespace Conway
+
+namespace Johnson
 {
     public static class JohnsonPoly
     {
@@ -702,14 +705,14 @@ namespace Conway
 
 		public static ConwayPoly C_Shape()
 		{
-			var conway = ConwayPoly.MakeUnitileGrid(1, 0, 2, 3);
+			var conway = Grids.Grids.MakeUnitileGrid(1, 0, 2, 3);
 			conway = conway._FaceRemove(FaceSelections.All, "", false, f => conway.Faces.IndexOf(f.Item1)==4);
 			return conway;
 		}
 
 		public static ConwayPoly H_Shape()
 		{
-			var conway = ConwayPoly.MakeUnitileGrid(1, 0, 3, 3);
+			var conway = Grids.Grids.MakeUnitileGrid(1, 0, 3, 3);
 			conway = conway._FaceRemove(FaceSelections.All, "", false, f => conway.Faces.IndexOf(f.Item1)==3);
 			conway = conway._FaceRemove(FaceSelections.All, "", false, f => conway.Faces.IndexOf(f.Item1)==4);
 			return conway;

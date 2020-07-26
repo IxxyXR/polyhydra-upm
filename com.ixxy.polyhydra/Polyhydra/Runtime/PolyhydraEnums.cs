@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Conway;
 
+
 public static class PolyHydraEnums
 {
 	public enum ColorMethods
