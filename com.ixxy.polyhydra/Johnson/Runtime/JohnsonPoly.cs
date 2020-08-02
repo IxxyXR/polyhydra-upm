@@ -706,15 +706,15 @@ namespace Johnson
 		public static ConwayPoly C_Shape()
 		{
 			var conway = Grids.Grids.MakeUnitileGrid(1, 0, 2, 3);
-			conway = conway._FaceRemove(FaceSelections.All, "", false, f => f.Item2==4);
+			conway = conway._FaceRemove(FaceSelections.All, "", false, f => f.index==4);
 			return conway;
 		}
 
 		public static ConwayPoly H_Shape()
 		{
 			var conway = Grids.Grids.MakeUnitileGrid(1, 0, 3, 3);
-			conway = conway._FaceRemove(FaceSelections.All, "", false, f => f.Item2==3);
-			conway = conway._FaceRemove(FaceSelections.All, "", false, f => f.Item2==4);
+			conway = conway._FaceRemove(FaceSelections.All, "", false, f => f.index==3);
+			conway = conway._FaceRemove(FaceSelections.All, "", false, f => f.index==4);
 			return conway;
 		}
 

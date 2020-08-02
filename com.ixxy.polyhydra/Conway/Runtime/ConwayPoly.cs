@@ -14,6 +14,19 @@ namespace Conway
 	/// A class for manifold meshes which uses the Halfedge data structure.
 	/// </summary>
 
+	public struct FilterParams
+	{
+		public FilterParams(ConwayPoly p, int i)
+		{
+			poly = p;
+			index = i;
+		}
+
+		public ConwayPoly poly;
+		public int index;
+
+	}
+
 	public class ConwayPoly
 	{
 
@@ -3482,11 +3495,11 @@ namespace Conway
 
 		public ConwayPoly FaceRemove(bool invertLogic, List<int> faceIndices)
 		{
-			Func<(ConwayPoly, int), bool> filter = x => faceIndices.Contains(x.Item2);
+			Func<FilterParams, bool> filter = x => faceIndices.Contains(x.index);
 			return _FaceRemove(FaceSelections.All, "", invertLogic, filter);
 		}
 
-		public ConwayPoly _FaceRemove(FaceSelections facesel=FaceSelections.All, string tags = "", bool invertLogic=false, Func<(ConwayPoly, int), bool> filter=null)
+		public ConwayPoly _FaceRemove(FaceSelections facesel=FaceSelections.All, string tags = "", bool invertLogic=false, Func<FilterParams, bool> filter=null)
 		{
 			var tagList = StringToTagList(tags);
 			var faceRoles = new List<Roles>();
@@ -3503,7 +3516,9 @@ namespace Conway
 				bool removeFace;
 				if (filter != null)
 				{
-					removeFace = filter((this, faceIndex));
+					FilterParams foo = new FilterParams(this, faceIndex);
+					removeFace = filter(foo);
+					//removeFace = filter((this, faceIndex));
 				}
 				else
 				{
@@ -4038,7 +4053,7 @@ namespace Conway
 			float yMin = Vertices.Min(v => v.Position.y);
 			lower = Mathf.Lerp(yMin, yMax, lower);
 			upper = Mathf.Lerp(yMin, yMax, upper);
-			Func<(ConwayPoly, int), bool> slice = x => x.Item1.Faces[x.Item2].Centroid.y > lower && x.Item1.Faces[x.Item2].Centroid.y < upper;
+			Func<FilterParams, bool> slice = x => x.poly.Faces[x.index].Centroid.y > lower && x.poly.Faces[x.index].Centroid.y < upper;
 			return _FaceRemove(FaceSelections.All, tags, true, slice);
 		}
 
@@ -4663,83 +4678,83 @@ namespace Conway
 			}
 
 			var filterFunc = FaceFilterFunc(facesel);
-			return include && filterFunc(this, faceIndex);
+			return include && filterFunc(new FilterParams(this, faceIndex));
 
 		}
 
-		public Func<ConwayPoly, int, bool> FaceFilterFunc(FaceSelections facesel)
+		public Func<FilterParams, bool> FaceFilterFunc(FaceSelections facesel)
 		{
 			switch (facesel)
 			{
 				case FaceSelections.All:
-					return (poly, faceIndex) => true;
+					return p => true;
 				case FaceSelections.EvenSided:
-					return (poly, faceIndex) => poly.Faces[faceIndex].Sides % 2 == 0;
+					return p => p.poly.Faces[p.index].Sides % 2 == 0;
 				case FaceSelections.OddSided:
-					return (poly, faceIndex) => poly.Faces[faceIndex].Sides % 2 != 0;
+					return p => p.poly.Faces[p.index].Sides % 2 != 0;
 				case FaceSelections.PSided:
-					return (poly, faceIndex) => poly.Faces[faceIndex].Sides == basePolyhedraInfo.P;
+					return p => p.poly.Faces[p.index].Sides == basePolyhedraInfo.P;
 				case FaceSelections.QSided:
-					return (poly, faceIndex) => poly.Faces[faceIndex].Sides == basePolyhedraInfo.Q;
+					return p => p.poly.Faces[p.index].Sides == basePolyhedraInfo.Q;
 				case FaceSelections.FacingUp:
-					return (poly, faceIndex) => poly.Faces[faceIndex].Normal.y > TOLERANCE;
+					return p => p.poly.Faces[p.index].Normal.y > TOLERANCE;
 				case FaceSelections.FacingStraightUp:
-					return (poly, faceIndex) => Vector3.Angle(Vector3.up, poly.Faces[faceIndex].Normal) < TOLERANCE;
+					return p => Vector3.Angle(Vector3.up, p.poly.Faces[p.index].Normal) < TOLERANCE;
 				case FaceSelections.FacingForward:
-					return (poly, faceIndex) => poly.Faces[faceIndex].Normal.z > TOLERANCE;
+					return p => p.poly.Faces[p.index].Normal.z > TOLERANCE;
 				case FaceSelections.FacingStraightForward:
-					return (poly, faceIndex) => Vector3.Angle(Vector3.forward, poly.Faces[faceIndex].Normal) < TOLERANCE;
+					return p => Vector3.Angle(Vector3.forward, p.poly.Faces[p.index].Normal) < TOLERANCE;
 				case FaceSelections.FacingLevel:
-					return (poly, faceIndex) => Math.Abs(poly.Faces[faceIndex].Normal.y) < TOLERANCE;
+					return p => Math.Abs(p.poly.Faces[p.index].Normal.y) < TOLERANCE;
 				case FaceSelections.FacingDown:
-					return (poly, faceIndex) => poly.Faces[faceIndex].Normal.y < -TOLERANCE;
+					return p => p.poly.Faces[p.index].Normal.y < -TOLERANCE;
 				case FaceSelections.FacingStraightDown:
-					return (poly, faceIndex) => Vector3.Angle(Vector3.down, poly.Faces[faceIndex].Normal) < TOLERANCE;
+					return p => Vector3.Angle(Vector3.down, p.poly.Faces[p.index].Normal) < TOLERANCE;
 				case FaceSelections.FacingCenter:
-					return (poly, faceIndex) => {
-						var face = poly.Faces[faceIndex];
+					return p => {
+						var face = p.poly.Faces[p.index];
 						var angle = Vector3.Angle(face.Normal, face.Centroid);
 						return Math.Abs(angle) < TOLERANCE || Math.Abs(angle - 180) < TOLERANCE;
 					};
 				case FaceSelections.FacingIn:
-					return (poly, faceIndex) => Vector3.Angle(-poly.Faces[faceIndex].Normal, poly.Faces[faceIndex].Centroid) > 90 - TOLERANCE;
+					return p => Vector3.Angle(-p.poly.Faces[p.index].Normal, p.poly.Faces[p.index].Centroid) > 90 - TOLERANCE;
 				case FaceSelections.FacingOut:
-					return (poly, faceIndex) => Vector3.Angle(-poly.Faces[faceIndex].Normal, poly.Faces[faceIndex].Centroid) < 90 + TOLERANCE;
+					return p => Vector3.Angle(-p.poly.Faces[p.index].Normal, p.poly.Faces[p.index].Centroid) < 90 + TOLERANCE;
 				case FaceSelections.TopHalf:
-					return (poly, faceIndex) => poly.Faces[faceIndex].Centroid.y > 0;
+					return p => p.poly.Faces[p.index].Centroid.y > 0;
 				case FaceSelections.Existing:
-					return (poly, faceIndex) => poly.FaceRoles[faceIndex] == Roles.Existing || poly.FaceRoles[faceIndex] == Roles.ExistingAlt;
+					return p => p.poly.FaceRoles[p.index] == Roles.Existing || p.poly.FaceRoles[p.index] == Roles.ExistingAlt;
 				case FaceSelections.Ignored:
-					return (poly, faceIndex) => poly.FaceRoles[faceIndex] == Roles.Ignored;
+					return p => p.poly.FaceRoles[p.index] == Roles.Ignored;
 				case FaceSelections.New:
-					return (poly, faceIndex) => poly.FaceRoles[faceIndex] == Roles.New;
+					return p => p.poly.FaceRoles[p.index] == Roles.New;
 				case FaceSelections.NewAlt:
-					return (poly, faceIndex) => poly.FaceRoles[faceIndex] == Roles.NewAlt;
+					return p => p.poly.FaceRoles[p.index] == Roles.NewAlt;
 				case FaceSelections.AllNew:
-					return (poly, faceIndex) => poly.FaceRoles[faceIndex] == Roles.New || poly.FaceRoles[faceIndex] == Roles.NewAlt;
+					return p => p.poly.FaceRoles[p.index] == Roles.New || p.poly.FaceRoles[p.index] == Roles.NewAlt;
 				case FaceSelections.Odd:
-					return (poly, faceIndex) => faceIndex % 2 == 1;
+					return p => p.index % 2 == 1;
 				case FaceSelections.Even:
-					return (poly, faceIndex) => faceIndex % 2 == 0;
+					return p => p.index % 2 == 0;
 				case FaceSelections.OnlyFirst:
-					return (poly, faceIndex) => faceIndex == 0;
+					return p => p.index == 0;
 				case FaceSelections.ExceptFirst:
-					return (poly, faceIndex) => faceIndex != 0;
+					return p => p.index != 0;
 				case FaceSelections.Inner:
-					return (poly, faceIndex) => poly.Faces[faceIndex].GetHalfedges().All(i=>i.Pair!=null);
+					return p => p.poly.Faces[p.index].GetHalfedges().All(i=>i.Pair!=null);
 				case FaceSelections.Outer:
-					return (poly, faceIndex) => poly.Faces[faceIndex].GetHalfedges().Any(i=>i.Pair==null);
+					return p => p.poly.Faces[p.index].GetHalfedges().Any(i=>i.Pair==null);
 				case FaceSelections.Smaller:
-					return (poly, faceIndex) => poly.Faces[faceIndex].GetArea() <= 0.05f;
+					return p => p.poly.Faces[p.index].GetArea() <= 0.05f;
 				case FaceSelections.Larger:
-					return (poly, faceIndex) => poly.Faces[faceIndex].GetArea() > 0.05f;
+					return p => p.poly.Faces[p.index].GetArea() > 0.05f;
 				case FaceSelections.Random:
-					return (poly, faceIndex) => random.NextDouble() < 0.5;
+					return p => random.NextDouble() < 0.5;
 				case FaceSelections.None:
-					return (poly, faceIndex) => false;
+					return p => false;
 			}
 
-			return (poly, faceIndex) => (poly.Faces[faceIndex].Sides == FaceSelectionToSides(facesel));
+			return p => (p.poly.Faces[p.index].Sides == FaceSelectionToSides(facesel));
 
 		}
 
