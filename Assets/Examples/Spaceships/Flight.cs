@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RandomFlight : MonoBehaviour
+public class Flight : MonoBehaviour
 {
     private Rigidbody rb;
     private TrailRenderer tr;
@@ -25,25 +25,25 @@ public class RandomFlight : MonoBehaviour
             rb.AddForce(Vector3.up * turnAmount);
             rb.AddTorque(Vector3.left * (turnAmount * 0.1f));
         }
-        else if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W))
         {
             rb.AddForce(Vector3.down * turnAmount);
             rb.AddTorque(Vector3.right * (turnAmount * 0.1f));
         }
-        else if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D))
         {
             rb.AddTorque(Vector3.up * turnAmount);
         }
-        else if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
             rb.AddTorque(Vector3.down * turnAmount);
         }
-        else if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space))
         {
             rb.AddForce(transform.rotation * Vector3.forward * thrustAmount);
             tr.emitting = true;
         }
-        else if (Input.GetKey(KeyCode.Return))
+        if (Input.GetKey(KeyCode.Return))
         {
             GetComponent<RandomSpaceshipGenerator>().Generate();
         }
