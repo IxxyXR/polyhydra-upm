@@ -66,7 +66,7 @@ public class RandomSpaceshipGenerator : MonoBehaviour
                     wingFaces = wingFaces.Loft(Random.Range(0, 1f), Random.Range(.15f, 1.5f), FaceSelections.Existing);
                     if (Random.value < 0.5f)
                     {
-                        wingFaces = wingFaces.FaceSlide(Random.Range(-.5f, .5f), Random.Range(0, 1), FaceSelections.Existing);
+                        wingFaces = wingFaces.FaceSlide(Random.Range(-.5f, .5f), Random.Range(-1, .25f), FaceSelections.Existing);
 
                     }
                 }
