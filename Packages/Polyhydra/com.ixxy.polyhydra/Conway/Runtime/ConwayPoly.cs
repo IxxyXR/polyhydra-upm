@@ -3482,11 +3482,11 @@ namespace Conway
 
 		public ConwayPoly FaceRemove(bool invertLogic, List<int> faceIndices)
 		{
-			Func<(Face, int), bool> filter = x => faceIndices.Contains(x.Item2);
+			Func<(ConwayPoly, int), bool> filter = x => faceIndices.Contains(x.Item2);
 			return _FaceRemove(FaceSelections.All, "", invertLogic, filter);
 		}
 
-		public ConwayPoly _FaceRemove(FaceSelections facesel=FaceSelections.All, string tags = "", bool invertLogic=false, Func<(Face, int), bool> filter=null)
+		public ConwayPoly _FaceRemove(FaceSelections facesel=FaceSelections.All, string tags = "", bool invertLogic=false, Func<(ConwayPoly, int), bool> filter=null)
 		{
 			var tagList = StringToTagList(tags);
 			var faceRoles = new List<Roles>();
@@ -3503,7 +3503,7 @@ namespace Conway
 				bool removeFace;
 				if (filter != null)
 				{
-					removeFace = filter((face, faceIndex));
+					removeFace = filter((this, faceIndex));
 				}
 				else
 				{
@@ -4038,7 +4038,7 @@ namespace Conway
 			float yMin = Vertices.Min(v => v.Position.y);
 			lower = Mathf.Lerp(yMin, yMax, lower);
 			upper = Mathf.Lerp(yMin, yMax, upper);
-			Func<(Face, int), bool> slice = x => x.Item1.Centroid.y > lower && x.Item1.Centroid.y < upper;
+			Func<(ConwayPoly, int), bool> slice = x => x.Item1.Faces[x.Item2].Centroid.y > lower && x.Item1.Faces[x.Item2].Centroid.y < upper;
 			return _FaceRemove(FaceSelections.All, tags, true, slice);
 		}
 
@@ -4662,75 +4662,85 @@ namespace Conway
 				include = matches.Any();
 			}
 
-			float angle;
+			var filterFunc = FaceFilterFunc(facesel);
+			return include && filterFunc(this, faceIndex);
+
+		}
+
+		public Func<ConwayPoly, int, bool> FaceFilterFunc(FaceSelections facesel)
+		{
 			switch (facesel)
 			{
 				case FaceSelections.All:
-					return include && true;
+					return (poly, faceIndex) => true;
 				case FaceSelections.EvenSided:
-					return include && Faces[faceIndex].Sides % 2 == 0;
+					return (poly, faceIndex) => poly.Faces[faceIndex].Sides % 2 == 0;
 				case FaceSelections.OddSided:
-					return include && Faces[faceIndex].Sides % 2 != 0;
+					return (poly, faceIndex) => poly.Faces[faceIndex].Sides % 2 != 0;
 				case FaceSelections.PSided:
-					return include && Faces[faceIndex].Sides == basePolyhedraInfo.P;
+					return (poly, faceIndex) => poly.Faces[faceIndex].Sides == basePolyhedraInfo.P;
 				case FaceSelections.QSided:
-					return include && Faces[faceIndex].Sides == basePolyhedraInfo.Q;
+					return (poly, faceIndex) => poly.Faces[faceIndex].Sides == basePolyhedraInfo.Q;
 				case FaceSelections.FacingUp:
-					return include && Faces[faceIndex].Normal.y > TOLERANCE;
+					return (poly, faceIndex) => poly.Faces[faceIndex].Normal.y > TOLERANCE;
 				case FaceSelections.FacingStraightUp:
-					return include && Vector3.Angle(Vector3.up, Faces[faceIndex].Normal) < TOLERANCE;
+					return (poly, faceIndex) => Vector3.Angle(Vector3.up, poly.Faces[faceIndex].Normal) < TOLERANCE;
 				case FaceSelections.FacingForward:
-					return include && Faces[faceIndex].Normal.z > TOLERANCE;
+					return (poly, faceIndex) => poly.Faces[faceIndex].Normal.z > TOLERANCE;
 				case FaceSelections.FacingStraightForward:
-					return include && Vector3.Angle(Vector3.forward, Faces[faceIndex].Normal) < TOLERANCE;
+					return (poly, faceIndex) => Vector3.Angle(Vector3.forward, poly.Faces[faceIndex].Normal) < TOLERANCE;
 				case FaceSelections.FacingLevel:
-					return include && Math.Abs(Faces[faceIndex].Normal.y) < TOLERANCE;
+					return (poly, faceIndex) => Math.Abs(poly.Faces[faceIndex].Normal.y) < TOLERANCE;
 				case FaceSelections.FacingDown:
-					return include && Faces[faceIndex].Normal.y < -TOLERANCE;
+					return (poly, faceIndex) => poly.Faces[faceIndex].Normal.y < -TOLERANCE;
 				case FaceSelections.FacingStraightDown:
-					return include && Vector3.Angle(Vector3.down, Faces[faceIndex].Normal) < TOLERANCE;
+					return (poly, faceIndex) => Vector3.Angle(Vector3.down, poly.Faces[faceIndex].Normal) < TOLERANCE;
 				case FaceSelections.FacingCenter:
-					angle = Vector3.Angle(-Faces[faceIndex].Normal, Faces[faceIndex].Centroid);
-					return include && Math.Abs(angle) < TOLERANCE || Math.Abs(angle - 180) < TOLERANCE;
+					return (poly, faceIndex) => {
+						var face = poly.Faces[faceIndex];
+						var angle = Vector3.Angle(face.Normal, face.Centroid);
+						return Math.Abs(angle) < TOLERANCE || Math.Abs(angle - 180) < TOLERANCE;
+					};
 				case FaceSelections.FacingIn:
-					return include && Vector3.Angle(-Faces[faceIndex].Normal, Faces[faceIndex].Centroid) > 90 - TOLERANCE;
+					return (poly, faceIndex) => Vector3.Angle(-poly.Faces[faceIndex].Normal, poly.Faces[faceIndex].Centroid) > 90 - TOLERANCE;
 				case FaceSelections.FacingOut:
-					return include && Vector3.Angle(-Faces[faceIndex].Normal, Faces[faceIndex].Centroid) < 90 + TOLERANCE;
+					return (poly, faceIndex) => Vector3.Angle(-poly.Faces[faceIndex].Normal, poly.Faces[faceIndex].Centroid) < 90 + TOLERANCE;
 				case FaceSelections.TopHalf:
-					return include && Faces[faceIndex].Centroid.y > 0;
+					return (poly, faceIndex) => poly.Faces[faceIndex].Centroid.y > 0;
 				case FaceSelections.Existing:
-					return include && FaceRoles[faceIndex] == Roles.Existing || FaceRoles[faceIndex] == Roles.ExistingAlt;
+					return (poly, faceIndex) => poly.FaceRoles[faceIndex] == Roles.Existing || poly.FaceRoles[faceIndex] == Roles.ExistingAlt;
 				case FaceSelections.Ignored:
-					return include && FaceRoles[faceIndex] == Roles.Ignored;
+					return (poly, faceIndex) => poly.FaceRoles[faceIndex] == Roles.Ignored;
 				case FaceSelections.New:
-					return include && FaceRoles[faceIndex] == Roles.New;
+					return (poly, faceIndex) => poly.FaceRoles[faceIndex] == Roles.New;
 				case FaceSelections.NewAlt:
-					return include && FaceRoles[faceIndex] == Roles.NewAlt;
+					return (poly, faceIndex) => poly.FaceRoles[faceIndex] == Roles.NewAlt;
 				case FaceSelections.AllNew:
-					return include && FaceRoles[faceIndex] == Roles.New || FaceRoles[faceIndex] == Roles.NewAlt;
+					return (poly, faceIndex) => poly.FaceRoles[faceIndex] == Roles.New || poly.FaceRoles[faceIndex] == Roles.NewAlt;
 				case FaceSelections.Odd:
-					return include && faceIndex % 2 == 1;
+					return (poly, faceIndex) => faceIndex % 2 == 1;
 				case FaceSelections.Even:
-					return include && faceIndex % 2 == 0;
+					return (poly, faceIndex) => faceIndex % 2 == 0;
 				case FaceSelections.OnlyFirst:
-					return include && faceIndex == 0;
+					return (poly, faceIndex) => faceIndex == 0;
 				case FaceSelections.ExceptFirst:
-					return include && faceIndex != 0;
+					return (poly, faceIndex) => faceIndex != 0;
 				case FaceSelections.Inner:
-					return include && Faces[faceIndex].GetHalfedges().All(i=>i.Pair!=null);
+					return (poly, faceIndex) => poly.Faces[faceIndex].GetHalfedges().All(i=>i.Pair!=null);
 				case FaceSelections.Outer:
-					return include && Faces[faceIndex].GetHalfedges().Any(i=>i.Pair==null);
+					return (poly, faceIndex) => poly.Faces[faceIndex].GetHalfedges().Any(i=>i.Pair==null);
 				case FaceSelections.Smaller:
-					return include && Faces[faceIndex].GetArea() <= 0.05f;
+					return (poly, faceIndex) => poly.Faces[faceIndex].GetArea() <= 0.05f;
 				case FaceSelections.Larger:
-					return include && Faces[faceIndex].GetArea() > 0.05f;
+					return (poly, faceIndex) => poly.Faces[faceIndex].GetArea() > 0.05f;
 				case FaceSelections.Random:
-					return include && random.NextDouble() < 0.5;
+					return (poly, faceIndex) => random.NextDouble() < 0.5;
 				case FaceSelections.None:
-					return include && false;
+					return (poly, faceIndex) => false;
 			}
 
-			return include && (Faces[faceIndex].Sides == FaceSelectionToSides(facesel));
+			return (poly, faceIndex) => (poly.Faces[faceIndex].Sides == FaceSelectionToSides(facesel));
+
 		}
 
 		public bool IncludeVertex(int vertexIndex, FaceSelections vertexsel)
