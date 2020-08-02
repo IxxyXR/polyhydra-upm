@@ -3499,6 +3499,11 @@ namespace Conway
 			return _FaceRemove(FaceSelections.All, "", invertLogic, filter);
 		}
 
+		public ConwayPoly FaceRemove(bool invertLogic, Func<FilterParams, bool> filter)
+		{
+			return _FaceRemove(FaceSelections.All, "", invertLogic, filter);
+		}
+
 		public ConwayPoly _FaceRemove(FaceSelections facesel=FaceSelections.All, string tags = "", bool invertLogic=false, Func<FilterParams, bool> filter=null)
 		{
 			var tagList = StringToTagList(tags);
