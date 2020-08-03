@@ -165,6 +165,16 @@ namespace Conway {
                 e2.Next = he_new;
             }
 
+            public IEnumerable<Halfedge> NakedEdges()
+            {
+                return GetHalfedges().Where(i=>i.Pair==null);
+            }
+
+            public bool HasNakedEdge()
+            {
+                return GetHalfedges().Any(i=>i.Pair==null);
+            }
+
         #endregion
 
         public ConwayPoly DetachCopy()

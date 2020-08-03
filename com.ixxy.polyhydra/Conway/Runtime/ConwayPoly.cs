@@ -4746,9 +4746,9 @@ namespace Conway
 				case FaceSelections.ExceptFirst:
 					return p => p.index != 0;
 				case FaceSelections.Inner:
-					return p => p.poly.Faces[p.index].GetHalfedges().All(i=>i.Pair!=null);
+					return p => !p.poly.Faces[p.index].HasNakedEdge();
 				case FaceSelections.Outer:
-					return p => p.poly.Faces[p.index].GetHalfedges().Any(i=>i.Pair==null);
+					return p => p.poly.Faces[p.index].HasNakedEdge();
 				case FaceSelections.Smaller:
 					return p => p.poly.Faces[p.index].GetArea() <= 0.05f;
 				case FaceSelections.Larger:
@@ -4818,6 +4818,10 @@ namespace Conway
 					return vertexIndex == 0;
 				case FaceSelections.ExceptFirst:
 					return vertexIndex != 0;
+				case FaceSelections.Inner:
+					return !Vertices[vertexIndex].HasNakedEdge();
+				case FaceSelections.Outer:
+					return Vertices[vertexIndex].HasNakedEdge();
 				case FaceSelections.Random:
 					return random.NextDouble() < 0.5;
 			}

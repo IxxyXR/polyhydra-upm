@@ -137,5 +137,11 @@ namespace Conway {
         }
 
         #endregion
+
+        public bool HasNakedEdge()
+        {
+            // TODO - does this make sense?
+            return Halfedge.Pair==null || Halfedge.Prev.Pair==null;
+        }
     }
 }

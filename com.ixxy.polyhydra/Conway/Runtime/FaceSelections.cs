@@ -3,6 +3,8 @@ namespace Conway
     public enum FaceSelections
     {
         All,
+
+        // Sides
         ThreeSided,
         FourSided,
         FiveSided,
@@ -17,6 +19,8 @@ namespace Conway
         QSided,
         EvenSided,
         OddSided,
+
+        // Direction
         FacingUp,
         FacingStraightUp,
         FacingDown,
@@ -27,21 +31,32 @@ namespace Conway
         FacingCenter,
         FacingIn,
         FacingOut,
+
+        // Role
         Ignored,
         Existing,
         New,
         NewAlt,
         AllNew,
+
+        // Index
         Odd,
         Even,
         OnlyFirst,
         ExceptFirst,
-        None,
+        Random,
+
+        // Edges
         Inner,
         Outer,
-        Random,
+
+        // Distance or position
         TopHalf,
+
+        // Area
         Smaller,
         Larger,
+
+        None,
     }
 }
