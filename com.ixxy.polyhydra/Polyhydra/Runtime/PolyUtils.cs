@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PolyUtils
 {
-    public static int ActualMod(int x, int m) // Fuck C# deciding that mod isn't actually mod
-    {
-        return (x % m + m) % m;
-    }
+
+    // Fuck C# deciding that mod isn't actually mod
+    public static int ActualMod(int x, int m){return (x % m + m) % m;}
+    public static float ActualMod(float x, float m) {return (x % m + m) % m;}
 
     public static void SplitMesh(MeshFilter mf)
     {
