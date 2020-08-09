@@ -60,6 +60,16 @@ namespace Wythoff {
         public List<Face> faces; // Array of Face instances
 
 
+
+
+        public WythoffPoly(PolyTypes polyType, int p, int q)
+        {
+            string symbol = Uniform.Uniforms[((int) polyType) + 1].Wythoff;
+            symbol = symbol.Replace("p", p.ToString()).Replace("q", q.ToString());
+            UnpackSym(symbol);
+            _Polyhedron();
+        }
+
         public WythoffPoly(string symbol)
         {
             UnpackSym(symbol);
