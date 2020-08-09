@@ -191,7 +191,7 @@ namespace Johnson
 	        int sides = 10;
 	        float bodyHeight = _CalcSideLength(sides);
 	        ConwayPoly poly = Rotunda();
-	        poly = poly.Loft(0f, bodyHeight, FaceSelections.FacingDown);
+	        poly = poly.Loft(new OpParams{valueB = bodyHeight, facesel = FaceSelections.FacingDown});
 	        return poly;
         }
 
@@ -200,7 +200,7 @@ namespace Johnson
 	        int sides = 10;
 	        float bodyHeight = _CalcAntiprismHeight(sides);
 	        ConwayPoly poly = Rotunda();
-	        poly = poly.Lace(0f, FaceSelections.FacingDown, "", bodyHeight);
+	        poly = poly.Lace(new OpParams{facesel = FaceSelections.FacingDown, valueA = bodyHeight});
 	        return poly;
         }
 
@@ -351,7 +351,7 @@ namespace Johnson
         private static ConwayPoly _MakePyramid(int sides, float height)
         {
             ConwayPoly polygon = _MakePolygon(sides, true);
-            var poly = polygon.Kis(height, FaceSelections.All);
+            var poly = polygon.Kis(new OpParams{valueA = height});
             var baseVerts = poly.Vertices.GetRange(0, sides);
             baseVerts.Reverse();
             poly.Faces.Insert(0, baseVerts);
@@ -375,7 +375,7 @@ namespace Johnson
 			float height = _CalcSideLength(sides);
 			ConwayPoly poly = _MakePrism(sides, height);
 			height = _CalcPyramidHeight(sides);
-			poly = poly.Kis(height, FaceSelections.FacingUp);
+			poly = poly.Kis(new OpParams{});
 			return poly;
         }
 
@@ -383,7 +383,7 @@ namespace Johnson
         {
 			ConwayPoly poly = ElongatedPyramid(sides);
 			float height = _CalcPyramidHeight(sides);
-			poly = poly.Kis(height, FaceSelections.FacingDown);
+			poly = poly.Kis(new OpParams{facesel = FaceSelections.FacingDown, valueA = height});
 			
 			return poly;
         }
@@ -394,7 +394,7 @@ namespace Johnson
 			ConwayPoly poly = Antiprism(sides);
 
 			height = _CalcPyramidHeight(sides);
-			poly = poly.Kis(height, FaceSelections.FacingStraightUp);
+			poly = poly.Kis(new OpParams{facesel = FaceSelections.FacingStraightUp, valueA = height});
 			return poly;
 		}
 
@@ -402,7 +402,7 @@ namespace Johnson
 		{
 			ConwayPoly poly = GyroelongatedPyramid(sides);
 			float height = _CalcPyramidHeight(sides);
-			poly = poly.Kis(height, FaceSelections.FacingStraightDown);
+			poly = poly.Kis(new OpParams{facesel = FaceSelections.FacingStraightDown, valueA = height});
 			return poly;
 		}
 
@@ -410,7 +410,7 @@ namespace Johnson
         {
 	        ConwayPoly poly = Cupola(sides);
 	        float bodyHeight = _CalcSideLength(sides * 2);
-	        poly = poly.Loft(0f, bodyHeight, FaceSelections.OnlyFirst);
+	        poly = poly.Loft(new OpParams{facesel = FaceSelections.OnlyFirst, valueB = bodyHeight});
 	        return poly;
         }
 
@@ -572,7 +572,7 @@ namespace Johnson
         private static ConwayPoly _MakeDipyramid(int sides, float height)
         {
             ConwayPoly poly = _MakePyramid(sides, height);
-            poly = poly.Kis(height, FaceSelections.Existing);
+            poly = poly.Kis(new OpParams{valueA = height, facesel = FaceSelections.Existing});
             return poly;
         }
 
@@ -628,7 +628,7 @@ namespace Johnson
             wythoffPoly.BuildFaces();
 
             var conwayPoly = new ConwayPoly(wythoffPoly);
-            conwayPoly = conwayPoly.FaceRemove(FaceSelections.FacingDown);
+            conwayPoly = conwayPoly.FaceRemove(new OpParams{facesel = FaceSelections.FacingDown});
             conwayPoly.FillHoles();
             return conwayPoly;
         }
@@ -706,15 +706,15 @@ namespace Johnson
 		public static ConwayPoly C_Shape()
 		{
 			var conway = Grids.Grids.MakeUnitileGrid(1, 0, 2, 3);
-			conway = conway._FaceRemove(FaceSelections.All, "", false, f => f.index==4);
+			conway = conway._FaceRemove(new OpParams{filterFunc = f => f.index==4});
 			return conway;
 		}
 
 		public static ConwayPoly H_Shape()
 		{
 			var conway = Grids.Grids.MakeUnitileGrid(1, 0, 3, 3);
-			conway = conway._FaceRemove(FaceSelections.All, "", false, f => f.index==3);
-			conway = conway._FaceRemove(FaceSelections.All, "", false, f => f.index==4);
+			conway = conway.FaceRemove(new OpParams{filterFunc = f => f.index==3});
+			conway = conway.FaceRemove(new OpParams{filterFunc = f => f.index==4});
 			return conway;
 		}
 
