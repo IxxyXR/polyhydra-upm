@@ -12,6 +12,11 @@ public class OtherPolysTest : MonoBehaviour
     [Range(1,40)] public int sides = 4;
     [Range(1,40)] public int segments = 3;
 
+    public bool ApplyOp;
+    [Range(-1,1)] public float opAmount = 0;
+
+    public bool ColorBySides;
+
     void Start()
     {
         Generate();
@@ -39,10 +44,9 @@ public class OtherPolysTest : MonoBehaviour
                 case PolyHydraEnums.OtherPolyTypes.UvHemisphere:
                     poly = JohnsonPoly.UvHemisphere(sides, segments);
                     break;
-                // TODO
-                // case PolyHydraEnums.OtherPolyTypes.GriddedCube:
-                //     poly = JohnsonPoly.GriddedCube();
-                //     break;
+                case PolyHydraEnums.OtherPolyTypes.GriddedCube:
+                    poly = JohnsonPoly.GriddedCube(sides, segments);
+                    break;
                 case PolyHydraEnums.OtherPolyTypes.C_Shape:
                     poly = JohnsonPoly.C_Shape();
                     break;
@@ -56,7 +60,12 @@ public class OtherPolysTest : MonoBehaviour
                     poly = JohnsonPoly.H_Shape();
                     break;
         }
-        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, PolyHydraEnums.ColorMethods.BySides);
+        var colorMethod = ColorBySides ? PolyHydraEnums.ColorMethods.BySides : PolyHydraEnums.ColorMethods.ByRole;
+        if (ApplyOp)
+        {
+            poly = poly.Loft(new OpParams{valueA = opAmount, valueB = 0f});
+        }
+        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, colorMethod);
         GetComponent<MeshFilter>().mesh = mesh;
     }
 

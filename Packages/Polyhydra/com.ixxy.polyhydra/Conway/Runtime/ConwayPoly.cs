@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -3536,15 +3537,15 @@ namespace Conway
 			return poly;
 		}
 
-		public ConwayPoly Layer(int layers, float scale, float offset, FaceSelections facesel, string tags = "")
+		public ConwayPoly Layer(OpParams o, int layers)
 		{
 			var poly = Duplicate();
 			var layer = Duplicate();
 			for (int i=0; i <= layers; i++)
 			{
 				var newLayer = layer.Duplicate();
-				newLayer = newLayer.FaceScale(new OpParams{valueA = scale, facesel = facesel, tags = tags});
-				newLayer = newLayer.Offset(offset, facesel);
+				newLayer = newLayer.FaceScale(o);
+				newLayer = newLayer.Offset(o);
 				poly.Append(newLayer);
 				layer = newLayer;
 			}
@@ -3645,31 +3646,31 @@ namespace Conway
 		/// </summary>
 		/// <param name="offset">Offset distance</param>
 		/// <returns>The offset mesh</returns>
-		public ConwayPoly Offset(double offset, bool randomize)
+		public ConwayPoly Offset(float offset, bool randomize)
 		{
 			var offsetList = Enumerable.Range(0, Vertices.Count).Select(i => offset).ToList();
 			return Offset(offsetList, randomize);
 		}
 
-		public ConwayPoly Offset(double offset, FaceSelections facesel, string tags = "", bool randomize=false, Func<FilterParams, bool> filter=null)
+		public ConwayPoly Offset(OpParams o)
 		{
 			// This will only work if the faces are split and don't share vertices
 
-			var tagList = StringToTagList(tags);
-			var offsetList = new List<double>();
-			double _offset = offset;
+			var tagList = StringToTagList(o.tags);
+			var offsetList = new List<float>();
 
 			for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
 			{
-				if (randomize) _offset = random.NextDouble() * (float)offset;
-				var vertexOffset = IncludeFace(faceIndex, facesel, tagList, filter) ? _offset : 0;
+				float offset = o.GetValueA(this, faceIndex);
+				if (o.randomize) offset = (float)random.NextDouble() * offset;
+				var vertexOffset = IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc) ? offset : 0;
 				for (var i = 0; i < Faces[faceIndex].GetVertices().Count; i++)
 				{
 					offsetList.Add(vertexOffset);
 				}
 			}
 
-			return Offset(offsetList, randomize);
+			return Offset(offsetList, o.randomize);
 		}
 
 		public ConwayPoly FaceMerge(FaceSelections facesel)
@@ -3683,11 +3684,11 @@ namespace Conway
 			return newPoly;
 		}
 
-		public ConwayPoly Offset(List<double> offset, bool randomize)
+		public ConwayPoly Offset(List<float> offset, bool randomize)
 		{
 			Vector3[] points = new Vector3[Vertices.Count];
-			double _offset;
-			var faceOffsets = new Dictionary<string, double>();
+			float _offset;
+			var faceOffsets = new Dictionary<string, float>();
 
 			for (int i = 0; i < Vertices.Count && i < offset.Count; i++)
 			{
@@ -3700,7 +3701,7 @@ namespace Conway
 					}
 					else
 					{
-						_offset = random.NextDouble() * (float) offset[i];
+						_offset = (float)random.NextDouble() * offset[i];
 						faceOffsets[vert.Halfedge.Face.Name] = _offset;
 					}
 				}
@@ -3915,13 +3916,13 @@ namespace Conway
 		/// <param name="distance">Distance to offset the mesh (thickness)</param>
 		/// <param name="symmetric">Whether to extrude in both (-ve and +ve) directions</param>
 		/// <returns>The extruded mesh (always closed)</returns>
-		public ConwayPoly Shell(double distance, bool symmetric, bool randomize)
+		public ConwayPoly Shell(float distance)
 		{
 			var offsetList = Enumerable.Repeat(distance, Vertices.Count).ToList();
-			return _Shell(offsetList, symmetric, randomize);
+			return Shell(new OpParams{valueA = distance});
 		}
 
-		private ConwayPoly _Shell(List<double> distance, bool symmetric, bool randomize)
+		public ConwayPoly Shell(OpParams o, bool symmetric = true)
 		{
 
 			var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
@@ -3930,13 +3931,13 @@ namespace Conway
 
 			if (symmetric)
 			{
-				result = Offset(distance.Select(d => 0.5 * d).ToList(), randomize);
-				top = Offset(distance.Select(d => -0.5 * d).ToList(), randomize);
+				result = Offset(new OpParams{randomize = o.randomize, funcA = x => 0.5f * o.funcA(x)});
+				top = Offset(new OpParams{randomize = o.randomize, funcA = x => -0.5f * o.funcA(x)});
 			}
 			else
 			{
 				result = Duplicate();
-				top = Offset(distance, randomize);
+				top = Offset(new OpParams{randomize = o.randomize, funcA = o.funcA});
 			}
 			result.FaceRoles = Enumerable.Repeat(Roles.Existing, result.Faces.Count).ToList();
 			result.VertexRoles = Enumerable.Repeat(Roles.Existing, result.Vertices.Count).ToList();
@@ -4743,7 +4744,7 @@ namespace Conway
 				var matches = tagList.Intersect(FaceTags[faceIndex]);
 				include = matches.Any();
 			}
-			filterFunc ??= FaceselToFaceFilterFunc(facesel);
+			filterFunc = filterFunc ?? FaceselToFaceFilterFunc(facesel);
 			return include && filterFunc(new FilterParams(this, faceIndex));
 		}
 
