@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -1099,7 +1098,7 @@ namespace Conway
 
 			for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
 			{
-				float ratio = o.GetValueB(this, faceIndex);
+				float ratio = o.GetValueA(this, faceIndex);
 				var prevFaceTagSet = FaceTags[faceIndex];
 				var face = Faces[faceIndex];
 
@@ -4804,27 +4803,30 @@ namespace Conway
 			return loops;
 		}
 
-		public void FillHoles()
+		public ConwayPoly FillHoles()
 		{
+			var result = Duplicate();
 			var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
-			var boundaries = FindBoundaries();
+			var boundaries = result.FindBoundaries();
 			foreach (var boundary in boundaries)
 			{
-				var success = Faces.Add(boundary.Select(x => x.Vertex));
+				var success = result.Faces.Add(boundary.Select(x => x.Vertex));
 				if (!success)
 				{
 					boundary.Reverse();
-					success = Faces.Add(boundary.Select(x => x.Vertex));
+					success = result.Faces.Add(boundary.Select(x => x.Vertex));
 				}
 
 				if (success)
 				{
-					FaceRoles.Add(Roles.New);
+					result.FaceRoles.Add(Roles.New);
 					newFaceTags.Add(new HashSet<Tuple<string, TagType>>());
 				}
 
-				Halfedges.MatchPairs();
+				result.Halfedges.MatchPairs();
 			}
+
+			return result;
 		}
 
 //		public ConwayPoly ElongateHoles()
@@ -5299,267 +5301,250 @@ namespace Conway
 			switch (op)
 			{
 				case Ops.Kis:
-					polyResult = this.Kis(opParams);
+					polyResult = Kis(opParams);
 					break;
 				case Ops.Dual:
-					polyResult = this.Dual();
+					polyResult = Dual();
 					break;
 				case Ops.Ambo:
-					polyResult = this.Ambo();
+					polyResult = Ambo();
 					break;
 				case Ops.Zip:
-					polyResult = this.Zip(opParams);
+					polyResult = Zip(opParams);
 					break;
 				case Ops.Expand:
-					polyResult = this.Expand(opParams);
+					polyResult = Expand(opParams);
 					break;
 				case Ops.Bevel:
-					polyResult = this.Bevel(opParams);
+					polyResult = Bevel(opParams);
 					break;
 				case Ops.Join:
-					polyResult = this.Join(opParams);
+					polyResult = Join(opParams);
 					break;
 				case Ops.Needle:
-					polyResult = this.Needle(opParams);
+					polyResult = Needle(opParams);
 					break;
 				case Ops.Ortho:
-					polyResult = this.Ortho(opParams);
+					polyResult = Ortho(opParams);
 					break;
 				case Ops.Meta:
-					polyResult = this.Meta(opParams);
+					polyResult = Meta(opParams);
 					break;
 				case Ops.Truncate:
-					polyResult = this.Truncate(opParams);
+					polyResult = Truncate(opParams);
 					break;
 				case Ops.Gyro:
-					polyResult = this.Gyro(opParams);
+					polyResult = Gyro(opParams);
 					break;
 				case Ops.Snub:
-					polyResult = this.Gyro(opParams);
-					polyResult = this.Dual();
+					polyResult = Gyro(opParams);
+					polyResult = Dual();
 					break;
 				case Ops.Exalt:
 					// TODO return a correct VertexRole array
 					// I suspect the last vertices map to the original shape verts
-					polyResult = this.Dual();
-					polyResult = this.Kis(opParams);
-					polyResult = this.Dual();
-					polyResult = this.Kis(opParams);
+					polyResult = Dual();
+					polyResult = Kis(opParams);
+					polyResult = Dual();
+					polyResult = Kis(opParams);
 					break;
 				case Ops.Yank:
-					polyResult = this.Kis(opParams);
-					polyResult = this.Dual();
-					polyResult = this.Kis(opParams);
-					polyResult = this.Dual();
+					polyResult = Kis(opParams);
+					polyResult = Dual();
+					polyResult = Kis(opParams);
+					polyResult = Dual();
 					break;
 				case Ops.Subdivide:
-					polyResult = this.Subdivide(opParams);
+					polyResult = Subdivide(opParams);
 					break;
 				case Ops.Loft:
-					polyResult = this.Loft(opParams);
+					polyResult = Loft(opParams);
 					break;
 				case Ops.Chamfer:
-					polyResult = this.Chamfer(opParams);
+					polyResult = Chamfer(opParams);
 					break;
 				case Ops.Quinto:
-					polyResult = this.Quinto(opParams);
+					polyResult = Quinto(opParams);
 					break;
 				case Ops.JoinedLace:
-					polyResult = this.JoinedLace(opParams);
+					polyResult = JoinedLace(opParams);
 					break;
 				case Ops.OppositeLace:
-					polyResult = this.OppositeLace(opParams);
+					polyResult = OppositeLace(opParams);
 					break;
 				case Ops.Lace:
-					polyResult = this.Lace(opParams);
+					polyResult = Lace(opParams);
 					break;
 				case Ops.JoinKisKis:
-					polyResult = this.JoinKisKis(opParams);
+					polyResult = JoinKisKis(opParams);
 					break;
 				case Ops.Stake:
-					polyResult = this.Stake(opParams);
+					polyResult = Stake(opParams);
 					break;
 				case Ops.JoinStake:
-					polyResult = this.Stake(opParams, true);
+					polyResult = Stake(opParams, true);
 					break;
 				case Ops.Medial:
-					polyResult = this.Medial((int) opParams.valueA, opParams.valueB);
+					polyResult = Medial((int) opParams.valueA, opParams.valueB);
 					break;
 				case Ops.EdgeMedial:
-					polyResult = this.EdgeMedial((int) opParams.valueA, opParams.valueB);
+					polyResult = EdgeMedial((int) opParams.valueA, opParams.valueB);
 					break;
 				// case Ops.JoinedMedial:
 				// 	conway = conway.JoinedMedial((int)0, amount2);
 				// 	break;
 				case Ops.Propeller:
-					polyResult = this.Propeller(opParams.valueA);
+					polyResult = Propeller(opParams.valueA);
 					break;
 				case Ops.Whirl:
-					polyResult = this.Whirl(opParams.valueA);
+					polyResult = Whirl(opParams.valueA);
 					break;
 				case Ops.Volute:
-					polyResult = this.Volute(opParams.valueA);
+					polyResult = Volute(opParams.valueA);
 					break;
 				case Ops.Cross:
-					polyResult = this.Cross(opParams);
+					polyResult = Cross(opParams);
 					break;
 				case Ops.Squall:
-					polyResult = this.Squall(opParams, false);
+					polyResult = Squall(opParams, false);
 					break;
 				case Ops.JoinSquall:
-					polyResult = this.Squall(opParams, true);
+					polyResult = Squall(opParams, true);
 					break;
 				case Ops.Shell:
 					// TODO do this properly with shared edges/vertices
-					polyResult = this.Shell(opParams, true);
+					polyResult = Shell(opParams, true);
 					break;
-				// 			case Ops.Skeleton:
-				// 				// polyResult = this.FaceRemove(new OpParams{tags = tags});
-				// 				// if ((faceSelections==FaceSelections.New || faceSelections==FaceSelections.NewAlt) && op == PolyHydraEnums.Ops.Skeleton)
-				// 				// {
-				// 				// 	// Nasty hack until I fix extrude
-				// 				// 	// Produces better results specific for PolyMidi
-				// 				// 	polyResult = this.FaceScale(new OpParams{valueA = 0f, facesel = FaceSelections.All});
-				// 				// }
-				// 				// polyResult = this.Shell(opParams.valueA, false, randomize);
-				// 				break;
+				case Ops.Skeleton:
+					// polyResult = FaceRemove(new OpParams{tags = tags});
+					// if ((faceSelections==FaceSelections.New || faceSelections==FaceSelections.NewAlt) && op == PolyHydraEnums.Ops.Skeleton)
+					// {
+					// 	// Nasty hack until I fix extrude
+					// 	// Produces better results specific for PolyMidi
+					// 	polyResult = FaceScale(new OpParams{valueA = 0f, facesel = FaceSelections.All});
+					// }
+					// polyResult = Shell(opParams.valueA, false, randomize);
+					break;
 				case Ops.Extrude:
 					opParams.funcB = opParams.funcA;
 					opParams.funcA = null;
 					opParams.valueA = 0;
-					polyResult = this.Loft(opParams);
+					polyResult = Loft(opParams);
 					break;
-				// 			case Ops.VertexScale:
-				// 				polyResult = this.VertexScale(new OpParams{randomize = randomize, funcA = amountFunc, filterFunc = faceFilter});
-				// 				break;
-				// 			case Ops.FaceSlide:
-				// 				////polyResult = this.FaceSlide(opParams.valueA, opParams.valueB, faceSelections, tags, randomize);
-				// 				break;
-				// 			case Ops.FaceMerge:
-				// 				////polyResult = this.FaceMerge(faceSelections);
-				// 				break;
-				// 			case Ops.VertexRotate:
-				// 				polyResult = this.VertexRotate(new OpParams{tags = tags, randomize = randomize, funcA = amountFunc, filterFunc = faceFilter});
-				// 				break;
-				// 			case Ops.VertexFlex:
-				// 				polyResult = this.VertexFlex(new OpParams{tags = tags, randomize = randomize, funcA = amountFunc, filterFunc = faceFilter});
-				// 				break;
-				// 			case Ops.FaceOffset:
-				// 				// TODO Faceroles ignored. Vertex Roles
-				// 				// Split faces
-				// 				var origRoles = poly.FaceRoles;
-				// 				// Split faces
-				// 				polyResult = this.FaceScale(new OpParams{tags = tags});
-				// 				poly.FaceRoles = origRoles;
-				// 				////polyResult = this.Offset(opParams.valueA, faceSelections, tags, randomize);
-				// 				break;
-				// 			case Ops.FaceScale:
-				// 				polyResult = this.FaceScale(new OpParams{tags = tags, randomize = randomize, funcA = amountFunc, filterFunc = faceFilter});
-				// 				break;
-				// 			case Ops.FaceRotate:
-				// 				polyResult = this.FaceRotate(new OpParams{tags = tags, randomize = randomize, funcA = amountFunc, filterFunc = faceFilter}, 0);
-				// 				break;
-				// //					case Ops.Ribbon:
-				// //						conway = conway.Ribbon(new OpParams{false, 0.1f);
-				// //						break;
-				// //					case Ops.FaceTranslate:
-				// //						conway = conway.FaceTranslate(new OpParams{filterFunc = faceFilter});
-				// //						break;
-				// //					case Ops.FaceRotateX:
-				// //						conway = conway.FaceRotate(new OpParams{1, filterFunc = faceFilter});
-				// //						break;
-				// //					case Ops.FaceRotateY:
-				// //						conway = conway.FaceRotate(new OpParams{2, filterFunc = faceFilter});
-				// //						break;
-				// 			case Ops.FaceRemove:
-				// 				polyResult = this.FaceRemove(new OpParams{tags = tags, filterFunc = faceFilter});
-				// 				break;
-				// 			case Ops.FaceKeep:
-				// 				polyResult = this.FaceKeep(new OpParams{tags = tags, filterFunc = faceFilter});
-				// 				break;
-				// 			case Ops.VertexRemove:
-				// 				polyResult = this.VertexRemove(new OpParams{tags = tags, filterFunc = faceFilter}, false);
-				// 				break;
-				// 			case Ops.VertexKeep:
-				// 				polyResult = this.VertexRemove(new OpParams{tags = tags, filterFunc = faceFilter}, true);
-				// 				break;
-				// 			case Ops.FillHoles:
-				// 				poly.FillHoles();
-				// 				break;
-				// 			case Ops.Hinge:
-				// 				polyResult = this.Hinge(opParams.valueA);
-				// 				break;
-				// 			case Ops.AddDual:
-				// 				polyResult = this.AddDual(opParams.valueA);
-				// 				break;
-				// 			case Ops.AddCopyX:
-				// 				////polyResult = this.AddCopy(Vector3.right, opParams.valueA, faceSelections, tags);
-				// 				break;
-				// 			case Ops.AddCopyY:
-				// 				////polyResult = this.AddCopy(Vector3.up, opParams.valueA, faceSelections, tags);
-				// 				break;
-				// 			case Ops.AddCopyZ:
-				// 				////polyResult = this.AddCopy(Vector3.forward, opParams.valueA, faceSelections, tags);
-				// 				break;
-				// 			case Ops.AddMirrorX:
-				// 				////polyResult = this.AddMirrored(Vector3.right, opParams.valueA, faceSelections, tags);
-				// 				break;
-				// 			case Ops.AddMirrorY:
-				// 				////polyResult = this.AddMirrored(Vector3.up, opParams.valueA, faceSelections, tags);
-				// 				break;
-				// 			case Ops.AddMirrorZ:
-				// 				////polyResult = this.AddMirrored(Vector3.forward, opParams.valueA, faceSelections, tags);
-				// 				break;
-				// 			// case Ops.Stash:
-				// 			// 	stash = conway.Duplicate();
-				// 			// 	stash = stash.FaceKeep(faceSelections, filterFunc = faceFilter});
-				// 			// 	break;
-				// 			// case Ops.Unstash:
-				// 			// 	if (stash == null) return conway;
-				// 			// 	var dup = conway.Duplicate();
-				// 			// 	var offset = Vector3.up * amount2;
-				// 			// 	dup.Append(stash.FaceKeep(faceSelections, tags), offset, Quaternion.identity, 0, filterFunc = faceFilter});
-				// 			// 	conway = dup;
-				// 			// 	break;
-				// 			// case Ops.UnstashToFaces:
-				// 			// 	if (stash == null) return conway;
-				// 			// 	conway = conway.AppendMany(stash, faceSelections, tags, 0, 0, true, filterFunc = faceFilter});
-				// 			// 	break;
-				// 			// case Ops.UnstashToVerts:
-				// 			// 	if (stash == null) return conway;
-				// 			// 	conway = conway.AppendMany(stash, faceSelections, tags, 0, 0, false, filterFunc = faceFilter});
-				// 			// 	break;
-				// 			case Ops.TagFaces:
-				// 				////poly.TagFaces(tags, faceSelections);
-				// 				break;
-				// 			case Ops.Layer:
-				// 				////polyResult = this.Layer(4, 1f - opParams.valueA, opParams.valueA / 10f, faceSelections, tags);
-				// 				break;
-				// 			case Ops.Canonicalize:
-				// 				polyResult = this.Canonicalize(0.1f, 0.1f);
-				// 				break;
-				// 			case Ops.Spherize:
-				// 				////polyResult = this.Spherize(opParams.valueA, faceSelections);
-				// 				break;
-				// 			case Ops.Recenter:
-				// 				poly.Recenter();
-				// 				break;
-				// 			case Ops.SitLevel:
-				// 				polyResult = this.SitLevel(opParams.valueA);
-				// 				break;
-				// 			case Ops.Stretch:
-				// 				polyResult = this.Stretch(opParams.valueA);
-				// 				break;
-				// 			case Ops.Slice:
-				// 				polyResult = this.Slice(opParams.valueA, opParams.valueB);
-				// 				break;
-				// 			case Ops.Stack:
-				// 				////polyResult = this.Stack(Vector3.up, opParams.valueA, opParams.valueB, 0.1f, faceSelections, tags);
-				// 				poly.Recenter();
-				// 				break;
-				// 			case Ops.Weld:
-				// 				polyResult = this.Weld(opParams.valueA);
-				// 				break;
+				case Ops.VertexScale:
+					polyResult = VertexScale(opParams);
+					break;
+				case Ops.FaceSlide:
+					////polyResult = FaceSlide(opParams.valueA, opParams.valueB, faceSelections, tags, randomize);
+					break;
+				case Ops.FaceMerge:
+					////polyResult = FaceMerge(faceSelections);
+					break;
+				case Ops.VertexRotate:
+					polyResult = VertexRotate(opParams);
+					break;
+				case Ops.VertexFlex:
+					polyResult = VertexFlex(opParams);
+					break;
+				case Ops.FaceOffset:
+					// TODO Faceroles ignored. Vertex Roles
+					// Split faces
+					var origRoles = FaceRoles;
+					// Split faces
+					polyResult = FaceScale(opParams);
+					polyResult.FaceRoles = origRoles;
+					////polyResult = Offset(opParams.valueA, faceSelections, tags, randomize);
+					break;
+				case Ops.FaceScale:
+					polyResult = FaceScale(opParams);
+					break;
+				case Ops.FaceRotate:
+					polyResult = FaceRotate(opParams, 0);
+					break;
+	//					case Ops.Ribbon:
+	//						conway = conway.Ribbon(new OpParams{false, 0.1f);
+	//						break;
+	//					case Ops.FaceTranslate:
+	//						conway = conway.FaceTranslate(new OpParams{filterFunc = faceFilter});
+	//						break;
+	//					case Ops.FaceRotateX:
+	//						conway = conway.FaceRotate(new OpParams{1, filterFunc = faceFilter});
+	//						break;
+	//					case Ops.FaceRotateY:
+	//						conway = conway.FaceRotate(new OpParams{2, filterFunc = faceFilter});
+	//						break;
+				case Ops.FaceRemove:
+					polyResult = FaceRemove(opParams);
+					break;
+				case Ops.FaceKeep:
+					polyResult = FaceKeep(opParams);
+					break;
+				case Ops.VertexRemove:
+					polyResult = VertexRemove(opParams, false);
+					break;
+				case Ops.VertexKeep:
+					polyResult = VertexRemove(opParams, true);
+					break;
+				case Ops.FillHoles:
+					polyResult = FillHoles();
+					break;
+				case Ops.Hinge:
+					polyResult = Hinge(opParams.valueA);
+					break;
+				case Ops.AddDual:
+					polyResult = AddDual(opParams.valueA);
+					break;
+				case Ops.AddCopyX:
+					////polyResult = AddCopy(Vector3.right, opParams.valueA, faceSelections, tags);
+					break;
+				case Ops.AddCopyY:
+					////polyResult = AddCopy(Vector3.up, opParams.valueA, faceSelections, tags);
+					break;
+				case Ops.AddCopyZ:
+					////polyResult = AddCopy(Vector3.forward, opParams.valueA, faceSelections, tags);
+					break;
+				case Ops.AddMirrorX:
+					////polyResult = AddMirrored(Vector3.right, opParams.valueA, faceSelections, tags);
+					break;
+				case Ops.AddMirrorY:
+					////polyResult = AddMirrored(Vector3.up, opParams.valueA, faceSelections, tags);
+					break;
+				case Ops.AddMirrorZ:
+					////polyResult = AddMirrored(Vector3.forward, opParams.valueA, faceSelections, tags);
+					break;
+				case Ops.TagFaces:
+					////poly.TagFaces(tags, faceSelections);
+					break;
+				case Ops.Layer:
+					////polyResult = Layer(4, 1f - opParams.valueA, opParams.valueA / 10f, faceSelections, tags);
+					break;
+				case Ops.Canonicalize:
+					polyResult = Canonicalize(0.1f, 0.1f);
+					break;
+				case Ops.Spherize:
+					////polyResult = Spherize(opParams.valueA, faceSelections);
+					break;
+				case Ops.Recenter:
+					polyResult = Duplicate();
+					polyResult.Recenter();
+					break;
+				case Ops.SitLevel:
+					polyResult = SitLevel(opParams.valueA);
+					break;
+				case Ops.Stretch:
+					polyResult = Stretch(opParams.valueA);
+					break;
+				case Ops.Slice:
+					polyResult = Slice(opParams.valueA, opParams.valueB);
+					break;
+				case Ops.Stack:
+					polyResult = Duplicate();
+					polyResult = Stack(Vector3.up, opParams.valueA, opParams.valueB, 0.1f, opParams.facesel, opParams.tags);
+					polyResult.Recenter();
+					break;
+				case Ops.Weld:
+					polyResult = Weld(opParams.valueA);
+					break;
 			}
 
 			return polyResult;
