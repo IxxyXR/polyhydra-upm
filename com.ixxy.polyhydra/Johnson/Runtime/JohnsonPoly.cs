@@ -718,6 +718,19 @@ namespace Johnson
 			return conway;
 		}
 
+		public static ConwayPoly GriddedCube(int PrismP, int PrismQ)
+		{
+			var conway = Grids.Grids.MakeUnitileGrid(1, 0, PrismP, PrismP);
+			conway = conway.AddMirrored(Vector3.up, PrismP);
+			conway.Recenter();
+			ConwayPoly xPair = conway.Rotate(Vector3.forward, 90);
+			ConwayPoly zPair = conway.Rotate(Vector3.left, 90);
+			conway.Append(xPair);
+			conway.Append(zPair);
+			conway = conway.Weld(0.001f);
+			return conway;
+		}
+
 		public static ConwayPoly Polygon(int sides)
 		{
 			return _MakePolygon(sides, true);
