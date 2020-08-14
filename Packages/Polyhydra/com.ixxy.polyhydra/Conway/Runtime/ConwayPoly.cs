@@ -4207,27 +4207,30 @@ namespace Conway
 			return result;
 		}
 
-		public ConwayPoly Extrude(float amount, FaceSelections facesel, string tags = "", bool randomize = false,
-			Func<FilterParams, bool> filter = null)
+		public ConwayPoly Extrude(OpParams o)
 		{
-			var tagList = StringToTagList(tags);
+			var tagList = StringToTagList(o.tags);
 			var debugFaces = new[] {0, 1};
 
 			ConwayPoly result;
 			result = Duplicate();
 			var affectedFaces = new List<Face>();
-			for (var i = 0; i < result.Faces.Count; i++)
+			var affectedFaceOriginalIndices = new List<int>();
+			for (var faceIndex = 0; faceIndex < result.Faces.Count; faceIndex++)
 			{
-				if (!debugFaces.Contains(i)) continue;
-				var face = result.Faces[i];
-				if (IncludeFace(i, facesel, tagList, filter))
+				if (!debugFaces.Contains(faceIndex)) continue;
+				var face = result.Faces[faceIndex];
+				if (IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc))
 				{
 					affectedFaces.Add(face);
+					affectedFaceOriginalIndices.Add(faceIndex);
 				}
 			}
 
-			foreach (var face in affectedFaces)
+			for (var newFaceIndex = 0; newFaceIndex < affectedFaces.Count; newFaceIndex++)
 			{
+				var face = affectedFaces[newFaceIndex];
+				float amount = o.GetValueA(this, affectedFaceOriginalIndices[newFaceIndex]);
 				var hole = result.Faces.Remove(face);
 				var holeVerts = hole.Select(e => e.Vertex).ToList();
 				var newVerts = hole.Select(e => new Vertex(e.Vertex.Position + face.Normal * amount)).ToList();
@@ -4241,7 +4244,6 @@ namespace Conway
 					side.Add(holeVerts[j]);
 					result.Faces.Add(side);
 				}
-
 
 
 //					foreach (var v in newVerts)
@@ -4286,7 +4288,6 @@ namespace Conway
 //					result.Append(extrusionPoly);
 //					result.Faces.Remove(result.Faces.First(f=>f.Centroid==face.Centroid));  // TODO implement without iteration
 //				}
-
 			}
 
 //			for (var i = 0; i < Faces.Count; i++)
@@ -5300,6 +5301,9 @@ namespace Conway
 
 			switch (op)
 			{
+				case Ops.Identity:
+					polyResult = Duplicate();
+					break;
 				case Ops.Kis:
 					polyResult = Kis(opParams);
 					break;
@@ -5428,6 +5432,7 @@ namespace Conway
 				case Ops.Extrude:
 					opParams.funcB = opParams.funcA;
 					opParams.funcA = null;
+					opParams.valueB = opParams.valueA;
 					opParams.valueA = 0;
 					polyResult = Loft(opParams);
 					break;

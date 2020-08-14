@@ -13,7 +13,10 @@ public class OtherPolysTest : MonoBehaviour
     [Range(1,40)] public int segments = 3;
 
     public bool ApplyOp;
+    public Ops op;
+    public FaceSelections facesel;
     [Range(-1,1)] public float opAmount = 0;
+    [Range(-1,1)] public float op2Amount = 0;
 
     public bool ColorBySides;
 
@@ -63,7 +66,7 @@ public class OtherPolysTest : MonoBehaviour
         var colorMethod = ColorBySides ? PolyHydraEnums.ColorMethods.BySides : PolyHydraEnums.ColorMethods.ByRole;
         if (ApplyOp)
         {
-            poly = poly.Loft(new OpParams{valueA = opAmount, valueB = 0f});
+            poly = poly.ApplyOp(op, new OpParams{valueA = opAmount, valueB = op2Amount, facesel = facesel});
         }
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, colorMethod);
         GetComponent<MeshFilter>().mesh = mesh;
