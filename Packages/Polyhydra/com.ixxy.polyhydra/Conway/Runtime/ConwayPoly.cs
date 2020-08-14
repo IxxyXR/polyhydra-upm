@@ -3258,8 +3258,8 @@ namespace Conway
 					var innerFace = new List<int>
 					{
 						newInnerVertices[face.Name + edge.Vertex.Name],
-						newEdgeVertices[edge.PairedName],
 						newInnerVertices[face.Name + edge.Prev.Vertex.Name],
+						newEdgeVertices[edge.PairedName],
 					};
 					faceIndices.Add(innerFace);
 					faceRoles.Add(Roles.New);
@@ -3270,9 +3270,9 @@ namespace Conway
 						var vertexFace = new List<int>
 						{
 							existingVertices[edge.Vertex.Position],
-							newEdgeVertices[edge.PairedName],
-							newInnerVertices[face.Name + edge.Vertex.Name],
 							newEdgeVertices[edge.Next.PairedName],
+							newInnerVertices[face.Name + edge.Vertex.Name],
+							newEdgeVertices[edge.PairedName],
 						};
 						faceIndices.Add(vertexFace);
 						faceRoles.Add(Roles.NewAlt);
@@ -3282,7 +3282,7 @@ namespace Conway
 				}
 
 				var existingFace = new List<int>();
-				for (int j = edges.Count - 1; j >= 0; j--)
+				for (int j = 0; j < edges.Count; j++)
 				{
 					var edge = edges[j];
 					existingFace.Add(newInnerVertices[face.Name + edge.Vertex.Name]);
@@ -3300,11 +3300,11 @@ namespace Conway
 				{
 					var vertex = Vertices[vertIndex];
 					var vertexFace = new List<int>();
-					for (int j = vertex.Halfedges.Count - 1; j >= 0; j--)
+					for (int j = 0; j < vertex.Halfedges.Count; j++)
 					{
 						var edge = vertex.Halfedges[j];
-						vertexFace.Add(newEdgeVertices[edge.PairedName]);
 						vertexFace.Add(newInnerVertices[edge.Face.Name + vertex.Name]);
+						vertexFace.Add(newEdgeVertices[edge.PairedName]);
 					}
 
 					faceIndices.Add(vertexFace);

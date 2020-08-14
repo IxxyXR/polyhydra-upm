@@ -379,7 +379,7 @@ namespace Johnson
 			return poly;
         }
 
-        public static ConwayPoly ElongatedBipyramid(int sides)
+        public static ConwayPoly ElongatedDipyramid(int sides)
         {
 			ConwayPoly poly = ElongatedPyramid(sides);
 			float height = _CalcPyramidHeight(sides);
@@ -398,7 +398,7 @@ namespace Johnson
 			return poly;
 		}
 
-		public static ConwayPoly GyroelongatedBipyramid(int sides)
+		public static ConwayPoly GyroelongatedDipyramid(int sides)
 		{
 			ConwayPoly poly = GyroelongatedPyramid(sides);
 			float height = _CalcPyramidHeight(sides);
