@@ -828,10 +828,10 @@ namespace Conway
             }
             else
             {
-                for (var i = 0; i < Vertices.Count; i++)
+                for (var vertexIndex = 0; vertexIndex < Vertices.Count; vertexIndex++)
                 {
-                    var vert = Vertices[i];
-                    if (IncludeVertex(i, facesel))
+                    var vert = Vertices[vertexIndex];
+                    if (IncludeVertex(vertexIndex, facesel, tagList, filter))
                     {
                         Vector3 transform = vert.Position + vert.Normal * offset;
                         var rot = Quaternion.AngleAxis(angle, vert.Normal);

@@ -774,7 +774,8 @@ namespace Conway
 					polyResult = AddMirrored(Vector3.forward, opParams.valueA, opParams.facesel, opParams.tags);
 					break;
 				case Ops.TagFaces:
-					TagFaces(opParams.tags, opParams.facesel);
+					polyResult = Duplicate();
+					polyResult.TagFaces(opParams.tags, opParams.facesel);
 					break;
 				case Ops.Layer:
 					opParams.valueA = 1f - opParams.valueA;
@@ -785,7 +786,7 @@ namespace Conway
 					polyResult = Canonicalize(0.1f, 0.1f);
 					break;
 				case Ops.Spherize:
-					////polyResult = Spherize(opParams.valueA, faceSelections);
+					polyResult = Spherize(opParams);
 					break;
 				case Ops.Recenter:
 					polyResult = Duplicate();
