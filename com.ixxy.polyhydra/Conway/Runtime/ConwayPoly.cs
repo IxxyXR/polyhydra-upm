@@ -698,10 +698,10 @@ namespace Conway
 					polyResult = VertexScale(opParams);
 					break;
 				case Ops.FaceSlide:
-					////polyResult = FaceSlide(opParams.valueA, opParams.valueB, faceSelections, tags, randomize);
+					polyResult = FaceSlide(opParams);
 					break;
 				case Ops.FaceMerge:
-					////polyResult = FaceMerge(faceSelections);
+					polyResult = FaceMerge(opParams);
 					break;
 				case Ops.VertexRotate:
 					polyResult = VertexRotate(opParams);

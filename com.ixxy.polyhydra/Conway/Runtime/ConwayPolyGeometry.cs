@@ -165,20 +165,21 @@ namespace Conway
             return conway;
         }
 
-        public ConwayPoly FaceSlide(float amount, float direction, FaceSelections facesel, string tags = "",
-            bool randomize = false, Func<FilterParams, bool> filter = null)
+        public ConwayPoly FaceSlide(OpParams o)
         {
-            var tagList = StringToTagList(tags);
+            var tagList = StringToTagList(o.tags);
             var poly = Duplicate();
             for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
             {
                 var face = poly.Faces[faceIndex];
-                if (!IncludeFace(faceIndex, facesel, tagList, filter)) continue;
+                if (!IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc)) continue;
                 var faceNormal = face.Normal;
                 //var amount = amount * (float) (randomize ? random.NextDouble() : 1);
                 var faceVerts = face.GetVertices();
                 for (var vertexIndex = 0; vertexIndex < faceVerts.Count; vertexIndex++)
                 {
+                    float amount = o.GetValueA(this, vertexIndex);
+                    float direction = o.GetValueB(this, vertexIndex);
                     var vertexPos = faceVerts[vertexIndex].Position;
 
                     Vector3 tangent, tangentLeft, tangentUp, t1, t2;
@@ -206,7 +207,7 @@ namespace Conway
 
                     tangent = Vector3.SlerpUnclamped(tangentUp, tangentLeft, direction);
 
-                    var vector = tangent * (amount * (float) (randomize ? random.NextDouble() : 1));
+                    var vector = tangent * (amount * (float) (o.randomize ? random.NextDouble() : 1));
                     var newPos = vertexPos + vector;
                     faceVerts[vertexIndex].Position = newPos;
                 }
@@ -555,14 +556,14 @@ namespace Conway
             return Offset(offsetList, o.randomize);
         }
 
-        public ConwayPoly FaceMerge(FaceSelections facesel)
+        public ConwayPoly FaceMerge(OpParams o)
         {
             // TODO Breaks if the poly already has holes.
             var newPoly = Duplicate();
-            newPoly = newPoly.FaceRemove(new OpParams {facesel = facesel});
+            newPoly = newPoly.FaceRemove(o);
             // Why do we do this?
             newPoly = newPoly.FaceRemove(new OpParams {facesel = FaceSelections.Outer});
-            newPoly.FillHoles();
+            newPoly = newPoly.FillHoles();
             return newPoly;
         }
 
