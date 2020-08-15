@@ -66,7 +66,7 @@ public class RandomSpaceshipGenerator : MonoBehaviour
                     wingFaces = wingFaces.Loft(new OpParams{valueA = Random.Range(0, 1f), valueB = Random.Range(.15f, 1.5f), facesel = FaceSelections.Existing});
                     if (Random.value < 0.5f)
                     {
-                        wingFaces = wingFaces.FaceSlide(Random.Range(-.5f, .5f), Random.Range(-1, .25f), FaceSelections.Existing);
+                        wingFaces = wingFaces.FaceSlide(new OpParams{valueA = Random.Range(-.5f, .5f), valueB = Random.Range(-1, .25f), facesel = FaceSelections.Existing});
 
                     }
                 }
@@ -107,7 +107,7 @@ public class RandomSpaceshipGenerator : MonoBehaviour
                     spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(.5f, 0), valueB = Random.Range(0.05f, .3f), facesel = FaceSelections.AllNew});
                 }
 
-                spaceship = spaceship.FaceSlide(Random.Range(-.3f, .3f), 0, FaceSelections.FacingStraightForward);
+                spaceship = spaceship.FaceSlide(new OpParams{valueA = Random.Range(-.3f, .3f), valueB = 0, facesel = FaceSelections.FacingStraightForward});
 
             }
             spaceship = spaceship.Rotate(Vector3.up, 180);
