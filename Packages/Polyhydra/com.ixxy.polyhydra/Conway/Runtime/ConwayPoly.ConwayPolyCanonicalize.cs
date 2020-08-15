@@ -350,17 +350,20 @@ namespace Conway
             return this;
         }
 
-        public ConwayPoly Spherize(float amount, FaceSelections vertexsel)
+        public ConwayPoly Spherize(OpParams o)
         {
             // TODO - preserve planar faces
+
+            var tagList = StringToTagList(o.tags);
 
             var vertexPoints = new List<Vector3>();
             var faceIndices = ListFacesByVertexIndices();
 
             for (var vertexIndex = 0; vertexIndex < Vertices.Count; vertexIndex++)
             {
+                float amount = o.GetValueA(this, vertexIndex);
                 var vertex = Vertices[vertexIndex];
-                if (IncludeVertex(vertexIndex, vertexsel))
+                if (IncludeVertex(vertexIndex, o.facesel, tagList, o.filterFunc))
                 {
                     vertexPoints.Add(Vector3.LerpUnclamped(vertex.Position, vertex.Position.normalized, amount));
                     VertexRoles[vertexIndex] = Roles.Existing;
