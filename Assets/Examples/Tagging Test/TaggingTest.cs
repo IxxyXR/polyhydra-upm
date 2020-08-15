@@ -6,7 +6,7 @@ using UnityEngine;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-public class JohnsonTest : MonoBehaviour
+public class TaggingTest : MonoBehaviour
 {
     public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
     [Range(1,40)] public int sides = 4;
@@ -102,9 +102,7 @@ public class JohnsonTest : MonoBehaviour
         var colorMethod = ColorBySides ? PolyHydraEnums.ColorMethods.BySides : PolyHydraEnums.ColorMethods.ByRole;
         if (ApplyOp)
         {
-            poly.TagFaces("top", facesel);
-            var o = new OpParams {valueA = opAmount, valueB = op2Amount, tags = "top"};
-            poly = poly.ApplyOp(op, o);
+            poly = poly.ApplyOp(op, new OpParams{valueA = opAmount, valueB = op2Amount, facesel = facesel});
         }
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, colorMethod);
         GetComponent<MeshFilter>().mesh = mesh;
