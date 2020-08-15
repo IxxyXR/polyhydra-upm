@@ -716,7 +716,7 @@ namespace Conway
             upper = Mathf.Lerp(yMin, yMax, upper);
             Func<FilterParams, bool> slice = x =>
                 x.poly.Faces[x.index].Centroid.y > lower && x.poly.Faces[x.index].Centroid.y < upper;
-            return _FaceRemove(new OpParams {facesel = FaceSelections.All, tags = tags, filterFunc = slice});
+            return _FaceRemove(new OpParams {facesel = FaceSelections.All, tags = tags, filterFunc = slice}, true);
         }
 
         public ConwayPoly Weld(float distance)
