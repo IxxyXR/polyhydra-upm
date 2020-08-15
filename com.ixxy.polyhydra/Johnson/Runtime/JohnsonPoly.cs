@@ -629,7 +629,7 @@ namespace Johnson
 
             var conwayPoly = new ConwayPoly(wythoffPoly);
             conwayPoly = conwayPoly.FaceRemove(new OpParams{facesel = FaceSelections.FacingDown});
-            conwayPoly.FillHoles();
+            conwayPoly = conwayPoly.FillHoles();
             return conwayPoly;
         }
 
@@ -826,7 +826,7 @@ namespace Johnson
 		public static ConwayPoly UvHemisphere(int verticalLines = 24, int horizontalLines = 24)
 		{
 			var poly = UvSphere(verticalLines, horizontalLines, 0.5f);
-			poly.FillHoles();
+			poly = poly.FillHoles();
 			return poly;
 		}
     }
