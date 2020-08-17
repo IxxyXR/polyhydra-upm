@@ -37,6 +37,7 @@ public static class PolyHydraEnums
 		Torus,
 		Cylinder,
 		Cone,
+		Sphere,
 //		Conic_Frustum,
 //		Mobius,
 //		Torus_Trefoil,

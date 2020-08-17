@@ -454,6 +454,22 @@ public class Unitile
         return -1;
     }
 
+    public void sphere(float radius = 1f)
+    {
+        plane(UT.ut_join, UT.ut_open);
+        float uu, vv, rad;
+        for (var i = 0; i < raw_verts.Count; i++)
+        {
+            var vert = raw_verts[i];
+            uu = vert.x / x_end;
+            vv = radius * vert.z / y_end;
+            float x = Mathf.Sin(Mathf.PI * vv) * Mathf.Cos(2f * Mathf.PI * uu);
+            float y = Mathf.Sin(Mathf.PI * vv) * Mathf.Sin(2f * Mathf.PI * uu);
+            float z = Mathf.Cos(Mathf.PI * vv);
+            raw_verts[i] = new Vector3(x, y, z);
+        }
+    }
+
     public void conic_frust(float top_rad=0.5f, float bot_rad=1f, float ht=2f)
     {
         plane(UT.ut_join, UT.ut_open);
