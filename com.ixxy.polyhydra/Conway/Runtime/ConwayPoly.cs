@@ -765,13 +765,13 @@ namespace Conway
 					polyResult = AddCopy(Vector3.forward, opParams.valueA, opParams.facesel, opParams.tags);
 					break;
 				case Ops.AddMirrorX:
-					polyResult = AddMirrored(Vector3.right, opParams.valueA, opParams.facesel, opParams.tags);
+					polyResult = AddMirrored(opParams, Vector3.right);
 					break;
 				case Ops.AddMirrorY:
-					polyResult = AddMirrored(Vector3.up, opParams.valueA, opParams.facesel, opParams.tags);
+					polyResult = AddMirrored(opParams, Vector3.up);
 					break;
 				case Ops.AddMirrorZ:
-					polyResult = AddMirrored(Vector3.forward, opParams.valueA, opParams.facesel, opParams.tags);
+					polyResult = AddMirrored(opParams, Vector3.forward);
 					break;
 				case Ops.TagFaces:
 					polyResult = Duplicate();
@@ -802,8 +802,7 @@ namespace Conway
 					polyResult = Slice(opParams.valueA, opParams.valueB);
 					break;
 				case Ops.Stack:
-					polyResult = Duplicate();
-					polyResult = polyResult.Stack(Vector3.up, opParams.valueA, opParams.valueB, 0.1f, opParams.facesel, opParams.tags);
+					polyResult = Stack(Vector3.up, opParams.valueA, opParams.valueB, 0.1f, opParams.facesel, opParams.tags);
 					polyResult.Recenter();
 					break;
 				case Ops.Weld:

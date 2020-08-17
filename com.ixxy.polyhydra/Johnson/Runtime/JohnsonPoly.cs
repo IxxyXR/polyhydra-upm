@@ -233,6 +233,7 @@ namespace Johnson
 		        };
 		        poly.Faces.Add(side1);
 		        poly.FaceRoles.Add(ConwayPoly.Roles.New);
+		        poly.FaceTags.Add(new HashSet<Tuple<string, ConwayPoly.TagType>>());
 
 		        var side2 = new List<Vertex>
 		        {
@@ -242,6 +243,7 @@ namespace Johnson
 		        };
 		        poly.Faces.Add(side2);
 		        poly.FaceRoles.Add(ConwayPoly.Roles.NewAlt);
+		        poly.FaceTags.Add(new HashSet<Tuple<string, ConwayPoly.TagType>>());
 
 	        }
 			poly.Halfedges.MatchPairs();
@@ -538,6 +540,7 @@ namespace Johnson
 				};
 				poly.Faces.Add(side1);
 				poly.FaceRoles.Add(ConwayPoly.Roles.New);
+				poly.FaceTags.Add(new HashSet<Tuple<string, ConwayPoly.TagType>>());
 				var side2 = new List<Vertex>
 				{
 						middleVerts[PolyUtils.ActualMod(i * 2 + indexOffset, sides * 2)],
@@ -547,6 +550,7 @@ namespace Johnson
 				};
 				poly.Faces.Add(side2);
 				poly.FaceRoles.Add(ConwayPoly.Roles.NewAlt);
+				poly.FaceTags.Add(new HashSet<Tuple<string, ConwayPoly.TagType>>());
 
 				i++;
 				edge2 = edge2.Next;
@@ -718,10 +722,12 @@ namespace Johnson
 			return conway;
 		}
 
-		public static ConwayPoly GriddedCube(int PrismP, int PrismQ)
+		public static ConwayPoly GriddedCube(int PrismP)
 		{
 			var conway = Grids.Grids.MakeUnitileGrid(1, 0, PrismP, PrismP);
-			conway = conway.AddMirrored(Vector3.up, PrismP);
+			var copy = conway.Duplicate();
+			copy.Mirror(Vector3.up, PrismP);
+			conway.Append(copy);
 			conway.Recenter();
 			ConwayPoly xPair = conway.Rotate(Vector3.forward, 90);
 			ConwayPoly zPair = conway.Rotate(Vector3.left, 90);
