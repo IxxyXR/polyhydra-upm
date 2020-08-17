@@ -81,7 +81,7 @@ namespace Grids
 					ut.conic_frust(0.00001f);
 					break;
 				case 4:
-					ut.conic_frust();
+					ut.sphere();
 					break;
 				case 5:
 					ut.mobius();
