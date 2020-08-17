@@ -464,7 +464,7 @@ public class Unitile
             a0 = 2 * Mathf.PI * vert.x / x_end;
             h = ht * vert.z / y_end;
             rad = (top_rad - bot_rad) * vert.z / y_end + bot_rad;
-            raw_verts[i] = new Vector3(rad * Mathf.Cos(a0), rad * Mathf.Sin(a0), h);
+            raw_verts[i] = new Vector3(rad * Mathf.Sin(a0), rad * Mathf.Cos(a0), h);
         }
     }
 

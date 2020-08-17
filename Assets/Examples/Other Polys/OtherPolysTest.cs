@@ -48,7 +48,7 @@ public class OtherPolysTest : MonoBehaviour
                     poly = JohnsonPoly.UvHemisphere(sides, segments);
                     break;
                 case PolyHydraEnums.OtherPolyTypes.GriddedCube:
-                    poly = JohnsonPoly.GriddedCube(sides, segments);
+                    poly = JohnsonPoly.GriddedCube(sides);
                     break;
                 case PolyHydraEnums.OtherPolyTypes.C_Shape:
                     poly = JohnsonPoly.C_Shape();

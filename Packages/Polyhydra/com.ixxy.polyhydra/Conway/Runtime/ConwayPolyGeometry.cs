@@ -9,15 +9,16 @@ namespace Conway
     {
         #region Geometry methods
 
-        public ConwayPoly AddMirrored(Vector3 axis, float amount, FaceSelections facesel = FaceSelections.All,
-            string tags = "")
+        public ConwayPoly AddMirrored(OpParams o, Vector3 axis)
         {
-            var original = FaceKeep(facesel, tags);
+            float amount = o.GetValueA(this, 0);
+            var original = FaceKeep(o);
             var mirror = original.Duplicate();
             mirror.Mirror(axis, amount);
-            mirror = mirror.FaceKeep(facesel, tags);
+            mirror = mirror.FaceKeep(o);
             mirror.Halfedges.Flip();
             original.Append(mirror);
+            original.Recenter();
             return original;
         }
 
@@ -52,17 +53,18 @@ namespace Conway
         {
             scale = Mathf.Abs(scale);
             scale = Mathf.Clamp(scale, 0.0001f, 0.99f);
-            var original = Duplicate();
             Vector3 offsetVector = axis * offset;
-            var copy = Duplicate();
-            copy = copy.FaceKeep(facesel, tags);
+
+            var original = Duplicate();
+            var copy = FaceKeep(facesel, tags);
+
             int copies = 0;
             while (scale > limit && copies < 64) // TODO make copies configurable
             {
                 original.Append(copy.Duplicate(offsetVector, Quaternion.identity, scale));
                 scale *= scale;
                 offsetVector += axis * offset;
-                offset *= Mathf.Sqrt(scale); // Not sure why but sqrt *looks* right.
+                offset *= Mathf.Sqrt(scale);  // Not sure why but sqrt *looks* right.
                 copies++;
             }
 
