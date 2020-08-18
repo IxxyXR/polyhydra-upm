@@ -504,7 +504,7 @@ namespace Conway
                 newPoly.Faces.Remove(face);
             }
 
-            newPoly.Vertices.CullUnused();
+            newPoly.CullUnusedVertices();
 
             for (var faceIndex = 0; faceIndex < newPoly.Faces.Count; faceIndex++)
             {
@@ -786,10 +786,10 @@ namespace Conway
         public ConwayPoly FillHoles()
         {
             var result = Duplicate();
-            var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
             var boundaries = result.FindBoundaries();
             foreach (var boundary in boundaries)
             {
+                if (boundary.Count < 3) continue;
                 var success = result.Faces.Add(boundary.Select(x => x.Vertex));
                 if (!success)
                 {
@@ -800,12 +800,10 @@ namespace Conway
                 if (success)
                 {
                     result.FaceRoles.Add(Roles.New);
-                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>());
+                    result.FaceTags.Add(new HashSet<Tuple<string, TagType>>());
                 }
-
-                result.Halfedges.MatchPairs();
             }
-
+            result.Halfedges.MatchPairs();
             return result;
         }
 

@@ -428,8 +428,8 @@ public class Unitile
         for (var i = 0; i < raw_verts.Count; i++)
         {
             var vert = raw_verts[i];
-            a0 = 2 * Mathf.PI * vert.x / x_end;
-            a1 = 2 * Mathf.PI * vert.z / y_end;
+            a0 = 2 * Mathf.PI * (vert.x / x_end + 0.001f);
+            a1 = 2 * Mathf.PI * (vert.z / y_end + 0.001f);
             vert = new Vector3(
                 Mathf.Sin(a1) * (sect_rad * Mathf.Cos(a0) + ring_rad),
                 sect_rad * Mathf.Sin(a0),
@@ -457,12 +457,12 @@ public class Unitile
     public void sphere(float radius = 1f)
     {
         plane(UT.ut_join, UT.ut_open);
-        float uu, vv, rad;
+        float uu, vv;
         for (var i = 0; i < raw_verts.Count; i++)
         {
             var vert = raw_verts[i];
-            uu = vert.x / x_end;
-            vv = radius * vert.z / y_end;
+            uu = vert.x / x_end + 0.001f;
+            vv = vert.z / y_end + 0.001f;
             float x = Mathf.Sin(Mathf.PI * vv) * Mathf.Cos(2f * Mathf.PI * uu);
             float y = Mathf.Sin(Mathf.PI * vv) * Mathf.Sin(2f * Mathf.PI * uu);
             float z = Mathf.Cos(Mathf.PI * vv);
@@ -473,13 +473,15 @@ public class Unitile
     public void conic_frust(float top_rad=0.5f, float bot_rad=1f, float ht=2f)
     {
         plane(UT.ut_join, UT.ut_open);
-        float a0, h, rad;
+        float a0, h, rad, uu, vv;
         for (var i = 0; i < raw_verts.Count; i++)
         {
             var vert = raw_verts[i];
-            a0 = 2 * Mathf.PI * vert.x / x_end;
-            h = ht * vert.z / y_end;
-            rad = (top_rad - bot_rad) * vert.z / y_end + bot_rad;
+            uu = vert.x / x_end + 0.001f;
+            vv = vert.z / y_end + 0.001f;
+            a0 = 2 * Mathf.PI * uu;
+            h = ht * vv;
+            rad = (top_rad - bot_rad) * vv + bot_rad;
             raw_verts[i] = new Vector3(rad * Mathf.Sin(a0), rad * Mathf.Cos(a0), h);
         }
     }

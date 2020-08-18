@@ -24,16 +24,5 @@ namespace Conway {
             _mConwayPoly = null;
         }
 
-        /// <summary>
-        /// Removes all vertices that are currently not used by the Halfedge list.
-        /// </summary>
-        /// <returns>The number of unused vertices that were removed.</returns>
-        public int CullUnused() {
-            var orig = new List<Vertex>(this);
-            Clear();
-            // re-add vertices which reference a halfedge
-            AddRange(orig.Where(v => v.Halfedge != null));
-            return orig.Count - Count;
-        }
     }
 }
