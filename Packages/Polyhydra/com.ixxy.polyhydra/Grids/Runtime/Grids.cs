@@ -109,7 +109,6 @@ namespace Grids
 					break;
 			}
 			var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, ut.raw_verts.Count);
-
 			var faceRoles = new List<ConwayPoly.Roles>();
 			int foo, isEven, width, height, coloringOffset;
 
@@ -191,14 +190,6 @@ namespace Grids
 						faceRoles.Add((ConwayPoly.Roles)((i % 2) + 2));
 						break;
 				}
-
-
-			}
-
-			for (var i = 0; i < ut.raw_faces[0].Count; i++)
-			{
-				var idx = ut.raw_faces[0][i];
-				var v = ut.raw_verts[idx];
 			}
 
 			var poly = new ConwayPoly(ut.raw_verts, ut.raw_faces, faceRoles, vertexRoles);
@@ -420,7 +411,7 @@ namespace Grids
 
 			vertexPoints.Add(Vector3.zero);
 
-			for (float radius = radiusStep; radius <= 1; radius += radiusStep)
+			for (float radius = radiusStep; radius < 1f + radiusStep; radius += radiusStep)
 			{
 				for (int i = start; i != end; i += inc)
 				{

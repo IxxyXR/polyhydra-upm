@@ -8,13 +8,15 @@ namespace Conway {
         
         #region constructors
 
-        public Vertex(Vector3 point) {
+        public Vertex(Vector3 point)
+        {
             Position = point;
             Name = Guid.NewGuid();
         }
 
         public Vertex(Vector3 point, Halfedge edge)
-            : this(point) {
+            : this(point)
+        {
             Halfedge = edge;
         }
 
@@ -102,8 +104,9 @@ namespace Conway {
         /// Finds the faces which share this vertex
         /// </summary>
         /// <returns>a list of incident faces, ordered counter-clockwise around the vertex</returns>
-        public List<Face> GetVertexFaces() {
-            List<Face> adjacent = new List<Face>();
+        public List<Face> GetVertexFaces()
+        {
+            var adjacent = new List<Face>();
             if (Halfedge == null) return adjacent;
             bool boundary = false;
             Halfedge edge = Halfedge;
@@ -118,7 +121,7 @@ namespace Conway {
             } while (edge != Halfedge);
 
             if (boundary) {
-                List<Face> rAdjacent = new List<Face>();
+                var rAdjacent = new List<Face>();
                 edge = Halfedge;
                 while (edge.Next.Pair != null) {
                     edge = edge.Next.Pair;

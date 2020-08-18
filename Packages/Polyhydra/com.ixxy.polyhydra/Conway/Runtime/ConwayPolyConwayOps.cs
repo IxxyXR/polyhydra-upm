@@ -9,14 +9,9 @@ namespace Conway
     {
         #region conway methods
 
-        /// <summary>
-        /// Conway's dual operator
-        /// </summary>
-        /// <returns>the dual as a new mesh</returns>
         public ConwayPoly Dual()
         {
             var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
-
             var faceRoles = new List<Roles>();
             var vertexRoles = new List<Roles>();
 
@@ -95,28 +90,30 @@ namespace Conway
                     }
                 }
 
-                faceIndices.Add(fIndex);
-                try
+                if (fIndex.Count >= 3)
                 {
-                    faceRoles.Add(VertexRoles[vertexIndex]);
+                    faceIndices.Add(fIndex);
+                    try
+                    {
+                        faceRoles.Add(VertexRoles[vertexIndex]);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogWarning(
+                            $"Dual op failed to set face role based on existing vertex role. " +
+                            $"Faces.Count: {Faces.Count} Verts: {Vertices.Count} " +
+                            $"old VertexRoles.Count: {VertexRoles.Count} i: {vertexIndex}");
+                    }
+                    var vertexFaceIndices = vertexFaces.Select(f => Faces.IndexOf(f));
+                    var existingTagSets =
+                        vertexFaceIndices.Select(fi => FaceTags[fi].Where(t => t.Item2 == TagType.Extrovert));
+                    var newFaceTagSet = existingTagSets.Aggregate(new HashSet<Tuple<string, TagType>>(), (rs, i) =>
+                    {
+                        rs.UnionWith(i);
+                        return rs;
+                    });
+                    newFaceTags.Add(newFaceTagSet);
                 }
-                catch (Exception e)
-                {
-                    Debug.LogWarning(
-                        $"Dual op failed to set face role based on existing vertex role. Faces.Count: {Faces.Count} Verts: {Vertices.Count} old VertexRoles.Count: {VertexRoles.Count} i: {vertexIndex}");
-//					throw;
-                }
-
-
-                var vertexFaceIndices = vertexFaces.Select(f => Faces.IndexOf(f));
-                var existingTagSets =
-                    vertexFaceIndices.Select(fi => FaceTags[fi].Where(t => t.Item2 == TagType.Extrovert));
-                var newFaceTagSet = existingTagSets.Aggregate(new HashSet<Tuple<string, TagType>>(), (rs, i) =>
-                {
-                    rs.UnionWith(i);
-                    return rs;
-                });
-                newFaceTags.Add(newFaceTagSet);
             }
 
             // If we're ended up with an invalid number of roles then just set them all to 'New'
@@ -266,18 +263,19 @@ namespace Conway
                     vertexRoles.Add(Roles.NewAlt);
                 }
 
-                faceIndices.Add(newHalfedges);
-                faceRoles.Add(Roles.New);
-
-                var vertexFaceIndices = vertex.GetVertexFaces().Select(f => Faces.IndexOf(f));
-                var existingTagSets =
-                    vertexFaceIndices.Select(fi => FaceTags[fi].Where(t => t.Item2 == TagType.Extrovert));
-                var newFaceTagSet = existingTagSets.Aggregate(new HashSet<Tuple<string, TagType>>(), (rs, i) =>
+                if (newHalfedges.Count() >= 3)
                 {
-                    rs.UnionWith(i);
-                    return rs;
-                });
-                newFaceTags.Add(newFaceTagSet);
+                    faceIndices.Add(newHalfedges);
+                    faceRoles.Add(Roles.New);
+                    var vertexFaceIndices = vertex.GetVertexFaces().Select(f => Faces.IndexOf(f)).Where(x=>x!=-1);  // No idea why IndexOf is failing to match
+                    var existingTagSets = vertexFaceIndices.Select(fi => FaceTags[fi].Where(t => t.Item2 == TagType.Extrovert));
+                    var newFaceTagSet = existingTagSets.Aggregate(new HashSet<Tuple<string, TagType>>(), (rs, i) =>
+                    {
+                        rs.UnionWith(i);
+                        return rs;
+                    });
+                    newFaceTags.Add(newFaceTagSet);
+                }
             }
 
             return new ConwayPoly(vertexPoints, faceIndices, faceRoles, vertexRoles, newFaceTags);
@@ -961,11 +959,14 @@ namespace Conway
             var faceRoles = new List<Roles>();
             var vertexRoles = new List<Roles>();
 
+            int lastVertIndex = 0;
             for (var i = 0; i < Vertices.Count; i++)
             {
-                vertexPoints.Add(Vertices[i].Position);
-                existingVertices[vertexPoints[i]] = i;
+                var vert = Vertices[i];
+                vertexPoints.Add(vert.Position);
+                existingVertices[vert.Position] = lastVertIndex;
                 vertexRoles.Add(Roles.Existing);
+                lastVertIndex++;
             }
 
             int vertexIndex = vertexPoints.Count();
@@ -983,32 +984,49 @@ namespace Conway
             for (var i = 0; i < Halfedges.Count; i++)
             {
                 var edge = Halfedges[i];
-                if (!rhombusFlags.ContainsKey(edge.Name))
+                var pair = edge.Pair;
+                if (!rhombusFlags.ContainsKey(edge.PairedName))
                 {
-                    if (edge.Pair != null)
+                    if (pair != null)
                     {
-                        var rhombus = new[]
+                        var tri1 = new[]
                         {
-                            newCentroidVertices[edge.Pair.Face.Name],
+                            newCentroidVertices[pair.Face.Name],
                             existingVertices[edge.Vertex.Position],
                             newCentroidVertices[edge.Face.Name],
                         };
-                        faceIndices.Add(rhombus);
-                        faceRoles.Add(i % 2 == 0 ? Roles.New : Roles.NewAlt);
+                        faceIndices.Add(tri1);
+                        faceRoles.Add( Roles.New);
 
-                        var newFaceTagSet = new HashSet<Tuple<string, TagType>>();
-                        newFaceTagSet.UnionWith(FaceTags[Faces.IndexOf(edge.Face)]
+                        var newFaceTagSet1 = new HashSet<Tuple<string, TagType>>();
+                        newFaceTagSet1.UnionWith(FaceTags[Faces.IndexOf(edge.Face)]
                             .Where(t => t.Item2 == TagType.Extrovert));
-                        newFaceTagSet.UnionWith(FaceTags[Faces.IndexOf(edge.Pair.Face)]
+                        newFaceTagSet1.UnionWith(FaceTags[Faces.IndexOf(edge.Pair.Face)]
                             .Where(t => t.Item2 == TagType.Extrovert));
-                        newFaceTags.Add(newFaceTagSet);
+                        newFaceTags.Add(newFaceTagSet1);
+
+                        var tri2 = new[]
+                        {
+                            newCentroidVertices[pair.Face.Name],
+                            newCentroidVertices[edge.Face.Name],
+                            existingVertices[pair.Vertex.Position],
+                        };
+                        faceIndices.Add(tri2);
+                        faceRoles.Add(Roles.NewAlt);
+
+                        var newFaceTagSet2 = new HashSet<Tuple<string, TagType>>();
+                        newFaceTagSet2.UnionWith(FaceTags[Faces.IndexOf(edge.Face)]
+                            .Where(t => t.Item2 == TagType.Extrovert));
+                        newFaceTagSet2.UnionWith(FaceTags[Faces.IndexOf(edge.Pair.Face)]
+                            .Where(t => t.Item2 == TagType.Extrovert));
+                        newFaceTags.Add(newFaceTagSet2);
                     }
+                    rhombusFlags[edge.PairedName] = true;
 
-                    rhombusFlags[edge.Name] = true;
                 }
             }
-
             return new ConwayPoly(vertexPoints, faceIndices, faceRoles, vertexRoles, newFaceTags);
+
         }
 
         public ConwayPoly Kis(OpParams o, List<int> selectedFaces = null, bool scalebyArea = false)
@@ -1852,7 +1870,7 @@ namespace Conway
                 float ratio = o.GetValueA(this, faceIndex);
                 var prevFaceTagSet = FaceTags[faceIndex];
                 var face = Faces[faceIndex];
-                if (@join || IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc))
+                if (join || IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc))
                 {
                     var edge = face.Halfedge;
                     var centroid = face.Centroid;
@@ -1881,7 +1899,7 @@ namespace Conway
 
                     for (int i = 0; i < face.Sides; i++)
                     {
-                        if (!@join)
+                        if (!join)
                         {
                             var triangle = new[]
                             {
@@ -1938,7 +1956,7 @@ namespace Conway
                 }
             }
 
-            if (@join)
+            if (join)
             {
                 var edgeFlags = new HashSet<(Guid, Guid)?>();
                 foreach (var edge in Halfedges)
@@ -2680,7 +2698,7 @@ namespace Conway
             var faceRoles = new List<Roles>();
             var vertexRoles = new List<Roles>();
 
-            if (!@join)
+            if (!join)
             {
                 for (var i = 0; i < Vertices.Count; i++)
                 {
@@ -2697,6 +2715,8 @@ namespace Conway
                 var centroid = face.Centroid;
 
                 var edges = face.GetHalfedges();
+                if (edges.Count<3) continue;
+
                 for (int j = 0; j < edges.Count; j++)
                 {
                     float amount = o.GetValueA(this, faceIndex);
@@ -2728,7 +2748,7 @@ namespace Conway
                     faceRoles.Add(Roles.New);
                     newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
 
-                    if (!@join)
+                    if (!join)
                     {
                         var vertexFace = new List<int>
                         {
@@ -2739,7 +2759,6 @@ namespace Conway
                         };
                         faceIndices.Add(vertexFace);
                         faceRoles.Add(Roles.NewAlt);
-
                         newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
                     }
                 }
@@ -2756,13 +2775,16 @@ namespace Conway
                 newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
             }
 
-            if (@join)
+            if (join)
             {
                 for (var vertIndex = 0; vertIndex < Vertices.Count; vertIndex++)
                 {
                     var vertex = Vertices[vertIndex];
                     var vertexFace = new List<int>();
-                    for (int j = 0; j < vertex.Halfedges.Count; j++)
+                    var edges = vertex.Halfedges;
+                    if (edges.Count<3) continue;
+
+                    for (int j = 0; j < edges.Count; j++)
                     {
                         var edge = vertex.Halfedges[j];
                         vertexFace.Add(newInnerVertices[edge.Face.Name + vertex.Name]);
@@ -2773,8 +2795,7 @@ namespace Conway
                     faceRoles.Add(Roles.NewAlt);
 
                     var vertexFaceIndices = vertex.GetVertexFaces().Select(f => Faces.IndexOf(f));
-                    var existingTagSets = vertexFaceIndices.Select(fi => FaceTags[fi]
-                        .Where(t => t.Item2 == TagType.Extrovert));
+                    var existingTagSets = vertexFaceIndices.Select(fi => FaceTags[fi].Where(t => t.Item2 == TagType.Extrovert));
                     var newFaceTagSet = existingTagSets.Aggregate(new HashSet<Tuple<string, TagType>>(), (rs, i) =>
                     {
                         rs.UnionWith(i);

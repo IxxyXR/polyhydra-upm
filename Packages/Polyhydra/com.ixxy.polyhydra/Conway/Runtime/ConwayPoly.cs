@@ -179,7 +179,7 @@ namespace Conway
 			FaceRoles = faceRoles.ToList();
 			VertexRoles = vertexRoles.ToList();
 
-			Vertices.CullUnused();
+			CullUnusedVertices();
 			InitTags();
 		}
 
@@ -197,6 +197,29 @@ namespace Conway
 		#endregion
 
 		#region General Methods
+
+		/// <summary>
+		/// Removes all vertices that are currently not used by the Halfedge list.
+		/// </summary>
+		/// <returns>The number of unused vertices that were removed.</returns>
+		public int CullUnusedVertices() {
+			var orig = new List<Vertex>(Vertices);
+			var origVertexRoles = new List<Roles>(VertexRoles);
+			Vertices.Clear();
+			VertexRoles.Clear();
+			// re-add vertices which reference a halfedge
+			for (var vertIndex = 0; vertIndex < orig.Count; vertIndex++)
+			{
+				var vertex = orig[vertIndex];
+				if (vertex.Halfedge != null)
+				{
+					Vertices.Add(vertex);
+					VertexRoles.Add(origVertexRoles[vertIndex]);
+				}
+			}
+			return orig.Count - Vertices.Count;
+		}
+
 
 		/// <summary>
 		/// A string representation of the mesh.
@@ -251,7 +274,6 @@ namespace Conway
 							break;
 						}
 
-						;
 					}
 
 					if (nextLoopEdge != null)
@@ -810,6 +832,12 @@ namespace Conway
 					break;
 			}
 
+			if (Application.isEditor)
+			{
+				if(polyResult.Faces.Count != polyResult.FaceRoles.Count) Debug.LogError("Incorrect FaceRoles");
+				if(polyResult.Faces.Count != polyResult.FaceTags.Count) Debug.LogError("Incorrect FaceTags");
+				if(polyResult.Vertices.Count != polyResult.VertexRoles.Count) Debug.LogError("Incorrect VertexRoles");
+			}
 			return polyResult;
 
 		}
