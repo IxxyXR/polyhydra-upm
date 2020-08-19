@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.TextCore;
 using Wythoff;
 using Debug = UnityEngine.Debug;
 using Random = System.Random;
@@ -390,12 +391,10 @@ namespace Conway
 			IEnumerable<Tuple<string, TagType>> tagList = null, Func<FilterParams, bool> filterFunc = null)
 		{
 			bool include = true;
-			if (tagList != null && tagList.Any()) // Return true if any tags match
-			{
-				var matches = tagList.Intersect(FaceTags[faceIndex]);
-				include = matches.Any();
+			if (tagList != null && tagList.Any())
+			{  // Return true if any tags match
+				include = tagList.Intersect(FaceTags[faceIndex]).Any();
 			}
-
 			filterFunc = filterFunc ?? FaceselToFaceFilterFunc(facesel);
 			return include && filterFunc(new FilterParams(this, faceIndex));
 		}
@@ -770,6 +769,9 @@ namespace Conway
 					break;
 				case Ops.FillHoles:
 					polyResult = FillHoles();
+					break;
+				case Ops.ExtendBoundaries:
+					polyResult = ExtendBoundaries(opParams);
 					break;
 				case Ops.Hinge:
 					polyResult = Hinge(opParams.valueA);

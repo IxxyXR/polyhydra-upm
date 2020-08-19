@@ -498,6 +498,7 @@ namespace Conway
             }
 
             var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
+
             for (var i = 0; i < facesToRemove.Count; i++)
             {
                 var face = facesToRemove[i];
@@ -522,7 +523,7 @@ namespace Conway
             }
 
             newPoly.VertexRoles = vertexRoles;
-
+            newPoly.FaceTags = newFaceTags;
             return newPoly;
         }
 
@@ -917,6 +918,56 @@ namespace Conway
         public ConwayPoly Duplicate(Vector3 transform, Quaternion rotation, Vector3 scale)
         {
             return Transform(transform, rotation.eulerAngles, scale);
+        }
+
+        public void _ExtendBoundaries(List<List<Halfedge>> boundaries, float scale)
+        {
+            FaceRoles = Enumerable.Repeat(Roles.Existing, Faces.Count).ToList();
+            var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
+            newFaceTags.AddRange(FaceTags);
+
+            foreach (var boundary in boundaries)
+            {
+                int firstNewVertexIndex = Vertices.Count;
+                for (var edgeIndex = 0; edgeIndex < boundary.Count; edgeIndex++)
+                {
+                    var edge1 = boundary[edgeIndex];
+                    var direction1 = edge1.Midpoint - edge1.Face.Centroid;
+                    var edge2 = boundary[(edgeIndex + boundary.Count - 1) % boundary.Count];
+                    var direction2 = edge2.Midpoint - edge2.Face.Centroid;
+                    var direction = direction1 == direction2 ? direction1 : direction1 + direction2;
+                    Vertices.Add(new Vertex(edge1.Vertex.Position + (direction * scale)));
+                    VertexRoles.Add(Roles.New);
+                }
+
+                for (var edgeIndex = 0; edgeIndex < boundary.Count; edgeIndex++)
+                {
+                    var edge = boundary[edgeIndex];
+                    bool success = Faces.Add(new[]
+                    {
+                        edge.Vertex,
+                        edge.Prev.Vertex,
+                        Vertices[firstNewVertexIndex + ((edgeIndex + 1) % boundary.Count)],
+                        Vertices[firstNewVertexIndex + edgeIndex],
+                    });
+                    if (success)
+                    {
+                        FaceRoles.Add(Roles.New);
+                        var prevFaceTagSet = FaceTags[Faces.IndexOf(edge.Face)];
+                        FaceTags.Add(prevFaceTagSet);
+
+                    }
+                }
+            }
+        }
+
+        public ConwayPoly ExtendBoundaries(OpParams o)
+        {
+            float amount = o.GetValueA(this, 0);
+            var poly = Duplicate();
+            var boundaries = poly.FindBoundaries();
+            poly._ExtendBoundaries(boundaries, amount);
+            return poly;
         }
 
         		/// <summary>

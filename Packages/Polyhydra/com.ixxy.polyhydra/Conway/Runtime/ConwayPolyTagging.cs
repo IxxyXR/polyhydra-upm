@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 
+
 namespace Conway
 {
     public partial class ConwayPoly
     {
-        #region tag methods
 
         public void InitTags()
         {
@@ -18,22 +18,23 @@ namespace Conway
 
         public void TagFaces(string tags, FaceSelections facesel, Func<FilterParams, bool> filter = null)
         {
-            var tagList = StringToTagList(tags, true);
             if (FaceTags == null || FaceTags.Count == 0)
             {
                 InitTags();
             }
 
+            var tagList = StringToTagList(tags, true);
             for (var i = 0; i < Faces.Count; i++)
             {
-                var tagset = FaceTags[i];
-                if (IncludeFace(i, facesel, tagList, filter))
+                if (IncludeFace(i, facesel, null, filter))
                 {
+                    var tagset = FaceTags[i];
                     tagset.UnionWith(tagList);
+                    FaceTags[i] = tagset;
+
                 }
             }
         }
 
-        #endregion
     }
 }
