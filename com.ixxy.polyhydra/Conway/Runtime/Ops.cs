@@ -80,6 +80,7 @@ namespace Conway
         VertexRemove,
         VertexKeep,
         FillHoles,
+        ExtendBoundaries,
         FaceMerge,
         Weld,
 

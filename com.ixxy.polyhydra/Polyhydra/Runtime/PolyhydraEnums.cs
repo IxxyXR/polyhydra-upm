@@ -124,7 +124,6 @@ public static class PolyHydraEnums
 	    public float amount2SafeMax = 0.999f;
 	    public bool usesFaces = false;
 	    public bool usesRandomize = false;
-	    public bool usesTags = false;
 	    public FaceSelections faceSelection = FaceSelections.All;
     }
 
@@ -548,6 +547,7 @@ public static class PolyHydraEnums
 //			{Ops.FaceRotateY, new OpConfig{usesFaces=true, amountDefault=0.1f, amountMin=-180, amountMax=180}},
 		{Ops.FaceRemove, new OpConfig {usesFaces = true, usesAmount = false}},
 		{Ops.FillHoles, new OpConfig {usesAmount = false}},
+		{Ops.ExtendBoundaries, new OpConfig {}},
 		{Ops.FaceMerge, new OpConfig {usesFaces = true, usesAmount = false}},
 		{Ops.FaceKeep, new OpConfig {usesFaces = true, usesAmount = false}},
 		{Ops.VertexRemove, new OpConfig {usesFaces = true, usesAmount = false}},
@@ -676,7 +676,6 @@ public static class PolyHydraEnums
 		{Ops.TagFaces, new OpConfig
 			{
 				usesFaces = true,
-				usesTags = true
 			}
 		},
 		{
