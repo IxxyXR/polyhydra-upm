@@ -14,8 +14,8 @@ public class JohnsonTest : MonoBehaviour
     public bool ApplyOp;
     public Ops op;
     public FaceSelections facesel;
-    [Range(-1,1)] public float opAmount = 0;
-    [Range(-1,1)] public float op2Amount = 0;
+    public float opAmount = 0;
+    public float op2Amount = 0;
 
     public bool ColorBySides;
 
