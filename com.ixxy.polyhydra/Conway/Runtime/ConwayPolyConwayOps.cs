@@ -2155,7 +2155,8 @@ namespace Conway
                 {
                     if (edge == null) edge = firstEdge;
 
-                    if (!newEdgeVertices.ContainsKey(edge.Name) && !newEdgeVertices.ContainsKey(edge.Pair.Name))
+                    bool hasPair = edge.Pair!=null && newEdgeVertices.ContainsKey(edge.Pair.Name);
+                    if (!newEdgeVertices.ContainsKey(edge.Name) && !hasPair)
                     {
                         newEdgeVertices[edge.Name] = new int[subdivisions];
                         for (int i = 0; i < subdivisions; i++)
@@ -2172,7 +2173,7 @@ namespace Conway
                     {
                         currNewVerts = newEdgeVertices[edge.Name];
                     }
-                    else if (newEdgeVertices.ContainsKey(edge.Pair.Name))
+                    else if (edge.Pair != null && newEdgeVertices.ContainsKey(edge.Pair.Name))
                     {
                         currNewVerts = newEdgeVertices[edge.Pair.Name];
                         flip = true;
@@ -2184,7 +2185,7 @@ namespace Conway
                     {
                         nextNewVerts = newEdgeVertices[edge.Next.Name];
                     }
-                    else if (newEdgeVertices.ContainsKey(edge.Next.Pair.Name))
+                    else if (edge.Next.Pair != null && newEdgeVertices.ContainsKey(edge.Next.Pair.Name))
                     {
                         nextNewVerts = newEdgeVertices[edge.Next.Pair.Name];
                         flipNext = true;
