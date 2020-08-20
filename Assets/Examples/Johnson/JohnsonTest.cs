@@ -102,8 +102,7 @@ public class JohnsonTest : MonoBehaviour
         var colorMethod = ColorBySides ? PolyHydraEnums.ColorMethods.BySides : PolyHydraEnums.ColorMethods.ByRole;
         if (ApplyOp)
         {
-            poly.TagFaces("top", facesel);
-            var o = new OpParams {valueA = opAmount, valueB = op2Amount, tags = "top"};
+            var o = new OpParams {valueA = opAmount, valueB = op2Amount, facesel = facesel};
             poly = poly.ApplyOp(op, o);
         }
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, colorMethod);
