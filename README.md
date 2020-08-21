@@ -1,41 +1,45 @@
-## upm-template
-A template project for making UPM packages for Unity
+# Polyhydra
 
-## How to use
+![Screenshot](https://github.com/Ixxy-Open-Source/wythoff-polyhedra/blob/master/anim.gif)
 
-First use this repository as the base of your UPM project repository by forking it.
+Procedural generation of geometric forms in Unity.
 
-### __Project Structure__ 
-Let's say the name of your package directory is `ABC`. Your UPM project directory will usually be `Packages/ABC` or `Packages/ABC` (let's assume it's `Packages/ABC` for this guide). A sample directory is included in the repo.
+# Try it on the web
 
-Inside which you'd have your `package.json`, `CHANGELOG.md`, `LICENSE`, `README.md`.
+http://www.polyhydra.org.uk/media/fastui/
 
-To know more about `package.json` (called the UPM Manifest) go [here](https://docs.unity3d.com/Manual/upm-manifestPkg.html)
+NOTE! - keyboard controls only in this particular web version.
 
-### __Configure Github Actions (only works when hosting on github.com)__
-Go to `.github/workflows/ci.yml` and change the value of `XYZ` to `Packages/ABC/package.json`. 
+Keyboard controls listed onscreen
 
-Every time you commit to `master`, this YML file is used to release your UPM package and automatically use a separate upm branch for releases as well as autogenerate tag for release. If you see the upm branch commits, you'll notice that your project directory is the root instead of the Unity project directory. Github Actions is used to automate this bit.
+Experimental and a bit buggy. Save often...
 
-### __Configure Semantic Release__
-Semantic releases is used to automate changelog updates as well as incrementing the version field inside `package.json` (the UPM Manifest). 
+# Overview
 
-Go to `.release.json` do make the following changes:
+You start by choosing a uniform polyhedron: https://en.wikipedia.org/wiki/Uniform_polyhedron - these are generated using the Wythoff construction.
 
-* `XYZ1` to `Packages/ABC`
-* `XYZ2` to `Packages/ABC/package.json`
-* `XYZ3` to `Packages/ABC/CHANGELOG.md`
+You can then stack up Conway Operators on top to create much more complex shapes: https://en.wikipedia.org/wiki/Conway_polyhedron_notation
 
-When using `git commit`, follow the [Angular Standard](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit)
+# Documentation
 
-### __Publishing to package registries__
-Use `npm publish` inside `Packages/ABC` or check out [OpenUPM](https://openupm.com/docs/#how-it-works)  
+See the [Wiki](https://github.com/IxxyXR/Polyhydra/wiki)
 
-## Further Resources
-[Favo Yang's Medium Articles](https://medium.com/@favoyang)  
-[OpenUPM Docs](https://openupm.com/docs/)  
-[Having a Docker Container As Your Private NPM Registry — The Easy Way by Sibeesh Venu](https://medium.com/better-programming/having-a-docker-container-as-your-private-npm-registry-the-easy-way-68159fa94cc4)  
+# Credits
 
-## Contact
-[@github](https://www.github.com/adrenak)  
-[@www](http://www.vatsalambastha.com)
+Obviously the original work by Willem Wythoff and John Conway. And also countless other mathematicians who have formed a base for, contributed to and extended the work in this area. A special shout out to George Hart who is often co-credited with Conway due to the large amount of work he did exploring and extending Conway's original operators. 
+
+Partly based on https://github.com/kaonasi (which in turn is based on the work of Zvi Har’El: http://www.math.technion.ac.il/S/rl/kaleido/ ).
+
+Conway operator code by Will Pearson @mcneel from https://github.com/pearswj/buckminster
+
+(Zvi Har'El has sadly passed away. I've tried to contact all potential copyright holders to see if it's OK to make use of their work as a basis for this but I've had no luck in getting a response. Please get in touch if you're an interested party. I'd love to put a proper open source licence on this)
+
+My original inspiration was 3DS Max's Hedra plugin which kept me entertained for quite a while nearly 2 decades ago. :-)
+
+![Screenshot](https://github.com/Ixxy-Open-Source/wythoff-polyhedra/blob/master/0.png)
+
+# TODO
+
+Lots. Again, see the [Wiki](https://github.com/IxxyXR/Polyhydra/wiki)
+
+![Screenshot](https://github.com/Ixxy-Open-Source/wythoff-polyhedra/blob/master/wythoff.png)
