@@ -42,6 +42,9 @@ public class RandomSpaceshipGenerator : MonoBehaviour
     private float loftLow = -.25f;
     private float loftHigh = 0.75f;
 
+    private ConwayPoly spaceship;
+    private ConwayPoly wings;
+
     void Start()
     {
         Generate();
@@ -57,8 +60,8 @@ public class RandomSpaceshipGenerator : MonoBehaviour
     {
         Random.seed = seed;
         
-        var spaceship = JohnsonPoly.Prism(numSides);
-        var wings = new ConwayPoly();
+        spaceship = JohnsonPoly.Prism(numSides);
+        wings = new ConwayPoly();
         float angleCorrection = 180f / numSides;
         if (numSides % 2 != 0) angleCorrection /= 2f;
         spaceship = spaceship.Rotate(Vector3.up, angleCorrection);
@@ -80,7 +83,7 @@ public class RandomSpaceshipGenerator : MonoBehaviour
 
         }
 
-        // Nose
+        // Make the nose section
         if (NoseLength > 0)
         {
             spaceship = spaceship.Loft(new OpParams {valueA = .2f, valueB = 0, facesel = FaceSelections.FacingStraightForward});
@@ -96,10 +99,10 @@ public class RandomSpaceshipGenerator : MonoBehaviour
 
         }
         
-        // Add Panel Ridges to everything
+        // Add panel insets to the hull
         spaceship = spaceship.Loft(new OpParams{valueA = 0.1f, valueB = 0.025f});
 
-        // Engines
+        // Add engines
         spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(.3f, .4f), valueB = Random.Range(-.2f, .2f), facesel = FaceSelections.FacingStraightBackward});
         if (EngineVariant)
         {
@@ -116,9 +119,11 @@ public class RandomSpaceshipGenerator : MonoBehaviour
             spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(.1f, .3f), valueB = Random.Range(-.3f, -.7f), facesel = FaceSelections.AllNew});
         }
 
+        // Add panel insets to the wings
         wings = wings.Loft(new OpParams{valueA = 0.1f, valueB = 0.025f});
         spaceship.Append(wings);
 
+        // Build the final mesh
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(spaceship, false);
         GetComponent<MeshFilter>().mesh = mesh;
         GetComponent<MeshRenderer>().material = material;
@@ -129,6 +134,18 @@ public class RandomSpaceshipGenerator : MonoBehaviour
         if (Random.value < ChanceOfSimpleSegment)
         {
             spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(loftLow, loftHigh), valueB = Random.Range(.2f, .5f), facesel = FaceSelections.FacingStraightForward});
+            
+            // Each simple section can have wings or fins
+            if (Random.value < ChanceOfWings)
+            {
+                var newWings = MakeWings(spaceship, MakeSideFaceFilter(numSides));
+                wings.Append(newWings);
+            }
+            else if (Random.value < ChanceOfFins)
+            {
+                spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(.5f, 0), valueB = Random.Range(0.05f, 1.0f), facesel = FaceSelections.AllNew});
+            }
+            
         }
         else
         {
@@ -144,15 +161,9 @@ public class RandomSpaceshipGenerator : MonoBehaviour
             {
                 spaceship = RibbedExtrude(spaceship, Random.Range(2, 7));
             }
-            
-            spaceship = MakeWings(spaceship, MakeSideFaceFilter(numSides));
-        }
 
-        if (Random.value < ChanceOfFins)
-        {
-            spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(.5f, 0), valueB = Random.Range(0.05f, 1.0f), facesel = FaceSelections.AllNew});
         }
-
+        
         spaceship = spaceship.FaceSlide(new OpParams{valueA = Random.Range(-.3f, .3f), valueB = 0, facesel = FaceSelections.FacingStraightForward});
         return spaceship;
     }
@@ -186,25 +197,28 @@ public class RandomSpaceshipGenerator : MonoBehaviour
     
     private ConwayPoly MakeWings(ConwayPoly spaceship, Func<FilterParams, bool> sideFaceFilter)
     {
-        if (Random.value < ChanceOfWings)
+        // Creates wings positioned on the last section created
+        
+        var wing = spaceship.Duplicate();
+        // Only keep the new section
+        wing = wing.FaceKeep(new OpParams{facesel = FaceSelections.AllNew});
+        // And only the faces pointing out mostly level
+        wing = wing.FaceKeep(new OpParams{filterFunc = sideFaceFilter});
+        // Scale them down
+        wing = wing.FaceScale(new OpParams{facesel = FaceSelections.All, valueA = Random.Range(0, 0.5f)});
+        // Extrude out the wings
+        wing = wing.Loft(new OpParams{valueA = Random.Range(0, 1f), valueB = Random.Range(.5f, 2f)});
+        for (int i=0; i<Random.Range(0, 3); i++)
         {
-            var wingFaces = spaceship.Duplicate();
-            wingFaces = wingFaces.FaceKeep(new OpParams{facesel = FaceSelections.AllNew});
-            wingFaces = wingFaces.FaceKeep(new OpParams{filterFunc = sideFaceFilter});
-            wingFaces = wingFaces.FaceScale(new OpParams{facesel = FaceSelections.All, valueA = Random.Range(0, 0.5f)});
-            wingFaces = wingFaces.Loft(new OpParams{valueA = Random.Range(0, 1f), valueB = Random.Range(.5f, 2f)});
-            for (int i=0; i<Random.Range(0, 3); i++)
+            wing = wing.Loft(new OpParams{valueA = Random.Range(0, 1f), valueB = Random.Range(.15f, 1.5f), facesel = FaceSelections.Existing});
+            if (Random.value < 0.5f)
             {
-                wingFaces = wingFaces.Loft(new OpParams{valueA = Random.Range(0, 1f), valueB = Random.Range(.15f, 1.5f), facesel = FaceSelections.Existing});
-                if (Random.value < 0.5f)
-                {
-                    wingFaces = wingFaces.FaceSlide(new OpParams{valueA = Random.Range(-.5f, .5f), valueB = Random.Range(-1, .25f), facesel = FaceSelections.Existing});
+                wing = wing.FaceSlide(new OpParams{valueA = Random.Range(-.5f, .5f), valueB = Random.Range(-1, .25f), facesel = FaceSelections.Existing});
 
-                }
             }
-            spaceship.Append(wingFaces);
         }
-        return spaceship;
+    
+        return wing;
     }
 
 
