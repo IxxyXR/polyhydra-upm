@@ -1,4 +1,5 @@
-﻿using Conway;
+﻿using System;
+using Conway;
 using Johnson;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -41,7 +42,6 @@ public class RandomSpaceshipGenerator : MonoBehaviour
     private float loftLow = -.25f;
     private float loftHigh = 0.75f;
 
-
     void Start()
     {
         Generate();
@@ -64,16 +64,17 @@ public class RandomSpaceshipGenerator : MonoBehaviour
         spaceship = spaceship.Rotate(Vector3.up, angleCorrection);
         spaceship = spaceship.Rotate(Vector3.left, -90);
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 2; i++)  // Loop twice - once for the back and once for the front.
         {
             for (int j = 0; j <= numSections; j++)
             {
                 spaceship = MakeSection(spaceship);
             }
             
-            
+            // Second time through loop:
+            // Flip the spaceship around ready to generate the back sections 
             spaceship = spaceship.Rotate(Vector3.up, 180);
-            // Change range for back sections
+            // Change random range for front sections
             loftLow = -0.35f;
             loftHigh = 0.15f;
 
@@ -115,7 +116,6 @@ public class RandomSpaceshipGenerator : MonoBehaviour
             spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(.1f, .3f), valueB = Random.Range(-.3f, -.7f), facesel = FaceSelections.AllNew});
         }
 
-        //spaceship = spaceship.Kis(1f, FaceSelections.FacingForward);
         wings = wings.Loft(new OpParams{valueA = 0.1f, valueB = 0.025f});
         spaceship.Append(wings);
 
@@ -129,29 +129,28 @@ public class RandomSpaceshipGenerator : MonoBehaviour
         if (Random.value < ChanceOfSimpleSegment)
         {
             spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(loftLow, loftHigh), valueB = Random.Range(.2f, .5f), facesel = FaceSelections.FacingStraightForward});
-            spaceship = MakeWings(spaceship);
         }
         else
         {
             if (Random.value < ChanceOfLaceSegment)
             {
                 spaceship = spaceship.Lace(new OpParams{valueA = Random.Range(loftLow, loftHigh), facesel = FaceSelections.FacingStraightForward, valueB = Random.Range(.2f, .5f)});
-                spaceship = MakeWings(spaceship);
             }
             else if (Random.value < ChanceOfTruncateSegment)
             {
                 spaceship = spaceship.Truncate(new OpParams{valueA = Random.Range(loftLow, loftHigh), facesel = FaceSelections.FacingForward});
-                spaceship = MakeWings(spaceship);
             }
             else
             {
                 spaceship = RibbedExtrude(spaceship, Random.Range(2, 7));
             }
+            
+            spaceship = MakeWings(spaceship, MakeSideFaceFilter(numSides));
         }
 
         if (Random.value < ChanceOfFins)
         {
-            spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(.5f, 0), valueB = Random.Range(0.05f, 1.3f), facesel = FaceSelections.AllNew});
+            spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(.5f, 0), valueB = Random.Range(0.05f, 1.0f), facesel = FaceSelections.AllNew});
         }
 
         spaceship = spaceship.FaceSlide(new OpParams{valueA = Random.Range(-.3f, .3f), valueB = 0, facesel = FaceSelections.FacingStraightForward});
@@ -172,14 +171,26 @@ public class RandomSpaceshipGenerator : MonoBehaviour
 
         return poly;
     }
+
+    public float AngleFromNormalY(float y)
+    {
+        // Assumes y comes from a normalized vector
+        return Mathf.Tan(y / 1f) * Mathf.Rad2Deg;
+    }
+
+    public Func<FilterParams, bool> MakeSideFaceFilter(int sides)
+    {
+        float sideAngle = 180f / sides;
+        return p => AngleFromNormalY(Math.Abs(p.poly.Faces[p.index].Normal.y)) < sideAngle;
+    }
     
-    private ConwayPoly MakeWings(ConwayPoly spaceship)
+    private ConwayPoly MakeWings(ConwayPoly spaceship, Func<FilterParams, bool> sideFaceFilter)
     {
         if (Random.value < ChanceOfWings)
         {
             var wingFaces = spaceship.Duplicate();
             wingFaces = wingFaces.FaceKeep(new OpParams{facesel = FaceSelections.AllNew});
-            wingFaces = wingFaces.FaceKeep(new OpParams{facesel = FaceSelections.FacingLevel});
+            wingFaces = wingFaces.FaceKeep(new OpParams{filterFunc = sideFaceFilter});
             wingFaces = wingFaces.FaceScale(new OpParams{facesel = FaceSelections.All, valueA = Random.Range(0, 0.5f)});
             wingFaces = wingFaces.Loft(new OpParams{valueA = Random.Range(0, 1f), valueB = Random.Range(.5f, 2f)});
             for (int i=0; i<Random.Range(0, 3); i++)
