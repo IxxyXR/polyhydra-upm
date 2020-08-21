@@ -419,8 +419,12 @@ namespace Conway
 					return p => Vector3.Angle(Vector3.up, p.poly.Faces[p.index].Normal) < TOLERANCE;
 				case FaceSelections.FacingForward:
 					return p => p.poly.Faces[p.index].Normal.z > TOLERANCE;
+				case FaceSelections.FacingBackward:
+					return p => p.poly.Faces[p.index].Normal.z < -TOLERANCE;
 				case FaceSelections.FacingStraightForward:
 					return p => Vector3.Angle(Vector3.forward, p.poly.Faces[p.index].Normal) < TOLERANCE;
+				case FaceSelections.FacingStraightBackward:
+					return p => Vector3.Angle(Vector3.back, p.poly.Faces[p.index].Normal) < TOLERANCE;
 				case FaceSelections.FacingLevel:
 					return p => Math.Abs(p.poly.Faces[p.index].Normal.y) < TOLERANCE;
 				case FaceSelections.FacingDown:
