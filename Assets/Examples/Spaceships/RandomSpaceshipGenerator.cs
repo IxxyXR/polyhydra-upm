@@ -14,8 +14,8 @@ public class RandomSpaceshipGenerator : MonoBehaviour
 
     [Range(3, 10)]
     public int numSides = 4;
-    [Range(2, 5)]
-    public int numSections = 4;
+    [Range(1, 6)]
+    public int numSections = 3;
     [Range(0, 3)]
     public float NoseLength = 1;
     [Range(0, 1)]
@@ -26,18 +26,15 @@ public class RandomSpaceshipGenerator : MonoBehaviour
     public int seed = 12345;
     
     [Range(0f, 1f)]
-    public float ChanceOfSimpleSegment = 0.85f;
+    public float ChanceOfLaceSegment = 0.25f;
     [Range(0f, 1f)]
-    public float ChanceOfLaceSegment = 0.75f;
+    public float ChanceOfTruncateSegment = 0.25f;
     [Range(0f, 1f)]
-    public float ChanceOfTruncateSegment = 0.75f;
-    [Range(0f, 1f)]
-    public float ChanceOfFins = 0.5f;
+    public float ChanceOfFins = 0.25f;
     [Range(0f, 1f)]
     public float ChanceOfWings = 0.25f;
-    
-    public float foo = 0f;
-    public float bar = 0f;
+    [Range(0f, 1f)]
+    public float ChanceOfRibbedSegment = 0.25f;
     
     private float loftLow = -.25f;
     private float loftHigh = 0.75f;
@@ -83,6 +80,27 @@ public class RandomSpaceshipGenerator : MonoBehaviour
 
         }
 
+
+        
+        // Make the engines
+        var engines = spaceship.FaceKeep(new OpParams {facesel = FaceSelections.FacingStraightBackward});
+        spaceship = spaceship.FaceRemove(new OpParams {facesel = FaceSelections.FacingStraightBackward});
+        engines = engines.Loft(new OpParams{valueA = Random.Range(.3f, .4f), valueB = Random.Range(-.2f, .2f)});
+        // spaceship = engines;
+        if (EngineVariant)
+        {
+            var engineRim = engines.FaceRemove(new OpParams{facesel = FaceSelections.Existing});
+            engines = engines.FaceKeep(new OpParams{facesel = FaceSelections.Existing});
+            engines = engines.Ortho(new OpParams{valueA = 0});
+            engines = engines.Loft(new OpParams{valueA = Random.Range(0, .25f), valueB = -.5f});
+            engines.Append(engineRim);
+        }
+        else
+        {
+            engines = engines.Loft(new OpParams{valueA = Random.Range(.25f, .75f), valueB = Random.Range(0, .2f), facesel = FaceSelections.Existing});
+            engines = engines.Loft(new OpParams{valueA = Random.Range(.1f, .3f), valueB = Random.Range(-.3f, -.7f), facesel = FaceSelections.AllNew});
+        }
+        
         // Make the nose section
         if (NoseLength > 0)
         {
@@ -96,31 +114,16 @@ public class RandomSpaceshipGenerator : MonoBehaviour
             {
                 spaceship = spaceship.Loft(new OpParams{valueA = NoseSharpness, valueB = NoseLength, facesel = FaceSelections.Existing});
             }
-
         }
+        
         
         // Add panel insets to the hull
         spaceship = spaceship.Loft(new OpParams{valueA = 0.1f, valueB = 0.025f});
 
-        // Add engines
-        spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(.3f, .4f), valueB = Random.Range(-.2f, .2f), facesel = FaceSelections.FacingStraightBackward});
-        if (EngineVariant)
-        {
-            var engines = spaceship.Duplicate();
-            spaceship = spaceship.FaceRemove(new OpParams{facesel = FaceSelections.Existing});
-            engines = engines.FaceKeep(new OpParams{facesel = FaceSelections.Existing});
-            engines = engines.Ortho(new OpParams{valueA = 0});
-            engines = engines.Loft(new OpParams{valueA = Random.Range(0, .25f), valueB = -.5f, facesel = FaceSelections.All});
-            spaceship.Append(engines);
-        }
-        else
-        {
-            spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(.5f, .5f), valueB = Random.Range(.2f, .5f), facesel = FaceSelections.Existing});
-            spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(.1f, .3f), valueB = Random.Range(-.3f, -.7f), facesel = FaceSelections.AllNew});
-        }
-
         // Add panel insets to the wings
         wings = wings.Loft(new OpParams{valueA = 0.1f, valueB = 0.025f});
+        
+        spaceship.Append(engines);
         spaceship.Append(wings);
 
         // Build the final mesh
@@ -131,10 +134,23 @@ public class RandomSpaceshipGenerator : MonoBehaviour
 
     private ConwayPoly MakeSection(ConwayPoly spaceship)
     {
-        if (Random.value < ChanceOfSimpleSegment)
+
+        if (Random.value < ChanceOfLaceSegment)
+        {
+            spaceship = spaceship.Lace(new OpParams{valueA = Random.Range(loftLow, loftHigh), facesel = FaceSelections.FacingStraightForward, valueB = Random.Range(.2f, .5f)});
+        }
+        else if (Random.value < ChanceOfTruncateSegment)
+        {
+            spaceship = spaceship.Truncate(new OpParams{valueA = Random.Range(loftLow, loftHigh), facesel = FaceSelections.FacingForward});
+        }
+        else if (Random.value < ChanceOfRibbedSegment)
+        {
+            spaceship = RibbedExtrude(spaceship, Random.Range(2, 7));
+        }
+        else  // Just a normal section
         {
             spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(loftLow, loftHigh), valueB = Random.Range(.2f, .5f), facesel = FaceSelections.FacingStraightForward});
-            
+        
             // Each simple section can have wings or fins
             if (Random.value < ChanceOfWings)
             {
@@ -144,22 +160,6 @@ public class RandomSpaceshipGenerator : MonoBehaviour
             else if (Random.value < ChanceOfFins)
             {
                 spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(.5f, 0), valueB = Random.Range(0.05f, 1.0f), facesel = FaceSelections.AllNew});
-            }
-            
-        }
-        else
-        {
-            if (Random.value < ChanceOfLaceSegment)
-            {
-                spaceship = spaceship.Lace(new OpParams{valueA = Random.Range(loftLow, loftHigh), facesel = FaceSelections.FacingStraightForward, valueB = Random.Range(.2f, .5f)});
-            }
-            else if (Random.value < ChanceOfTruncateSegment)
-            {
-                spaceship = spaceship.Truncate(new OpParams{valueA = Random.Range(loftLow, loftHigh), facesel = FaceSelections.FacingForward});
-            }
-            else
-            {
-                spaceship = RibbedExtrude(spaceship, Random.Range(2, 7));
             }
 
         }
