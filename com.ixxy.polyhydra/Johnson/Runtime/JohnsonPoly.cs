@@ -350,6 +350,11 @@ namespace Johnson
             return _MakePyramid(sides, height);
         }
         
+        public static ConwayPoly Pyramid(int sides, float height)
+        {
+	        return _MakePyramid(sides, height);
+        }
+        
         private static ConwayPoly _MakePyramid(int sides, float height)
         {
             ConwayPoly polygon = _MakePolygon(sides, true);
