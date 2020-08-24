@@ -28,7 +28,7 @@ public class RandomSpaceshipGenerator : MonoBehaviour
     [Range(0f, 1f)]
     public float ChanceOfLaceSegment = 0.25f;
     [Range(0f, 1f)]
-    public float ChanceOfTruncateSegment = 0.25f;
+    public float ChanceOfStakeSegment = 0.25f;
     [Range(0f, 1f)]
     public float ChanceOfFins = 0.25f;
     [Range(0f, 1f)]
@@ -45,6 +45,8 @@ public class RandomSpaceshipGenerator : MonoBehaviour
     private ConwayPoly spaceship;
     private ConwayPoly wings;
     private ConwayPoly antennae;
+
+    private bool alreadyStake;
 
     void Start()
     {
@@ -69,6 +71,8 @@ public class RandomSpaceshipGenerator : MonoBehaviour
         if (numSides % 2 != 0) angleCorrection /= 2f;
         spaceship = spaceship.Rotate(Vector3.up, angleCorrection);
         spaceship = spaceship.Rotate(Vector3.left, -90);
+
+        alreadyStake = false;
 
         for (int i = 0; i < 2; i++)  // Loop twice - once for the back and once for the front.
         {
@@ -150,9 +154,10 @@ public class RandomSpaceshipGenerator : MonoBehaviour
         {
             spaceship = spaceship.Lace(new OpParams{valueA = Random.Range(loftLow, loftHigh), facesel = FaceSelections.FacingStraightForward, valueB = Random.Range(.2f, .5f)});
         }
-        else if (Random.value < ChanceOfTruncateSegment)
+        else if (Random.value < ChanceOfStakeSegment && !alreadyStake)  // Only do this once
         {
-            spaceship = spaceship.Truncate(new OpParams{valueA = Random.Range(loftLow, loftHigh), facesel = FaceSelections.FacingForward});
+            spaceship = spaceship.Stake(new OpParams{valueA = Random.Range(loftLow, loftHigh), facesel = FaceSelections.FacingForward});
+            alreadyStake = true;
         }
         else if (Random.value < ChanceOfRibbedSegment)
         {
