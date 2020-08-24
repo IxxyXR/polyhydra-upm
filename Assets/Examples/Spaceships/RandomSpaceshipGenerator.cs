@@ -35,12 +35,19 @@ public class RandomSpaceshipGenerator : MonoBehaviour
     public float ChanceOfWings = 0.25f;
     [Range(0f, 1f)]
     public float ChanceOfRibbedSegment = 0.25f;
+    [Range(0f, 1f)]
+    public float ChanceOfAntenna = 0.25f;
+    
+    public float foo = 0.25f;
+    public float bar = 0.25f;
+
     
     private float loftLow = -.25f;
     private float loftHigh = 0.75f;
 
     private ConwayPoly spaceship;
     private ConwayPoly wings;
+    private ConwayPoly antennae;
 
     void Start()
     {
@@ -59,6 +66,8 @@ public class RandomSpaceshipGenerator : MonoBehaviour
         
         spaceship = JohnsonPoly.Prism(numSides);
         wings = new ConwayPoly();
+        antennae = new ConwayPoly();
+        
         float angleCorrection = 180f / numSides;
         if (numSides % 2 != 0) angleCorrection /= 2f;
         spaceship = spaceship.Rotate(Vector3.up, angleCorrection);
@@ -72,8 +81,12 @@ public class RandomSpaceshipGenerator : MonoBehaviour
             }
             
             // Second time through loop:
-            // Flip the spaceship around ready to generate the back sections 
+            // Flip everything around ready to generate the back sections 
+            
             spaceship = spaceship.Rotate(Vector3.up, 180);
+            wings = wings.Rotate(Vector3.up, 180);
+            antennae = antennae.Rotate(Vector3.up, 180);
+            
             // Change random range for front sections
             loftLow = -0.35f;
             loftHigh = 0.15f;
@@ -125,6 +138,7 @@ public class RandomSpaceshipGenerator : MonoBehaviour
         
         spaceship.Append(engines);
         spaceship.Append(wings);
+        spaceship.Append(antennae);
 
         // Build the final mesh
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(spaceship, false);
@@ -161,6 +175,11 @@ public class RandomSpaceshipGenerator : MonoBehaviour
             {
                 spaceship = spaceship.Loft(new OpParams{valueA = Random.Range(.5f, 0), valueB = Random.Range(0.05f, 1.0f), facesel = FaceSelections.AllNew});
             }
+            else if (Random.value < ChanceOfAntenna)
+            {
+                antennae.Append(MakeAntenna(spaceship));
+            }
+            
 
         }
         
@@ -194,7 +213,30 @@ public class RandomSpaceshipGenerator : MonoBehaviour
         float sideAngle = 180f / sides;
         return p => AngleFromNormalY(Math.Abs(p.poly.Faces[p.index].Normal.y)) < sideAngle;
     }
-    
+
+    private ConwayPoly MakeAntenna(ConwayPoly spaceship)
+    {
+        var allNew = spaceship.FaceselToFaceFilterFunc(FaceSelections.AllNew);
+        var facingUp = spaceship.FaceselToFaceFilterFunc(FaceSelections.FacingUp);
+        Func<FilterParams, bool> newAndFacingUp = x => allNew(x) && facingUp(x);
+        var topSurfaces = spaceship.FaceKeep(new OpParams{filterFunc = newAndFacingUp});
+        
+        var antennaGroup = new ConwayPoly();
+        var antenna = JohnsonPoly.Pyramid(4);
+        foreach (var face in topSurfaces.Faces)
+        {
+            float radius = Random.Range(0.01f, 0.05f);
+            float height = Random.Range(0.25f, 2f);
+            float offset = Random.value < .5 ? 0 : Random.value < 0.5 ? .5f : -.5f;
+            antennaGroup.Append(antenna.Transform(
+                face.GetPolarPoint(90, offset),
+                Vector3.zero,
+                new Vector3(radius, height, radius)
+            ));
+        }
+        return antennaGroup;
+    }
+
     private ConwayPoly MakeWings(ConwayPoly spaceship, Func<FilterParams, bool> sideFaceFilter)
     {
         // Creates wings positioned on the last section created

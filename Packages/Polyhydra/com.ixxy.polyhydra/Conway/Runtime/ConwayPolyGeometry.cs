@@ -874,6 +874,7 @@ namespace Conway
 
         public void Append(ConwayPoly other, Vector3 transform, Quaternion rotation, Vector3 scale)
         {
+            if (other == null) return;
             ConwayPoly dup = other.Duplicate(transform, rotation, scale);
 
             Vertices.AddRange(dup.Vertices);

@@ -34,27 +34,61 @@ namespace Conway
         private Vector3 _cachedNormal;
         // private bool _hasCachedNormal;
 
+        public Vector3 GetPolarPoint(float angle, float position)
+        {
+            // Returns a point that lies on the face
+            // And is measured in polar coordinates
+            // (angle in degrees, position is 0 to 1 with 0 being on the centroid and 1 being on the edge
+            // The face can be concave but the algorithm assumes so overhangs or "ears"
+            // As it starts by doing a fan triangulation from the centroid.
+            
+            var verts = GetVertices();
+            var centroid = Centroid;
+            angle = angle % 360;
+            float previousAngle = 0;
+            Vector3 result = centroid;
+            for (int i = 1; i <= verts.Count; i++)
+            {
+                Vector3 a = centroid;
+                Vector3 b = verts[i % verts.Count].Position;
+                Vector3 c = verts[i - 1].Position;
+                float currentAngle = previousAngle + Vector3.Angle(a - b, a - c);
+                if (currentAngle > angle)
+                {
+                    float angleInTri = angle - previousAngle;
+                    float ratio = Mathf.InverseLerp(previousAngle, currentAngle, previousAngle + angleInTri);
+                    Vector3 pointOnEdge = Vector3.Lerp(b, c, ratio);
+                    result = Vector3.LerpUnclamped(a, pointOnEdge, position);
+                    break;
+                }
+                previousAngle = currentAngle;
+            }
+
+            return result;
+        }
+        
+        
         public float GetArea()
         {
             float area = 0;
-            var edges = GetHalfedges();
+            var verts = GetVertices();
 
-            if (edges.Count == 3)
+            if (verts.Count == 3)
             {
                 Vector3 v = Vector3.Cross(
-                    edges[0].Vertex.Position - edges[1].Vertex.Position,
-                    edges[0].Vertex.Position - edges[2].Vertex.Position
+                    verts[0].Position - verts[1].Position,
+                    verts[0].Position - verts[2].Position
                 );
                 area += v.magnitude * 0.5f;
             }
             else
             {
                 var centroid = Centroid;
-                for (int i = 0; i < edges.Count; i += 2)
+                for (int i = 1; i < verts.Count; i ++)
                 {
                     Vector3 a = centroid;
-                    Vector3 b = edges[i].Vertex.Position;
-                    Vector3 c = edges[i + 1].Vertex.Position;
+                    Vector3 b = verts[i % verts.Count].Position;
+                    Vector3 c = verts[i - 1].Position;
                     Vector3 v = Vector3.Cross(a - b, a - c);
                     area += v.magnitude * 0.5f;
                 }
