@@ -37,11 +37,8 @@ public class RandomSpaceshipGenerator : MonoBehaviour
     public float ChanceOfRibbedSegment = 0.25f;
     [Range(0f, 1f)]
     public float ChanceOfAntenna = 0.25f;
-    
-    public float foo = 0.25f;
-    public float bar = 0.25f;
 
-    
+
     private float loftLow = -.25f;
     private float loftHigh = 0.75f;
 
