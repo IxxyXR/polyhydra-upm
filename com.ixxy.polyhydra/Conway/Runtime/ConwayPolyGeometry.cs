@@ -921,7 +921,7 @@ namespace Conway
             return Transform(transform, rotation.eulerAngles, scale);
         }
 
-        public void _ExtendBoundaries(List<List<Halfedge>> boundaries, float scale)
+        public void _ExtendBoundaries(List<List<Halfedge>> boundaries, float scale, float angle=0)
         {
             FaceRoles = Enumerable.Repeat(Roles.Existing, Faces.Count).ToList();
             var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
@@ -937,6 +937,8 @@ namespace Conway
                     var edge2 = boundary[(edgeIndex + boundary.Count - 1) % boundary.Count];
                     var direction2 = edge2.Midpoint - edge2.Face.Centroid;
                     var direction = direction1 == direction2 ? direction1 : direction1 + direction2;
+                    var normal = (edge1.Face.Normal + edge2.Face.Normal) / 2f;
+                    direction = Vector3.LerpUnclamped(direction, normal, angle / 90f).normalized;
                     Vertices.Add(new Vertex(edge1.Vertex.Position + (direction * scale)));
                     VertexRoles.Add(Roles.New);
                 }
@@ -965,9 +967,10 @@ namespace Conway
         public ConwayPoly ExtendBoundaries(OpParams o)
         {
             float amount = o.GetValueA(this, 0);
+            float angle = o.GetValueB(this, 0);
             var poly = Duplicate();
             var boundaries = poly.FindBoundaries();
-            poly._ExtendBoundaries(boundaries, amount);
+            poly._ExtendBoundaries(boundaries, amount, angle);
             return poly;
         }
 
