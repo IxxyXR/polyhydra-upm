@@ -40,7 +40,8 @@ public class PolarPointsTest : MonoBehaviour
             for (float angle = 0; angle < 360; angle += theta)
             {
                 var pos = face.GetPolarPoint(angle, distance);
-                decorations.Append(cube.Transform(pos, Vector3.zero, Vector3.one));
+                var look = Quaternion.LookRotation(face.Normal, Vector3.up).eulerAngles + new Vector3(90, 0, 0);
+                decorations.Append(cube.Transform(pos, look, Vector3.one));
             }
         }
         //poly.Append(decorations);
