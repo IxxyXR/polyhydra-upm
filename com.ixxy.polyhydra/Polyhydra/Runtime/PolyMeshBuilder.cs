@@ -3,6 +3,7 @@ using System.Linq;
 using Conway;
 using UnityEngine;
 using Wythoff;
+using Face = Conway.Face;
 
 
 public static class PolyMeshBuilder
@@ -91,7 +92,10 @@ public static class PolyMeshBuilder
 					for (int i = 0; i < uniqueRoles.Count; i++) submeshTriangles.Add(new List<int>());
 					break;
 				case PolyHydraEnums.ColorMethods.BySides:
-					for (int i = 0; i < 16; i++) submeshTriangles.Add(new List<int>());
+					for (int i = 0; i < colors.Length; i++) submeshTriangles.Add(new List<int>());
+					break;
+				case PolyHydraEnums.ColorMethods.ByFaceDirection:
+					for (int i = 0; i < colors.Length; i++) submeshTriangles.Add(new List<int>());
 					break;
 				case PolyHydraEnums.ColorMethods.ByTags:
 					var flattenedTags = conway.FaceTags.SelectMany(d => d.Select(i => i.Item1));
@@ -124,6 +128,9 @@ public static class PolyMeshBuilder
 					break;
 				case PolyHydraEnums.ColorMethods.BySides:
 					color = colors[face.Sides % colors.Length];
+					break;
+				case PolyHydraEnums.ColorMethods.ByFaceDirection:
+					color = colors[CalcDirectionIndex(face, colors.Length - 1)];
 					break;
 				case PolyHydraEnums.ColorMethods.ByTags:
 					var c = new Color();
@@ -223,6 +230,9 @@ public static class PolyMeshBuilder
 					case PolyHydraEnums.ColorMethods.BySides:
 						submeshTriangles[face.Sides].AddRange(faceTris);
 						break;
+					case PolyHydraEnums.ColorMethods.ByFaceDirection:
+						submeshTriangles[CalcDirectionIndex(face, colors.Length - 1)].AddRange(faceTris);
+						break;
 					case PolyHydraEnums.ColorMethods.ByTags:
 						if (conway.FaceTags[i].Count > 0)
 						{
@@ -269,6 +279,21 @@ public static class PolyMeshBuilder
 		target.RecalculateTangents();
 		return target;
 	}
+
+    private static int CalcDirectionIndex(Face face, int range)
+    {
+	    var angles = new []
+	    {
+		    Vector3.Angle(face.Normal, Vector3.up),
+		    Vector3.Angle(face.Normal, Vector3.down),
+		    Vector3.Angle(face.Normal, Vector3.left),
+		    Vector3.Angle(face.Normal, Vector3.right),
+		    Vector3.Angle(face.Normal, Vector3.forward),
+		    Vector3.Angle(face.Normal, Vector3.back),
+	    };
+	    float angle = angles.Min();
+	    return Mathf.FloorToInt((angle / 90f) * range);
+    }
 
 
     public static Mesh BuildMeshFromWythoffPoly(WythoffPoly source, Color[] colors)

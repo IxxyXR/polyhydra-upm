@@ -7,8 +7,6 @@ namespace Conway
 {
     public partial class ConwayPoly
     {
-        #region Geometry methods
-
         public ConwayPoly AddMirrored(OpParams o, Vector3 axis)
         {
             float amount = o.GetValueA(this, 0);
@@ -964,6 +962,92 @@ namespace Conway
             }
         }
 
+        public ConwayPoly MergeCoplanarFaces(float threshold, int failSafeLimit=500)
+        {
+            // Sledgehammer approach. 
+            // Could be vastly improved/
+            // Basically loops through deleting coplanar faces and filling
+            
+            var mergedPoly = Duplicate();
+            int failSafe = 0;
+            bool finished = false;
+            int currentFaceIndex = 0;
+            var faceIndicesToMerge = new List<int>();
+            bool foundCoplanar = false;
+            while (!finished)
+            {
+                var currentFace = mergedPoly.Faces[currentFaceIndex];
+                foreach (var edge in currentFace.GetHalfedges())
+                {
+                    if (edge.Pair == null) continue;
+                    var face = edge.Pair.Face;
+                    if (Vector3.Angle(currentFace.Normal, face.Normal) < threshold)
+                    {
+                        if (faceIndicesToMerge.Count==0) faceIndicesToMerge.Add(currentFaceIndex);
+                        faceIndicesToMerge.Add(mergedPoly.Faces.IndexOf(face));  // TODO
+                        foundCoplanar = true;
+                    }
+                }
+                
+                currentFaceIndex++;
+                bool facesMerged = false;
+                if (foundCoplanar)
+                {
+                    int faceCountBefore = mergedPoly.Faces.Count;
+                    mergedPoly = mergedPoly.FaceRemove(false, faceIndicesToMerge);
+                    mergedPoly = mergedPoly.FillHoles();
+                    faceIndicesToMerge = new List<int>();
+                    int faceCountAfter = mergedPoly.Faces.Count;
+                    facesMerged = faceCountAfter < faceCountBefore;
+                    if (facesMerged) currentFaceIndex = 0;
+                }
+                failSafe++;
+                if (!foundCoplanar || !facesMerged)
+                {
+                    if (currentFaceIndex >= mergedPoly.Faces.Count)
+                    {
+                        // We've done an entire scan of the poly and not merged anything
+                        finished = true;
+                    }
+                }
+
+                if (failSafe > failSafeLimit) break;  // Avoid infinite loops
+            }
+
+            return mergedPoly;
+        }
+
+        // Initial sketch.
+        // Put to one side in favour of a sledgehammer approach above
+        // public ConwayPoly MergeCoplanarFaces(float threshold)
+        // {
+        //     var newFaces = new List<List<int>>();
+        //     // Only handles triangular faces sharing one edge
+        //     foreach (var face in Faces)
+        //     {
+        //         bool merge = false;
+        //         var newFace = new List<int>();
+        //         foreach (var edge in face.GetHalfedges())
+        //         {
+        //             if (edge.Pair == null) continue;
+        //             if (Vector3.Angle(edge.Face.Normal, edge.Pair.Face.Normal) < threshold)
+        //             {
+        //
+        //             }
+        //         }
+        //
+        //         if (merge)
+        //         {
+        //             newFaces.Add(faceIndices);
+        //         }
+        //         else
+        //         {
+        //             newFaces.Add(faceIndices);
+        //         }
+        //     }
+        //     return new ConwayPoly();
+        // }
+
         public ConwayPoly ExtendBoundaries(OpParams o)
         {
             float amount = o.GetValueA(this, 0);
@@ -974,7 +1058,7 @@ namespace Conway
             return poly;
         }
 
-        		/// <summary>
+        /// <summary>
 		/// Thickens each mesh edge in the plane of the mesh surface.
 		/// </summary>
 		/// <param name="offset">Distance to offset edges in plane of adjacent faces</param>
@@ -1168,8 +1252,5 @@ namespace Conway
 		//
 		// 	return ribbon;
 		// }
-
-
-        #endregion
     }
 }
