@@ -8,7 +8,8 @@ public static class PolyHydraEnums
     {
         BySides,
         ByRole,
-        ByTags
+        ByFaceDirection,
+        ByTags,
     }
 
 	public enum PolyTypeCategories

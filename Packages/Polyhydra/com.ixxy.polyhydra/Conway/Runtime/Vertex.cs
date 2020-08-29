@@ -8,6 +8,11 @@ namespace Conway {
         
         #region constructors
 
+        public Vertex(float x, float y, float z)
+        {
+            Position = new Vector3(x, y, z);
+            Name = Guid.NewGuid();
+        }
         public Vertex(Vector3 point)
         {
             Position = point;
