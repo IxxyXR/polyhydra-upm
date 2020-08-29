@@ -965,8 +965,9 @@ namespace Conway
         public ConwayPoly MergeCoplanarFaces(float threshold, int failSafeLimit=500)
         {
             // Sledgehammer approach. 
-            // Could be vastly improved/
-            // Basically loops through deleting coplanar faces and filling
+            // Could be vastly improved
+            // Basically loops through deleting coplanar faces and filling the gaps
+            // Gets very slow for big inputs
             
             var mergedPoly = Duplicate();
             int failSafe = 0;
@@ -981,7 +982,7 @@ namespace Conway
                 {
                     if (edge.Pair == null) continue;
                     var face = edge.Pair.Face;
-                    if (Vector3.Angle(currentFace.Normal, face.Normal) < threshold)
+                    if (Vector3.Angle(currentFace.Normal, face.Normal) <= threshold)
                     {
                         if (faceIndicesToMerge.Count==0) faceIndicesToMerge.Add(currentFaceIndex);
                         faceIndicesToMerge.Add(mergedPoly.Faces.IndexOf(face));  // TODO
@@ -1010,12 +1011,47 @@ namespace Conway
                         finished = true;
                     }
                 }
-
+        
                 if (failSafe > failSafeLimit) break;  // Avoid infinite loops
             }
-
+        
             return mergedPoly;
         }
+
+        // public ConwayPoly MergeCoplanarFaces(float threshold, int failSafeLimit=500)
+        // {
+        //     // Another aborted attempt
+        //     // Promising but we need a way to construct a single face from a set of coplanar faces
+        //     // Storing either face GUIDs or face indices is useless because they become invalid
+        //     // after the first merge
+        //     
+        //     var mergedPoly = Duplicate();
+        //     int failSafe = 0;
+        //     bool finished = false;
+        //     int currentFaceIndex = 0;
+        //     var faceIndicesToMerge = new List<int>();
+        //     bool foundCoplanar = false;
+        //     var mergeList = new Dictionary<Vector3, HashSet<int>>();
+        //     for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
+        //     {
+        //         var face = Faces[faceIndex];
+        //         if (!mergeList.ContainsKey(face.Normal))
+        //         {
+        //             mergeList[face.Normal] = new HashSet<int>();
+        //         }
+        //         else
+        //         {
+        //             mergeList[face.Normal].Add(faceIndex);
+        //         }
+        //     }
+        //
+        //     foreach (var mergeSet in mergeList.Values)
+        //     {
+        //         // TODO
+        //     }
+        //
+        //     return mergedPoly;
+        // }
 
         // Initial sketch.
         // Put to one side in favour of a sledgehammer approach above
