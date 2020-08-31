@@ -200,7 +200,7 @@ namespace Johnson
 	        int sides = 10;
 	        float bodyHeight = _CalcAntiprismHeight(sides);
 	        ConwayPoly poly = Rotunda();
-	        poly = poly.Lace(new OpParams{facesel = FaceSelections.FacingDown, valueA = bodyHeight});
+	        poly = poly.Lace(new OpParams{facesel = FaceSelections.FacingDown, valueA = 0, valueB = bodyHeight});
 	        return poly;
         }
 
@@ -382,7 +382,7 @@ namespace Johnson
 			float height = _CalcSideLength(sides);
 			ConwayPoly poly = _MakePrism(sides, height);
 			height = _CalcPyramidHeight(sides);
-			poly = poly.Kis(new OpParams{});
+			poly = poly.Kis(new OpParams{valueA = height, facesel = FaceSelections.FacingUp});
 			return poly;
         }
 
@@ -838,6 +838,79 @@ namespace Johnson
 		{
 			var poly = UvSphere(verticalLines, horizontalLines, 0.5f);
 			poly = poly.FillHoles();
+			return poly;
+		}
+
+		public static ConwayPoly Build(PolyHydraEnums.JohnsonPolyTypes johnsonPolyType, int sides)
+		{
+			ConwayPoly poly;
+			
+			switch (johnsonPolyType)
+			{
+                case PolyHydraEnums.JohnsonPolyTypes.Prism:
+                    poly = Prism(sides);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.Antiprism:
+                    poly = Antiprism(sides);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.Pyramid:
+                    poly = Pyramid(sides);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.ElongatedPyramid:
+                    poly = ElongatedPyramid(sides);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.GyroelongatedPyramid:
+                    poly = GyroelongatedPyramid(sides);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.Dipyramid:
+                    poly = Dipyramid(sides);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.ElongatedDipyramid:
+                    poly = ElongatedDipyramid(sides);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.GyroelongatedDipyramid:
+                    poly = GyroelongatedDipyramid(sides);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.Cupola:
+                    poly = Cupola(sides);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.ElongatedCupola:
+                    poly = ElongatedCupola(sides);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.GyroelongatedCupola:
+                    poly = GyroelongatedCupola(sides);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.OrthoBicupola:
+                    poly = OrthoBicupola(sides);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.GyroBicupola:
+                    poly = GyroBicupola(sides);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.ElongatedOrthoBicupola:
+                    poly = ElongatedBicupola(sides, false);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.ElongatedGyroBicupola:
+                    poly = ElongatedBicupola(sides, true);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.GyroelongatedBicupola:
+                    poly = GyroelongatedBicupola(sides, false);
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.Rotunda:
+                    poly = Rotunda();
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.ElongatedRotunda:
+                    poly = ElongatedRotunda();
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.GyroelongatedRotunda:
+                    poly = GyroelongatedRotunda();
+                    break;
+                case PolyHydraEnums.JohnsonPolyTypes.GyroelongatedBirotunda:
+                    poly = GyroelongatedBirotunda();
+                    break;
+                default:
+	                poly = new ConwayPoly();
+	                break;
+			}
 			return poly;
 		}
     }

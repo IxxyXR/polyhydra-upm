@@ -12,12 +12,20 @@ public class JohnsonTest : MonoBehaviour
     [Range(1,40)] public int sides = 4;
 
     public bool ApplyOp;
-    public Ops op;
-    public FaceSelections facesel;
-    public float opAmount = 0;
-    public float op2Amount = 0;
+    public Ops op1;
+    public FaceSelections op1Facesel;
+    public float op1Amount1 = 0;
+    public float op1Amount2 = 0;
+    public Ops op2;
+    public FaceSelections op2Facesel;
+    public float op2Amount1 = 0;
+    public float op2Amount2 = 0;
+    public bool Canonicalize;    
+    public Vector3 Position = Vector3.zero;
+    public Vector3 Rotation = Vector3.zero;
+    public Vector3 Scale = Vector3.one;
 
-    public bool ColorBySides;
+    public PolyHydraEnums.ColorMethods ColorMethod;
 
     void Start()
     {
@@ -32,80 +40,24 @@ public class JohnsonTest : MonoBehaviour
     [ContextMenu("Generate")]
     public void Generate()
     {
-        ConwayPoly poly = null;
+        var poly = JohnsonPoly.Build(JohnsonPolyType, sides);
+        
+         if (ApplyOp)
+         {
+             var o1 = new OpParams {valueA = op1Amount1, valueB = op1Amount2, facesel = op1Facesel};
+             poly = poly.ApplyOp(op1, o1);
+             var o2 = new OpParams {valueA = op2Amount1, valueB = op2Amount2, facesel = op2Facesel};
+             poly = poly.ApplyOp(op2, o2);
+         }
+         if (Canonicalize)
+         {
+             poly = poly.Canonicalize(0.1, 0.1);
+         }
 
-        // TODO move this into a method on JohnsonPoly
-        switch (JohnsonPolyType)
-        {
-                case PolyHydraEnums.JohnsonPolyTypes.Prism:
-                    poly = JohnsonPoly.Prism(sides);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.Antiprism:
-                    poly = JohnsonPoly.Antiprism(sides);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.Pyramid:
-                    poly = JohnsonPoly.Pyramid(sides);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.ElongatedPyramid:
-                    poly = JohnsonPoly.ElongatedPyramid(sides);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.GyroelongatedPyramid:
-                    poly = JohnsonPoly.GyroelongatedPyramid(sides);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.Dipyramid:
-                    poly = JohnsonPoly.Dipyramid(sides);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.ElongatedDipyramid:
-                    poly = JohnsonPoly.ElongatedDipyramid(sides);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.GyroelongatedDipyramid:
-                    poly = JohnsonPoly.GyroelongatedDipyramid(sides);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.Cupola:
-                    poly = JohnsonPoly.Cupola(sides);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.ElongatedCupola:
-                    poly = JohnsonPoly.ElongatedCupola(sides);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.GyroelongatedCupola:
-                    poly = JohnsonPoly.GyroelongatedCupola(sides);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.OrthoBicupola:
-                    poly = JohnsonPoly.OrthoBicupola(sides);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.GyroBicupola:
-                    poly = JohnsonPoly.GyroBicupola(sides);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.ElongatedOrthoBicupola:
-                    poly = JohnsonPoly.ElongatedBicupola(sides, false);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.ElongatedGyroBicupola:
-                    poly = JohnsonPoly.ElongatedBicupola(sides, true);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.GyroelongatedBicupola:
-                    poly = JohnsonPoly.GyroelongatedBicupola(sides, false);
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.Rotunda:
-                    poly = JohnsonPoly.Rotunda();
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.ElongatedRotunda:
-                    poly = JohnsonPoly.ElongatedRotunda();
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.GyroelongatedRotunda:
-                    poly = JohnsonPoly.GyroelongatedRotunda();
-                    break;
-                case PolyHydraEnums.JohnsonPolyTypes.GyroelongatedBirotunda:
-                    poly = JohnsonPoly.GyroelongatedBirotunda();
-                    break;
+         poly = poly.FaceScale(new OpParams{valueA = -0.2f});
+        poly = poly.Transform(Position, Rotation, Scale);
 
-        }
-        var colorMethod = ColorBySides ? PolyHydraEnums.ColorMethods.BySides : PolyHydraEnums.ColorMethods.ByRole;
-        if (ApplyOp)
-        {
-            var o = new OpParams {valueA = opAmount, valueB = op2Amount, facesel = facesel};
-            poly = poly.ApplyOp(op, o);
-        }
-        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, colorMethod);
+        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;
     }
 

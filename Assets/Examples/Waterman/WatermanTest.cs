@@ -67,8 +67,6 @@ public class WatermanTest : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
     }
 
-
-
     void OnDrawGizmos () {
         // GizmoHelper.DrawGizmos(poly, false, false, true);
 	}
