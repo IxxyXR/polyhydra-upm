@@ -45,6 +45,9 @@ namespace Conway
         JoinSquall,
 
         Cross,
+        
+        Split,
+        Gable,
 
         Extrude,
         Shell,

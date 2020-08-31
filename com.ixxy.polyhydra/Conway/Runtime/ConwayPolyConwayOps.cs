@@ -3027,6 +3027,170 @@ namespace Conway
 		// 	//medialPolyhedron.setVertexNormalsToFaceNormals();
 		// 	return new ConwayPoly(vertexPoints, faceIndices, faceRoles, vertexRoles);
 		// }
+        
+        public ConwayPoly Gable(OpParams o, int edgeOffset=0)
+        {
+            var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
+            var tagList = StringToTagList(o.tags);
+            // vertices and faces to vertices
+            var vertexRoles = Enumerable.Repeat(Roles.Existing, Vertices.Count).ToList();
+            List<Vector3> vertexPoints = Vertices.Select(v => v.Position).ToList();
 
+            var faceRoles = new List<Roles>();
+
+            // vertex lookup
+            var vlookup = new Dictionary<Guid, int>();
+            int n = Vertices.Count;
+            for (int i = 0; i < n; i++)
+            {
+                vlookup.Add(Vertices[i].Name, i);
+            }
+
+            // create new tri-faces (like a fan)
+            var faceIndices = new List<IEnumerable<int>>(); // faces as vertex indices
+            for (int faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
+            {
+                var prevFaceTagSet = FaceTags[faceIndex];
+                bool includeFace = IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc);
+                var face = Faces[faceIndex];
+                if (includeFace && face.Sides % 2 == 0)  // Only even sided faces
+                {
+                    var edges = face.GetHalfedges();
+                    int initialEdgeIndex = edgeOffset;
+                    var initialEdge = edges[initialEdgeIndex];
+                    int oppositeEdgeIndex = (edgeOffset + (face.Sides / 2) % face.Sides);
+                    var oppositeEdge = edges[oppositeEdgeIndex];
+
+                    var randVal = o.randomize ? random.NextDouble() : 1;
+                    float amount = o.GetValueA(this, faceIndex);
+                    float offset = o.GetValueB(this, faceIndex);
+                    var normalOffset = face.Normal * (float) (offset * randVal);
+                    var offsetCentroid = face.Centroid + normalOffset;
+                    var initialNewVertPos = Vector3.LerpUnclamped(offsetCentroid, initialEdge.Midpoint + normalOffset, amount);
+                    var oppositeNewVertPos = Vector3.LerpUnclamped(offsetCentroid, oppositeEdge.Midpoint + normalOffset, amount);
+                    vertexPoints.Add(initialNewVertPos);
+                    vertexRoles.Add(Roles.New);
+                    int initialVertIndex = vertexPoints.Count - 1;
+                    vertexPoints.Add(oppositeNewVertPos);
+                    vertexRoles.Add(Roles.New);
+                    int oppositeVertIndex = vertexPoints.Count - 1;
+                    
+                    faceIndices.Add(
+                        new[]
+                        {
+                            vlookup[initialEdge.Prev.Vertex.Name],
+                            vlookup[initialEdge.Vertex.Name],
+                            initialVertIndex
+                        }
+                    );
+                    faceRoles.Add(Roles.New);
+                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                    
+                    faceIndices.Add(
+                        new[]
+                        {
+                            vlookup[oppositeEdge.Prev.Vertex.Name],
+                            vlookup[oppositeEdge.Vertex.Name],
+                            oppositeVertIndex
+                        }
+                    );
+                    faceRoles.Add(Roles.New);
+                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+
+                    var newFace1 = new List<int>();
+                    for (var edgeIndex = initialEdgeIndex; edgeIndex != oppositeEdgeIndex; edgeIndex=(edgeIndex+1)%edges.Count)
+                    {
+                        var edge = edges[edgeIndex];
+                        newFace1.Add(vlookup[edge.Vertex.Name]);
+                    }
+                    newFace1.Add(oppositeVertIndex);
+                    newFace1.Add(initialVertIndex);
+                    faceIndices.Add(newFace1);
+                    faceRoles.Add(Roles.NewAlt);
+                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                    
+                    var newFace2 = new List<int>();
+                    for (var edgeIndex = oppositeEdgeIndex; edgeIndex != initialEdgeIndex; edgeIndex=(edgeIndex+1)%edges.Count)
+                    {
+                        var edge = edges[edgeIndex];
+                        newFace2.Add(vlookup[edge.Vertex.Name]);
+                    }
+                    newFace2.Add(initialVertIndex);
+                    newFace2.Add(oppositeVertIndex);
+                    faceIndices.Add(newFace2);
+                    faceRoles.Add(Roles.NewAlt);
+                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                }
+                else
+                {
+                    faceIndices.Add(ListFacesByVertexIndices()[faceIndex]);
+                    faceRoles.Add(Roles.Ignored);
+                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                }
+            }
+
+            return new ConwayPoly(vertexPoints, faceIndices, faceRoles, vertexRoles, newFaceTags);
+        }
+
+        public ConwayPoly Split(OpParams o, int vertexOffset=0)
+        {
+            var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
+            var tagList = StringToTagList(o.tags);
+            // vertices and faces to vertices
+            var vertexRoles = Enumerable.Repeat(Roles.Existing, Vertices.Count).ToList();
+            List<Vector3> vertexPoints = Vertices.Select(v => v.Position).ToList();
+
+            var faceRoles = new List<Roles>();
+
+            // vertex lookup
+            var vlookup = new Dictionary<Guid, int>();
+            int n = Vertices.Count;
+            for (int i = 0; i < n; i++)
+            {
+                vlookup.Add(Vertices[i].Name, i);
+            }
+
+            var faceIndices = new List<IEnumerable<int>>(); // faces as vertex indices
+            for (int faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
+            {
+                var face = Faces[faceIndex];
+                var edges = face.GetHalfedges();
+                int oppositeVertexIndex = (vertexOffset + (face.Sides / 2) % face.Sides);
+                var prevFaceTagSet = FaceTags[faceIndex];
+                bool includeFace = IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc);
+                if (includeFace && face.Sides % 2 == 0 )  // Only even sided faces > 4
+                {
+                    var newFace1 = new List<int>();
+                    for (var edgeIndex = vertexOffset; edgeIndex != oppositeVertexIndex; edgeIndex=(edgeIndex+1)%face.Sides)
+                    {
+                        var edge = edges[edgeIndex];
+                        newFace1.Add(vlookup[edge.Vertex.Name]);
+                    }
+                    newFace1.Add(vlookup[edges[oppositeVertexIndex].Vertex.Name]);
+                    faceIndices.Add(newFace1);
+                    faceRoles.Add(Roles.NewAlt);
+                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                    
+                    var newFace2 = new List<int>();
+                    for (var edgeIndex = oppositeVertexIndex; edgeIndex != vertexOffset; edgeIndex=(edgeIndex+1)%face.Sides)
+                    {
+                        var edge = edges[edgeIndex];
+                        newFace2.Add(vlookup[edge.Vertex.Name]);
+                    }
+                    newFace2.Add(vlookup[edges[vertexOffset].Vertex.Name]);
+                    faceIndices.Add(newFace2);
+                    faceRoles.Add(Roles.NewAlt);
+                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                }
+                else
+                {
+                    faceIndices.Add(ListFacesByVertexIndices()[faceIndex]);
+                    faceRoles.Add(Roles.Ignored);
+                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                }
+            }
+
+            return new ConwayPoly(vertexPoints, faceIndices, faceRoles, vertexRoles, newFaceTags);
+        }
     }
 }

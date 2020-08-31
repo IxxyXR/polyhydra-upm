@@ -699,6 +699,12 @@ namespace Conway
 				case Ops.JoinSquall:
 					polyResult = Squall(opParams, true);
 					break;
+				case Ops.Split:
+					polyResult = Split(opParams, 0);
+					break;
+				case Ops.Gable:
+					polyResult = Gable(opParams, 0);
+					break;
 				case Ops.Shell:
 					polyResult = Shell(opParams, true);
 					break;
