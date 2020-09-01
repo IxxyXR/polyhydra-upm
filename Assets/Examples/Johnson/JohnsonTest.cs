@@ -9,7 +9,7 @@ using UnityEngine;
 public class JohnsonTest : MonoBehaviour
 {
     public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
-    [Range(1,40)] public int sides = 4;
+    [Range(3,40)] public int sides = 4;
 
     public bool ApplyOp;
     public Ops op1;

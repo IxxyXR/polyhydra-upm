@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Conway;
 using Johnson;
-using UnityEditor;
 using UnityEngine;
-
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
@@ -16,7 +17,10 @@ public class FaceLoopsTest : MonoBehaviour
     {
         None,
         Remove,
+        Keep,
+        SplitFaces,
         Split,
+        SetRole
     }
     public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
     [Range(1,40)] public int sides = 4;
@@ -65,17 +69,43 @@ public class FaceLoopsTest : MonoBehaviour
         }
 
         // Find and remove the edge loop
-        var face = poly.Faces[StartingFace % poly.Faces.Count];
+        var face = poly.Faces[ConwayPoly.ActualMod(StartingFace, poly.Faces.Count)];
         var edges = face.GetHalfedges();
-        var startingEdge = edges[StartingEdge % edges.Count];
+        var startingEdge = edges[ConwayPoly.ActualMod(StartingEdge, edges.Count)];
         loop = poly.GetFaceLoop(startingEdge);
         if (LoopAction == LoopActions.Remove)
         {
             poly = poly.FaceRemove(false, loop.Select(x=>x.Item1).ToList());
         }
-        else if (LoopAction == LoopActions.Split)
+        else if (LoopAction == LoopActions.Keep)
+        {
+            poly = poly.FaceRemove(true, loop.Select(x=>x.Item1).ToList());
+        }
+        else if (LoopAction == LoopActions.SplitFaces)
         {
             poly = poly.SplitLoop(loop);
+        }
+        else if (LoopAction == LoopActions.Split)
+        {
+            var otherPoly = poly.FaceRemove(false, loop.Select(x=>x.Item1).ToList());
+            poly = poly.FaceRemove(true, loop.Select(x=>x.Item1).ToList());
+            
+            poly.FaceRoles = Enumerable.Repeat(ConwayPoly.Roles.Existing, poly.Faces.Count).ToList();
+            poly.VertexRoles = Enumerable.Repeat(ConwayPoly.Roles.Existing, poly.Vertices.Count).ToList();
+            otherPoly.FaceRoles = Enumerable.Repeat(ConwayPoly.Roles.New, otherPoly.Faces.Count).ToList();
+            otherPoly.VertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, otherPoly.Vertices.Count).ToList();
+            
+            poly.Append(otherPoly);
+        }
+        else if (LoopAction == LoopActions.SetRole)
+        {
+            var faceRoles = new List<ConwayPoly.Roles>();
+            var loopIndices = loop.Select(x => x.Item1);
+            for (var faceIndex = 0; faceIndex < poly.Faces.Count; faceIndex++)
+            {
+                faceRoles.Add(loopIndices.Contains(faceIndex) ? ConwayPoly.Roles.Existing : ConwayPoly.Roles.New);
+            }
+            poly.FaceRoles = faceRoles;
         }
 
         if (ApplyOp)
@@ -89,7 +119,7 @@ public class FaceLoopsTest : MonoBehaviour
              poly = poly.Canonicalize(0.1, 0.1);
         }
 
-//        poly = poly.Transform(Position, Rotation, Scale);
+        poly = poly.Transform(Position, Rotation, Scale);
 
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;
@@ -98,16 +128,19 @@ public class FaceLoopsTest : MonoBehaviour
     private void OnDrawGizmos()
     {
         #if UNITY_EDITOR
-            Gizmos.color = Color.green;
-            for (var i = 0; i < loop.Count; i++)
-            {
-                var f = loop[i];
-                var pos = poly.Faces[f.Item1].GetHalfedges()[f.Item2].Midpoint;
-                Gizmos.DrawWireSphere(transform.TransformPoint(pos), .03f);
-                Handles.Label(pos + new Vector3(0, .15f, 0), i.ToString());
-            }
-
-            GizmoHelper.DrawGizmos(poly, transform, edgeGizmos: false, vertexGizmos: false);
+        // Gizmos.color = Color.green;
+        // for (var i = 0; i < loop.Count; i++)
+        // {
+        //     var f = loop[i];
+        //     var face = poly.Faces[f.Item1];
+        //     var edges = face.GetHalfedges(); 
+        //     var edge = edges[ConwayPoly.ActualMod(f.Item2, edges.Count)]; 
+        //     var pos = edge.Midpoint;
+        //     pos = transform.TransformPoint(pos);
+        //     Gizmos.DrawWireSphere(pos, .03f);
+        //     Handles.Label(pos + new Vector3(0, .15f, 0), i.ToString());
+        // }
+        GizmoHelper.DrawGizmos(poly, transform, edgeGizmos: false, vertexGizmos: false);
         #endif
     }
 }
