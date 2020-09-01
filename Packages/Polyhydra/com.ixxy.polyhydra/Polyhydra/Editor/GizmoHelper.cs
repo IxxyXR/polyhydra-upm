@@ -1,12 +1,15 @@
-namespace com.ixxy.polyhydra.Polyhydra.Editor
-{
+using Conway;
+using UnityEditor;
+using UnityEngine;
+
 public static class GizmoHelper
 {
-    public static void DrawGizmos(ConwayPoly poly, bool conwayVertexGizmos, bool faceCenterGizmos, bool faceGizmos)
+    public static void DrawGizmos(ConwayPoly poly, Transform transform, 
+	    bool vertexGizmos=false, bool faceGizmos=false, bool edgeGizmos=false, bool faceCenterGizmos=false)
     {
 		float GizmoRadius = .03f;
 
-		if (conwayVertexGizmos && poly!=null)
+		if (vertexGizmos && poly!=null)
 		{
 			Gizmos.color = Color.white;
 			if (poly.Vertices != null)
@@ -56,8 +59,18 @@ public static class GizmoHelper
 				Handles.Label(Vector3.Scale(face.Centroid, transform.lossyScale) + new Vector3(0, .03f, 0), label);
 			}
 		}
-
-
+		if (edgeGizmos)
+		{
+			for (int i = 0; i < poly.Halfedges.Count; i++)
+			{
+				Gizmos.color = Color.yellow;
+				var edge = poly.Halfedges[i];
+				Gizmos.DrawLine(
+					transform.TransformPoint(edge.Vertex.Position),
+					transform.TransformPoint(edge.Next.Vertex.Position)
+				);
+				Gizmos.DrawWireCube(transform.TransformPoint(edge.PointAlongEdge(0.9f)), Vector3.one * 0.02f);
+			}
+		}
     }
-}
 }

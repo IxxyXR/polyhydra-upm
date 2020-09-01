@@ -54,8 +54,7 @@ public class JohnsonTest : MonoBehaviour
              poly = poly.Canonicalize(0.1, 0.1);
          }
 
-         poly = poly.FaceScale(new OpParams{valueA = -0.2f});
-        poly = poly.Transform(Position, Rotation, Scale);
+         poly = poly.Transform(Position, Rotation, Scale);
 
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;

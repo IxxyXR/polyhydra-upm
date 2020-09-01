@@ -1,0 +1,18 @@
+{
+    "name": "Ixxy.Polyhydra.Editor",
+    "references": [
+        "GUID:00a4cb4d06515dd41ac32e72da5d81b7",
+        "GUID:a48417eabcbbb45399a6a8a8bb558d31"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

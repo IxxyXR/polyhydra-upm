@@ -956,7 +956,6 @@ namespace Conway
                         FaceRoles.Add(Roles.New);
                         var prevFaceTagSet = FaceTags[Faces.IndexOf(edge.Face)];
                         FaceTags.Add(prevFaceTagSet);
-
                     }
                 }
             }
@@ -1092,6 +1091,157 @@ namespace Conway
             var boundaries = poly.FindBoundaries();
             poly._ExtendBoundaries(boundaries, amount, angle);
             return poly;
+        }
+        
+        public ConwayPoly SplitLoop(List<Tuple<int,int>> loop)
+        {
+            var poly = Duplicate();
+            var faces = poly.Faces;
+            int firstNewVertexIndex = poly.Vertices.Count;
+            var newVertLookup = new Dictionary<(Guid, Guid)?, Vertex>();
+            foreach (var loopItem in loop)
+            {
+                var face = faces[loopItem.Item1];
+                var edge = face.GetHalfedges()[loopItem.Item2];
+                Vector3 pos = edge.Midpoint;
+                var newVert = new Vertex(pos);
+                poly.Vertices.Add(newVert);
+                newVertLookup[edge.PairedName] = newVert;
+            }
+
+            var facesToRemove = new List<Face>();
+            var facesToAdd = new List<List<Vertex>>();
+            for (var loopIndex = 0; loopIndex < loop.Count; loopIndex++)
+            {
+                var loopItem = loop[loopIndex];
+                int nextLoopIndex = (loopIndex + 1) % loop.Count;
+                var nextLoopItem = loop[nextLoopIndex];
+
+                var face = faces[loopItem.Item1];
+                var initialEdge = face.GetHalfedges()[loopItem.Item2];
+                var currentEdge = initialEdge;
+                var nextFace = faces[nextLoopItem.Item1];
+                var nextEdge = nextFace.GetHalfedges()[nextLoopItem.Item2];
+                
+                var faceHalfEdges = face.GetHalfedges();
+                var newVert1 = poly.Vertices[firstNewVertexIndex + loopIndex];
+                var newVert2 = poly.Vertices[firstNewVertexIndex + ActualMod(loopIndex + 1, loop.Count)];
+
+                var newFace1 = new List<Vertex>();
+                int counter = 0;
+                bool finished = false;
+                while (!finished)
+                {
+                    newFace1.Add(currentEdge.Vertex);
+                    currentEdge = currentEdge.Next;
+                    counter++;
+                    finished = counter >= (face.Sides/2);
+                }
+
+                if (newVertLookup.ContainsKey(currentEdge.PairedName))
+                {
+                    newFace1.Add(newVertLookup[currentEdge.PairedName]);
+                }
+                
+                if (newVertLookup.ContainsKey(initialEdge.Prev.PairedName))
+                {
+                    newFace1.Add(newVertLookup[initialEdge.Prev.PairedName]);
+                }
+                
+                // var vs = new List<Halfedge>()
+                // {
+                //     initialEdge,
+                //     initialEdge.Next,
+                //     initialEdge.Prev,
+                //     initialEdge.Next.Next,
+                //     initialEdge.Prev.Prev,
+                // };
+                // for (var i = 0; i < vs.Count; i++)
+                // {
+                //     var v = vs[i];
+                //     if (newVertLookup.ContainsKey(v.PairedName))
+                //     {
+                //         newFace1.Add(newVertLookup[v.PairedName]);
+                //         Debug.Log($"added edge {i}");
+                //         break;
+                //     }
+                // }
+                // Debug.Log($"------");
+                
+                
+                
+                // newFace1.Add(newVert1);
+                
+                // var newFace2 = new List<Vertex>();
+                // newFace2.Add(newVert1);
+                // newFace2.Add(newVert2);
+                // for (var edgeIndex = faceHalfEdges.Count / 2; edgeIndex < faceHalfEdges.Count; edgeIndex++)
+                // {
+                //     newFace2.Add(faceHalfEdges[edgeIndex].Vertex);
+                // }
+                
+                facesToRemove.Add(face);
+                if (newFace1.Count>=3) facesToAdd.Add(newFace1);
+                // newFace2.Reverse();
+                //facesToAdd.Add(newFace2);
+            }
+
+            
+            var prevTags = new Dictionary<int, HashSet<Tuple<string, TagType>>>();
+            for (var i = 0; i < facesToRemove.Count; i++)
+            {
+                var face = facesToRemove[i];
+                var hole = poly.Faces.Remove(face);
+                // prevTags.Add(FaceTags[i]);
+            }
+
+            foreach (var face in facesToAdd)
+            {
+                bool success = poly.Faces.Add(face);
+                if (success)
+                {
+                    Debug.Log($"add face success");
+                    FaceRoles.Add(Roles.New);
+                    // FaceTags.Add(prevTags);
+                }
+            }
+            return poly;
+        }
+
+        public List<Tuple<int,int>> GetFaceLoop(Halfedge startingEdge)
+        {
+            var loop = new List<Tuple<int,int>>();
+            if (startingEdge.Face.Sides % 2 != 0) return loop;
+            var faceLookup = new  Dictionary<string, int>();
+            for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
+            {
+                var face = Faces[faceIndex];
+                faceLookup[face.Name] = faceIndex;
+            }
+            
+            bool finished = false;
+            int failsafe = 0;
+            var currentEdge = startingEdge;
+            int edgeCounter = 0;
+            while (!finished)
+            {
+                loop.Add(new Tuple<int, int>(faceLookup[currentEdge.Face.Name], edgeCounter));
+                var currentFace = currentEdge.Face;
+                edgeCounter = 0;
+                while (edgeCounter < currentFace.Sides / 2)
+                {
+                    currentEdge = currentEdge.Next;
+                    edgeCounter++;
+                }
+                currentEdge = currentEdge.Pair;
+                failsafe++;
+                finished = currentEdge == null ||
+                           currentEdge.Face.Sides % 2 != 0 ||
+                           currentEdge == startingEdge ||
+                           failsafe > 100;
+            }
+
+            return loop;
         }
 
         /// <summary>
