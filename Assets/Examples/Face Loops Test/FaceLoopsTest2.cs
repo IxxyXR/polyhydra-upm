@@ -23,8 +23,8 @@ public class FaceLoopsTest2 : MonoBehaviour
     }
     public PolyHydraEnums.GridTypes GridType;
     public PolyHydraEnums.GridShapes GridShape;
-    [Range(1,40)] public int width = 4;
-    [Range(1,40)] public int depth = 3;
+    [Range(1,64)] public int width = 4;
+    [Range(1,64)] public int depth = 3;
 
     public bool ApplyOp;
     public Ops op1;
@@ -122,7 +122,7 @@ public class FaceLoopsTest2 : MonoBehaviour
 
         poly = poly.Transform(Position, Rotation, Scale);
 
-        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
+        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod, true);
         GetComponent<MeshFilter>().mesh = mesh;
     }
 
