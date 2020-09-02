@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Conway;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Wythoff;
 using Face = Conway.Face;
 
@@ -43,7 +44,11 @@ public static class PolyMeshBuilder
 		ConwayPoly conway,
 		bool generateSubmeshes,
 		Color[] colors = null,
-		PolyHydraEnums.ColorMethods colorMethod = PolyHydraEnums.ColorMethods.ByRole)
+		PolyHydraEnums.ColorMethods colorMethod = PolyHydraEnums.ColorMethods.ByRole,
+		bool largeMeshFormat = true
+    )
+
+     
 	{
 
 		Vector2 calcUV(Vector3 point, Vector3 xAxis, Vector3 yAxis)
@@ -58,6 +63,10 @@ public static class PolyMeshBuilder
 
 		if (colors == null) colors = DefaultFaceColors;
 		var target = new Mesh();
+		if (largeMeshFormat)
+		{
+			target.indexFormat = IndexFormat.UInt32;
+		}
 		var meshTriangles = new List<int>();
 		var meshVertices = new List<Vector3>();
 		var meshNormals = new List<Vector3>();
