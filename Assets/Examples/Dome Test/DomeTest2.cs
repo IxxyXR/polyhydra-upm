@@ -10,42 +10,38 @@ public class DomeTest2 : MonoBehaviour
     public PolyHydraEnums.GridShapes GridShape;
     [Range(1,40)] public int width = 4;
     [Range(1,40)] public int depth = 3;
-    public Vector3 Position = Vector3.zero;
-    public Vector3 Rotation = Vector3.zero;
-    public Vector3 Scale = Vector3.one;
 
+    [Range(0,1)]public float Jitter;
+    [Range(0,1)]public float Density;
 
-    public bool ApplyOp;
-    public Ops op1;
-    public FaceSelections op1Facesel;
-    public float op1Amount1 = 0;
-    public float op1Amount2 = 0;
-    public bool op1Animate;
-    public FaceSelections domeFaceSel;
     public float DomeHeight = 1f;
     public int DomeSegments = 8;
     [Range(0.001f, 1f)] public float DomeCurve1 = .01f;
     [Range(0.001f, 2f)] public float DomeCurve2 = .01f;
-    public Ops op2;
-    public FaceSelections op2Facesel;
-    public float op2Amount1 = 0;
-    public float op2Amount2 = 0;
-    public bool op2Animate;
     public PolyHydraEnums.ColorMethods ColorMethod;
+    
+    
+    public Color[] Colors =
+    {
+        new Color(1.0f, 0.5f, 0.5f),
+        new Color(0.8f, 0.85f, 0.9f),
+        new Color(0.5f, 0.6f, 0.6f),
+        new Color(1.0f, 0.94f, 0.9f),
+        new Color(0.66f, 0.2f, 0.2f),
+        new Color(0.6f, 0.0f, 0.0f),
+        new Color(1.0f, 1.0f, 1.0f),
+        new Color(0.6f, 0.6f, 0.6f),
+        new Color(0.5f, 1.0f, 0.5f),
+        new Color(0.5f, 0.5f, 1.0f),
+        new Color(0.5f, 1.0f, 1.0f),
+        new Color(1.0f, 0.5f, 1.0f),
+    };
 
     void Start()
     {
         Generate();
     }
-
-    void Update()
-    {
-        if (op1Animate || op2Animate)
-        {
-            Generate();
-        }
-    }
-
+    
     private void OnValidate()
     {
         Generate();
@@ -55,20 +51,19 @@ public class DomeTest2 : MonoBehaviour
     public void Generate()
     {
         var poly = Grids.Grids.MakeGrid(GridType, GridShape, width, depth);
-        if (ApplyOp)
-        {
-            var o1 = new OpParams {valueA = op1Amount1 * Mathf.Abs(op1Animate ? Mathf.Sin(Time.time) : 1), valueB = op1Amount2, facesel = op1Facesel};
-            poly = poly.ApplyOp(op1, o1);
-        }
-        poly = poly.Dome(domeFaceSel, DomeHeight, DomeSegments, DomeCurve1, DomeCurve2);
-        if (ApplyOp)
-        {
-            var o2 = new OpParams {valueA = op2Amount1 * Mathf.Abs(op2Animate ? Mathf.Cos(Time.time * .6f) : 1), valueB = op2Amount2, facesel = op2Facesel};
-            poly = poly.ApplyOp(op2, o2);
-        }
-        //poly = poly.Transform(Position, Rotation, Scale);
-
-        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
+        poly = poly.VertexRotate(new OpParams{valueA = Jitter, randomize = true});
+        var (ground, houses) = poly.Split(new OpParams{filterFunc = x=>Random.value<Density, valueA = .1f});
+        houses = houses.Loft(new OpParams{funcB=x=>Random.Range(.5f, 1.5f)});
+        var (walls, domes) = houses.Split(new OpParams{facesel=FaceSelections.Existing});
+        walls = walls.Loft(new OpParams {facesel = FaceSelections.AllNew, valueA = 0.75f});
+        walls = walls.FaceSlide(new OpParams {valueA = 0.15f, facesel = FaceSelections.Existing});
+        walls = walls.FaceRemove(new OpParams {facesel = FaceSelections.Existing});
+        walls = walls.Shell(0.025f);
+        domes = domes.Dome(FaceSelections.All, DomeHeight, DomeSegments, DomeCurve1, DomeCurve2);
+        
+        walls.Append(ground);
+        walls.Append(domes);
+        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(walls, false, Colors, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;
     }
 

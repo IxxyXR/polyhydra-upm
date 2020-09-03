@@ -1508,5 +1508,12 @@ namespace Conway
 		//
 		// 	return ribbon;
 		// }
+        public (ConwayPoly poly1, ConwayPoly poly2) Split(OpParams o)
+        {
+            
+            var poly1 = _FaceRemove(o);
+            var poly2 = _FaceRemove(o, true);
+            return (poly1, poly2);
+        }
     }
 }

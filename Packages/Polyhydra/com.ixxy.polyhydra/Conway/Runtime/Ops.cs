@@ -46,7 +46,7 @@ namespace Conway
 
         Cross,
         
-        Split,
+        SplitFaces,
         Gable,
 
         Extrude,
