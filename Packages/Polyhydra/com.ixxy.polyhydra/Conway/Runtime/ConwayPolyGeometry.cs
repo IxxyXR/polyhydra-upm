@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace Conway
@@ -1288,6 +1289,29 @@ namespace Conway
             }
 
             return loop;
+        }
+
+        public ConwayPoly Dome(FaceSelections facesel, float height=1f, int segments = 4, float curve1=0.1f, float curve2=0.1f)
+        {
+            
+            // Bit hacky.
+            // Would be better to extend Loft to accept an "interations" param
+            
+            var poly = Duplicate();
+            for (float segmentIndex = 0; segmentIndex <= segments; segmentIndex++)
+            {
+                float i = (float)segmentIndex / segments;
+                poly = poly.Loft(new OpParams
+                {
+                    valueA = 0.001f + (Mathf.Abs(Mathf.Sin(i * Mathf.PI * curve1))*curve2),
+                    // valueB = height/segments,
+                    valueB = (0.001f + (Mathf.Abs(Mathf.Cos(i * Mathf.PI * curve1))*0.05f) * height),
+                    facesel = facesel,
+                });
+                
+                facesel = FaceSelections.Existing;
+            }
+            return poly;
         }
 
         /// <summary>
