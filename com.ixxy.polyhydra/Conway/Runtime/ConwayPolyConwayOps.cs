@@ -3132,7 +3132,7 @@ namespace Conway
             return new ConwayPoly(vertexPoints, faceIndices, faceRoles, vertexRoles, newFaceTags);
         }
 
-        public ConwayPoly Split(OpParams o, int vertexOffset=0)
+        public ConwayPoly SplitFaces(OpParams o, int vertexOffset=0)
         {
             var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
             var tagList = StringToTagList(o.tags);
