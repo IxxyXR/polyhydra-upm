@@ -31,7 +31,7 @@ namespace Conway
         
         public OpParams(
             float a,
-            FaceSelections selection, 
+            FaceSelections selection,
             string selectByTags = "",
             bool randomValues = false 
         )
@@ -58,6 +58,18 @@ namespace Conway
         
         public OpParams(
             float a, float b,
+            string selectByTags = "",
+            bool randomValues = false 
+        )
+        {
+            valueA = a;
+            valueB = b;
+            randomize = randomValues;
+            tags = selectByTags;
+        }
+        
+        public OpParams(
+            float a, float b,
             Func<FilterParams, bool> selection,
             string selectByTags = "",
             bool randomValues = false 
@@ -180,5 +192,6 @@ namespace Conway
             randomize = randomValues;
             tags = selectByTags;
         }
+
     }
 }
