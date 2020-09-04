@@ -1,5 +1,7 @@
-﻿using Conway;
+﻿using System;
+using Conway;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 [ExecuteInEditMode]
@@ -50,9 +52,16 @@ public class DomeTest2 : MonoBehaviour
     [ContextMenu("Generate")]
     public void Generate()
     {
-        var poly = Grids.Grids.MakeGrid(GridType, GridShape, width, depth);
-        poly = poly.VertexRotate(new OpParams{valueA = Jitter, randomize = true});
-        var (ground, houses) = poly.Split(new OpParams{filterFunc = x=>Random.value<Density, valueA = .1f});
+        
+        Func<FilterParams, bool> randomPerFace = x =>
+        {
+            Random.InitState(x.index);
+            return Random.value<Density;
+        };
+
+        var grid = Grids.Grids.MakeGrid(GridType, GridShape, width, depth);
+        grid = grid.VertexRotate(new OpParams{valueA = Jitter, randomize = true});
+        var houses = grid.FaceKeep(new OpParams{filterFunc = randomPerFace, valueA = .1f});
         houses = houses.Loft(new OpParams{funcB=x=>Random.Range(.5f, 1.5f)});
         var (walls, domes) = houses.Split(new OpParams{facesel=FaceSelections.Existing});
         walls = walls.Loft(new OpParams {facesel = FaceSelections.AllNew, valueA = 0.75f});
@@ -60,7 +69,11 @@ public class DomeTest2 : MonoBehaviour
         walls = walls.FaceRemove(new OpParams {facesel = FaceSelections.Existing});
         walls = walls.Shell(0.025f);
         domes = domes.Dome(FaceSelections.All, DomeHeight, DomeSegments, DomeCurve1, DomeCurve2);
-        
+
+        var ground = grid.Dual();
+        ground = ground.Bevel(new OpParams {valueA = 0.25f});
+        ground = ground.Medial(new OpParams {valueA = 3f});
+        // walls.Append(grid);
         walls.Append(ground);
         walls.Append(domes);
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(walls, false, Colors, ColorMethod);

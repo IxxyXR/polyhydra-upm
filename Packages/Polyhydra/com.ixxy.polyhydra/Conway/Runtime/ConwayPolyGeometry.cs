@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace Conway
@@ -524,6 +523,96 @@ namespace Conway
             newPoly.VertexRoles = vertexRoles;
             newPoly.FaceTags = newFaceTags;
             return newPoly;
+        }
+        
+
+        public (ConwayPoly newPoly1, ConwayPoly newPoly2) Split(OpParams o)
+        {
+            
+            // Essentially the same code as _FaceRemove but we keep both polys
+            // Both methods could probably be combined into a single one
+            // but it didn't seem worth the extra complexity
+            // Of course - you could just do:
+            // var poly1 = _FaceRemove(o);
+            // var poly2 = _FaceRemove(o, true);
+            // return (poly1, poly2);
+            // But that's slower - especially on complex polys.
+            
+            var tagList = StringToTagList(o.tags);
+            var existingFaceIndices = ListFacesByVertexIndices();
+            var existingFaceRoles = new Dictionary<Vector3, Roles>();
+            var existingVertexRoles = new Dictionary<Vector3, Roles>();
+
+            var newPoly1 = Duplicate();
+            var faceList1 = new List<Face>();
+            var faceRoles1 = new List<Roles>();
+            var vertexRoles1 = new List<Roles>();
+            var newFaceTags1 = new List<HashSet<Tuple<string, TagType>>>();
+
+            var newPoly2 = Duplicate();
+            var faceList2 = new List<Face>();
+            var faceRoles2 = new List<Roles>();
+            var vertexRoles2 = new List<Roles>();
+            var newFaceTags2 = new List<HashSet<Tuple<string, TagType>>>();
+            
+            for (int faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
+            {
+                var face = Faces[faceIndex];
+                existingFaceRoles[face.Centroid] = FaceRoles[faceIndex];
+                var verts = face.GetVertices();
+                for (var vertIndex = 0; vertIndex < verts.Count; vertIndex++)
+                {
+                    var vert = verts[vertIndex];
+                    existingVertexRoles[vert.Position] = VertexRoles[existingFaceIndices[faceIndex][vertIndex]];
+                }
+                
+                if (IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc))
+                {
+                    faceList1.Add(newPoly1.Faces[faceIndex]);
+                }
+                else
+                {
+                    faceList2.Add(newPoly2.Faces[faceIndex]);
+                }
+            }
+
+            foreach (var t in faceList1) newPoly1.Faces.Remove(t);
+            newPoly1.CullUnusedVertices();
+
+            foreach (var t in faceList2) newPoly2.Faces.Remove(t);
+            newPoly2.CullUnusedVertices();
+            
+            for (var faceIndex = 0; faceIndex < newPoly1.Faces.Count; faceIndex++)
+            {
+                faceRoles1.Add(existingFaceRoles[newPoly1.Faces[faceIndex].Centroid]);
+                newFaceTags1.Add(FaceTags[faceIndex]);
+            }
+            newPoly1.FaceRoles = faceRoles1;
+
+            for (var faceIndex = 0; faceIndex < newPoly2.Faces.Count; faceIndex++)
+            {
+                faceRoles2.Add(existingFaceRoles[newPoly2.Faces[faceIndex].Centroid]);
+                newFaceTags2.Add(FaceTags[faceIndex]);
+            }
+            newPoly2.FaceRoles = faceRoles2;
+            
+            for (var i = 0; i < newPoly1.Vertices.Count; i++)
+            {
+                var vert = newPoly1.Vertices[i];
+                vertexRoles1.Add(existingVertexRoles[vert.Position]);
+            }
+            newPoly1.VertexRoles = vertexRoles1;
+            newPoly1.FaceTags = newFaceTags1;
+            
+            for (var i = 0; i < newPoly2.Vertices.Count; i++)
+            {
+                var vert = newPoly2.Vertices[i];
+                vertexRoles2.Add(existingVertexRoles[vert.Position]);
+            }
+            newPoly2.VertexRoles = vertexRoles2;
+            newPoly2.FaceTags = newFaceTags2;
+
+            return (newPoly1, newPoly2);
         }
 
         /// <summary>
@@ -1508,12 +1597,5 @@ namespace Conway
 		//
 		// 	return ribbon;
 		// }
-        public (ConwayPoly poly1, ConwayPoly poly2) Split(OpParams o)
-        {
-            
-            var poly1 = _FaceRemove(o);
-            var poly2 = _FaceRemove(o, true);
-            return (poly1, poly2);
-        }
     }
 }
