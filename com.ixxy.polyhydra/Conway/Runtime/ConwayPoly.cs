@@ -853,6 +853,16 @@ namespace Conway
 
 		}
 
+		public void SetFaceRoles(Roles role)
+		{
+			FaceRoles = Enumerable.Repeat(role, Faces.Count).ToList();
+		}
+		
+		public void SetVertexRoles(Roles role)
+		{
+			VertexRoles = Enumerable.Repeat(role, Vertices.Count).ToList();
+		}
+		
 		#endregion General Methods
 
 	}

@@ -69,10 +69,13 @@ namespace Conway
             return original;
         }
 
-        public ConwayPoly Transform(Vector3 pos, Vector3 rot, Vector3 scale)
+        public ConwayPoly Transform(Vector3 pos, Vector3? rot=null, Vector3? scale=null)
         {
-            var qrot = Quaternion.Euler(rot.x, rot.y, rot.z);
-            var matrix = Matrix4x4.TRS(pos, qrot, scale);
+            var matrix = Matrix4x4.TRS(
+                pos, 
+                Quaternion.Euler(rot ?? Vector3.zero), 
+                scale ?? Vector3.one
+            );
 
             var copy = Duplicate();
             for (var i = 0; i < copy.Vertices.Count; i++)
