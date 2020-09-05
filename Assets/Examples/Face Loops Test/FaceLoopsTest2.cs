@@ -38,7 +38,7 @@ public class FaceLoopsTest2 : MonoBehaviour
     public FaceSelections op2Facesel;
     public float op2Amount1 = 0;
     public float op2Amount2 = 0;
-    public bool Canonicalize;    
+    public bool Canonicalize;
     public Vector3 Position = Vector3.zero;
     public Vector3 Rotation = Vector3.zero;
     public Vector3 Scale = Vector3.one;

@@ -288,8 +288,6 @@ namespace Conway
 
         public ConwayPoly Truncate(OpParams o)
         {
-            var tagList = StringToTagList(o.tags);
-
             int GetVertID(Vertex v)
             {
                 return Vertices.FindIndex(a => a == v);
@@ -313,7 +311,7 @@ namespace Conway
             {
                 float amount = o.GetValueA(this, vertexIndex);
                 var v = Vertices[vertexIndex];
-                if (IncludeVertex(vertexIndex, o.facesel, tagList, o.filterFunc))
+                if (IncludeVertex(vertexIndex, o.facesel, o.GetTagList(), o.filterFunc))
                 {
                     foreach (var edge in v.Halfedges)
                     {
@@ -364,7 +362,7 @@ namespace Conway
                         pos2 = faceEdges[ActualMod((i + 1), faceEdges.Count)].PointAlongEdge(1 - amount);
                     }
 
-                    if (IncludeVertex(GetVertID(edge.Vertex), o.facesel, tagList, o.filterFunc))
+                    if (IncludeVertex(GetVertID(edge.Vertex), o.facesel, o.GetTagList(), o.filterFunc))
                     {
                         centerFace.Add(newVerts[pos1]);
                         centerFace.Add(newVerts[pos2]);
@@ -389,7 +387,7 @@ namespace Conway
                 float amount = o.GetValueA(this, vertexIndex);
 
                 var vertex = Vertices[vertexIndex];
-                if (!IncludeVertex(GetVertID(vertex), o.facesel, tagList, o.filterFunc)) continue;
+                if (!IncludeVertex(GetVertID(vertex), o.facesel, o.GetTagList(), o.filterFunc)) continue;
                 bool boundary = false;
                 var edges = vertex.Halfedges;
 
@@ -1032,7 +1030,6 @@ namespace Conway
         public ConwayPoly Kis(OpParams o, List<int> selectedFaces = null, bool scalebyArea = false)
         {
             var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
-            var tagList = StringToTagList(o.tags);
             // vertices and faces to vertices
             var vertexRoles = Enumerable.Repeat(Roles.Existing, Vertices.Count).ToList();
             List<Vector3> vertexPoints = Vertices.Select(v => v.Position).ToList();
@@ -1053,7 +1050,7 @@ namespace Conway
             {
                 var prevFaceTagSet = FaceTags[faceIndex];
                 bool includeFace = selectedFaces == null || selectedFaces.Contains(faceIndex);
-                includeFace &= IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc);
+                includeFace &= IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc);
                 if (includeFace)
                 {
                     var face = Faces[faceIndex];
@@ -1390,28 +1387,10 @@ namespace Conway
 
             return new ConwayPoly(vertexPoints, faceIndices, faceRoles, vertexRoles, newFaceTags);
         }
-
-        private static IEnumerable<Tuple<string, TagType>> StringToTagList(string tagString, bool extrovertOnly = false)
-        {
-            var tagList = new List<Tuple<string, TagType>>();
-            if (tagString != null && tagString != "")
-            {
-                var substrings = tagString.Split(',');
-                if (substrings.Length == 0) substrings = new[] {tagString};
-                tagList = substrings.Select(item => new Tuple<string, TagType>(item, TagType.Extrovert)).ToList();
-                if (!extrovertOnly)
-                {
-                    tagList.Concat(substrings.Select(item => new Tuple<string, TagType>(item, TagType.Introvert)));
-                }
-            }
-
-            return tagList;
-        }
-
+        
         public ConwayPoly Loft(OpParams o)
         {
             var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
-            var tagList = StringToTagList(o.tags);
             var faceIndices = new List<int[]>();
             var vertexPoints = new List<Vector3>();
             var existingVertices = new Dictionary<Vector3, int>();
@@ -1438,7 +1417,7 @@ namespace Conway
                 var face = Faces[faceIndex];
                 var offsetVector = face.Normal * (float) (offset * (o.randomize ? random.NextDouble() : 1));
 
-                if (IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc))
+                if (IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc))
                 {
                     var edge = face.Halfedge;
                     var centroid = face.Centroid;
@@ -1663,7 +1642,6 @@ namespace Conway
         {
             var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
 
-            var tagList = StringToTagList(o.tags);
             var faceIndices = new List<int[]>();
             var vertexPoints = new List<Vector3>();
             var existingVertices = new Dictionary<Vector3, int>();
@@ -1691,7 +1669,7 @@ namespace Conway
                 var face = Faces[faceIndex];
                 var offsetVal = (float) (offset * (o.randomize ? random.NextDouble() : 1));
                 var offsetVector = face.Normal * offsetVal;
-                if (joined || opposite || IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc))
+                if (joined || opposite || IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc))
                 {
                     var edge = face.Halfedge;
                     var centroid = face.Centroid;
@@ -1846,7 +1824,6 @@ namespace Conway
         {
             var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
 
-            var tagList = StringToTagList(o.tags);
             var faceIndices = new List<int[]>();
             var vertexPoints = new List<Vector3>();
             var existingVertices = new Dictionary<Vector3, int>();
@@ -1870,7 +1847,7 @@ namespace Conway
                 float ratio = o.GetValueA(this, faceIndex);
                 var prevFaceTagSet = FaceTags[faceIndex];
                 var face = Faces[faceIndex];
-                if (join || IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc))
+                if (join || IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc))
                 {
                     var edge = face.Halfedge;
                     var centroid = face.Centroid;
@@ -3031,7 +3008,6 @@ namespace Conway
         public ConwayPoly Gable(OpParams o, int edgeOffset=0)
         {
             var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
-            var tagList = StringToTagList(o.tags);
             // vertices and faces to vertices
             var vertexRoles = Enumerable.Repeat(Roles.Existing, Vertices.Count).ToList();
             List<Vector3> vertexPoints = Vertices.Select(v => v.Position).ToList();
@@ -3051,7 +3027,7 @@ namespace Conway
             for (int faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
             {
                 var prevFaceTagSet = FaceTags[faceIndex];
-                bool includeFace = IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc);
+                bool includeFace = IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc);
                 var face = Faces[faceIndex];
                 if (includeFace && face.Sides % 2 == 0)  // Only even sided faces
                 {
@@ -3135,7 +3111,6 @@ namespace Conway
         public ConwayPoly SplitFaces(OpParams o, int vertexOffset=0)
         {
             var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
-            var tagList = StringToTagList(o.tags);
             // vertices and faces to vertices
             var vertexRoles = Enumerable.Repeat(Roles.Existing, Vertices.Count).ToList();
             List<Vector3> vertexPoints = Vertices.Select(v => v.Position).ToList();
@@ -3157,7 +3132,7 @@ namespace Conway
                 var edges = face.GetHalfedges();
                 int oppositeVertexIndex = (vertexOffset + (face.Sides / 2) % face.Sides);
                 var prevFaceTagSet = FaceTags[faceIndex];
-                bool includeFace = IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc);
+                bool includeFace = IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc);
                 if (includeFace && face.Sides % 2 == 0 )  // Only even sided faces > 4
                 {
                     var newFace1 = new List<int>();

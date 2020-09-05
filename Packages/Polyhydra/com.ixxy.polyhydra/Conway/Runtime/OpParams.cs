@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.UIElements.Experimental;
 
 namespace Conway
@@ -17,6 +19,7 @@ namespace Conway
         public float GetValueA(ConwayPoly poly, int index) => funcA?.Invoke(new FilterParams(poly, index)) ?? valueA;
         public float GetValueB(ConwayPoly poly, int index) => funcB?.Invoke(new FilterParams(poly, index)) ?? valueB;
 
+        private List<Tuple<string, ConwayPoly.TagType>> _tagList;
 
         public OpParams(
             FaceSelections selection, 
@@ -193,5 +196,31 @@ namespace Conway
             tags = selectByTags;
         }
 
+        public List<Tuple<string, ConwayPoly.TagType>> GetTagList(bool extrovertOnly=false)
+        {
+            if (_tagList == null)
+            {
+                _tagList = GetTagList(tags);
+            }
+
+            return _tagList;
+        }
+
+        public static List<Tuple<string, ConwayPoly.TagType>> GetTagList(string tagString, bool extrovertOnly=false)
+        {
+            var tagList = new List<Tuple<string, ConwayPoly.TagType>>();
+            if (!string.IsNullOrEmpty(tagString))
+            {
+                var substrings = tagString.Split(',');
+                if (substrings.Length == 0) substrings = new[] {tagString};
+                tagList = substrings.Select(item => new Tuple<string, ConwayPoly.TagType>(item, ConwayPoly.TagType.Extrovert)).ToList();
+                if (!extrovertOnly)
+                {
+                    tagList.Concat(substrings.Select(item => new Tuple<string, ConwayPoly.TagType>(item, ConwayPoly.TagType.Introvert)));
+                }
+            }
+
+            return tagList;
+        }
     }
 }
