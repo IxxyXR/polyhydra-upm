@@ -11,9 +11,10 @@ using UnityEditor;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class FaceLoopsTest3 : MonoBehaviour
 {
-    public PolyHydraEnums.ColorMethods ColorMethod;
+    public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
     [Range(3, 32)] public int sides=5;
     [Range(0, 32)] public int splits;
+    public PolyHydraEnums.ColorMethods ColorMethod;
     
     public bool ApplyOp;
     public Ops op1;
@@ -45,7 +46,7 @@ public class FaceLoopsTest3 : MonoBehaviour
     [ContextMenu("Generate")]
     public void Generate()
     {
-        poly = JohnsonPoly.Prism(sides);
+        poly = JohnsonPoly.Build(JohnsonPolyType, sides);
 
         
         // if (ApplyOp)
@@ -56,7 +57,10 @@ public class FaceLoopsTest3 : MonoBehaviour
         for (int i = 0; i < splits; i++)
         {
             face = poly.GetFace(new OpParams(FaceSelections.FourSided), 0);
-            poly = poly.SplitLoop(poly.GetFaceLoop(face.GetHalfedges()[0]));
+            if (face != null)
+            {
+                poly = poly.SplitLoop(poly.GetFaceLoop(face.GetHalfedges()[0]));
+            }
         }
         
         if (ApplyOp)
