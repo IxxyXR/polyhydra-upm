@@ -29,6 +29,7 @@ public static class PolyHydraEnums
 		Uniform,
 		Grid,
 		Johnson,
+		// Waterman, TODO
 		Other
 	}
 
@@ -434,7 +435,26 @@ public static class PolyHydraEnums
 				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f
 			}
 		},
-
+		{
+			Ops.SplitFaces,
+			new OpConfig
+			{
+				usesFaces = true,
+				usesAmount = false,
+			}
+		},
+		{
+			Ops.Gable,
+			new OpConfig
+			{
+				usesFaces = true,
+				amountDefault = 0.5f,
+				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
+				usesAmount2 = true,
+				amount2Min = -3, amount2Max = 3, amount2SafeMin = -0.5f, amount2SafeMax = 1,
+				usesRandomize = true
+			}
+		},
 		{
 			Ops.FaceOffset,
 			new OpConfig
@@ -548,7 +568,16 @@ public static class PolyHydraEnums
 //			{Ops.FaceRotateY, new OpConfig{usesFaces=true, amountDefault=0.1f, amountMin=-180, amountMax=180}},
 		{Ops.FaceRemove, new OpConfig {usesFaces = true, usesAmount = false}},
 		{Ops.FillHoles, new OpConfig {usesAmount = false}},
-		{Ops.ExtendBoundaries, new OpConfig {}},
+		{
+			Ops.ExtendBoundaries,
+			new OpConfig
+			{
+				amountDefault = 0.5f,
+				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
+				usesAmount2 = true,
+				amount2Min = -3, amount2Max = 3, amount2SafeMin = -0.5f, amount2SafeMax = 1,
+			}
+		},
 		{Ops.FaceMerge, new OpConfig {usesFaces = true, usesAmount = false}},
 		{Ops.FaceKeep, new OpConfig {usesFaces = true, usesAmount = false}},
 		{Ops.VertexRemove, new OpConfig {usesFaces = true, usesAmount = false}},
