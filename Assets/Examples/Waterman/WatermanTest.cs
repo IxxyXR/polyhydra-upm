@@ -12,7 +12,6 @@ public class WatermanTest : MonoBehaviour
     public int root = 2;
     [Range(0, 6)]
     public int c = 0;
-    public bool TriangularFaces = false;
 
     public bool ApplyOps;
     public Ops op1;
@@ -33,6 +32,22 @@ public class WatermanTest : MonoBehaviour
 
     private ConwayPoly poly;
     
+    public Color[] Colors =
+    {
+        new Color(1.0f, 0.5f, 0.5f),
+        new Color(0.8f, 0.85f, 0.9f),
+        new Color(0.5f, 0.6f, 0.6f),
+        new Color(1.0f, 0.94f, 0.9f),
+        new Color(0.66f, 0.2f, 0.2f),
+        new Color(0.6f, 0.0f, 0.0f),
+        new Color(1.0f, 1.0f, 1.0f),
+        new Color(0.6f, 0.6f, 0.6f),
+        new Color(0.5f, 1.0f, 0.5f),
+        new Color(0.5f, 0.5f, 1.0f),
+        new Color(0.5f, 1.0f, 1.0f),
+        new Color(1.0f, 0.5f, 1.0f),
+    };
+    
     void Start()
     {
         Generate();
@@ -46,7 +61,7 @@ public class WatermanTest : MonoBehaviour
     [ContextMenu("Generate")]
     public void Generate()
     {
-         poly = WatermanPoly.Build(1f, root, c, TriangularFaces);
+         poly = WatermanPoly.Build(1f, root, c);
 
         if (ApplyOps)
         {
@@ -63,7 +78,7 @@ public class WatermanTest : MonoBehaviour
 
         poly = poly.Transform(Position, Rotation, Scale);
         
-        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
+        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, Colors, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;
     }
 

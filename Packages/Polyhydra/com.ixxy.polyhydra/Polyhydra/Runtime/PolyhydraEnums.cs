@@ -558,9 +558,9 @@ public static class PolyHydraEnums
 			{
 				usesFaces = true,
 				amountDefault = 0.5f,
-				amountMin = -4, amountMax = 4, amountSafeMin = -1, amountSafeMax = 1,
+				amountMin = -4, amountMax = 4, amountSafeMin = -1f, amountSafeMax = 1f,
 				usesAmount2 = true,
-				amount2Min = -3f, amount2Max = 3f, amount2SafeMin = -1f, amount2SafeMax = 1f,
+				amount2Min = -4f, amount2Max = 4f, amount2SafeMin = -2f, amount2SafeMax = 2f,
 				usesRandomize = true
 			}
 		},
@@ -573,9 +573,9 @@ public static class PolyHydraEnums
 			new OpConfig
 			{
 				amountDefault = 0.5f,
-				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
+				amountMin = -4, amountMax = 4, amountSafeMin = -1f, amountSafeMax = 1f,
 				usesAmount2 = true,
-				amount2Min = -3, amount2Max = 3, amount2SafeMin = -0.5f, amount2SafeMax = 1,
+				amount2Min = -180, amount2Max = 180, amount2SafeMin = -100f, amount2SafeMax = 100,
 			}
 		},
 		{Ops.FaceMerge, new OpConfig {usesFaces = true, usesAmount = false}},

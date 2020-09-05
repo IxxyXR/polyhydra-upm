@@ -10,7 +10,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Conway;
-using GK;
 using UnityEngine;
 
 namespace Johnson
@@ -86,7 +85,7 @@ namespace Johnson
 			float scale = (float) (R / radius);
 			int IR = (int) (radius + 1);
 
-			var points = new List<Vector3>();
+			var points = new List<double>();
 			float R2x, R2y, R2;
 			for (int i = -IR; i <= IR; i++)
 			{
@@ -111,45 +110,25 @@ namespace Johnson
 							R2 = R2y + (k - center.z) * (k - center.z);
 							if (R2 <= radius2 && R2 > radius2 - 400)
 							{
-								points.Add(new Vector3(i, j, k) * scale);
+								var scaledVector = new Vector3(i, j, k) * scale;
+								points.AddRange(new[]{(double)scaledVector.x, (double)scaledVector.y, (double)scaledVector.z});
 							}
 						}
 					}
 				}
 			}
 			
-			var calc = new ConvexHullCalculator();
 			var verts = new List<Vector3>();
-			var tris = new List<int[]>();
-			var normals = new List<Vector3>();
-
+			var faces = new List<int[]>();
 			
-			if (points.Count >= 4)
-			{
-				calc.GenerateHull(points, true, ref verts, ref tris, ref normals);
-				var faceRoles = Enumerable.Repeat(ConwayPoly.Roles.New, tris.Count);
-				var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, verts.Count);
-				conway = new ConwayPoly(verts, tris, faceRoles, vertexRoles);
-				conway = conway.Weld(0.01f);
-				if (!triangularFaces)
-				{
-					conway = conway.MergeCoplanarFaces(0.1f, 1000);
-					conway.FaceRoles = Enumerable.Repeat(ConwayPoly.Roles.New, conway.Faces.Count).ToList();
-					conway.VertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, conway.Vertices.Count).ToList();
-				}
-			}
-			else if (points.Count == 3)
-			{
-				var faces = new List<List<int>>();
-				faces.Add(new List<int>{0, 1, 2});
-				var faceRoles = Enumerable.Repeat(ConwayPoly.Roles.New, 1);
-				var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, 3);
-				conway = new ConwayPoly(verts, faces, faceRoles, vertexRoles);
-			}
-			else
-			{
-				conway = new ConwayPoly();
-			}
+			var hull = new QuickHull3D.Hull();
+			hull.Build(points.ToArray(), points.Count / 3);
+			verts = hull.GetVertices().Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList();
+			faces = hull.GetFaces().ToList();
+			var faceRoles = Enumerable.Repeat(ConwayPoly.Roles.New, faces.Count);
+			var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, verts.Count);
+			conway = new ConwayPoly(verts, faces, faceRoles, vertexRoles);
+			
 			return conway;
 		}
 	}
