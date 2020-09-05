@@ -22,8 +22,9 @@ namespace Conway
             {
                 InitTags();
             }
+            
+            var tagList = OpParams.GetTagList(tags);
 
-            var tagList = StringToTagList(tags, true);
             for (var i = 0; i < Faces.Count; i++)
             {
                 if (IncludeFace(i, facesel, null, filter))

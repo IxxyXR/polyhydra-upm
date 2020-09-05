@@ -865,5 +865,27 @@ namespace Conway
 		
 		#endregion General Methods
 
+		public List<Face> GetFaces(OpParams o, int limit=-1)
+		{
+			var matchedFaces = new List<Face>();
+			for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
+			{
+				var face = Faces[faceIndex];
+				if (IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc))
+				{
+					matchedFaces.Add(face);
+				}
+				
+				if (limit!=-1 && matchedFaces.Count >= limit) break;
+			}
+
+			return matchedFaces;
+		}
+
+		public Face GetFace(OpParams o, int index)
+		{
+			var faces = GetFaces(o, index - 1);
+			return index < faces.Count ? faces[index] : null;
+		}
 	}
 }

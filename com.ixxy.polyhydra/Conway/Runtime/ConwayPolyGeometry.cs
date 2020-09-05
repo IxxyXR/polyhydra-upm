@@ -170,12 +170,11 @@ namespace Conway
 
         public ConwayPoly FaceSlide(OpParams o)
         {
-            var tagList = StringToTagList(o.tags);
             var poly = Duplicate();
             for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
             {
                 var face = poly.Faces[faceIndex];
-                if (!IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc)) continue;
+                if (!IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc)) continue;
                 var faceNormal = face.Normal;
                 //var amount = amount * (float) (randomize ? random.NextDouble() : 1);
                 var faceVerts = face.GetVertices();
@@ -221,7 +220,6 @@ namespace Conway
 
         public ConwayPoly VertexScale(OpParams o)
         {
-            var tagList = StringToTagList(o.tags);
             var vertexPoints = new List<Vector3>();
             var faceIndices = ListFacesByVertexIndices();
 
@@ -230,7 +228,7 @@ namespace Conway
                 float scale = o.GetValueA(this, vertexIndex);
                 var _scale = scale * (o.randomize ? random.NextDouble() : 1) + 1;
                 var vertex = Vertices[vertexIndex];
-                var includeVertex = IncludeVertex(vertexIndex, o.facesel, tagList, o.filterFunc);
+                var includeVertex = IncludeVertex(vertexIndex, o.facesel, o.GetTagList(), o.filterFunc);
                 vertexPoints.Add(includeVertex ? vertex.Position * (float) _scale : vertex.Position);
             }
 
@@ -239,12 +237,11 @@ namespace Conway
 
         public ConwayPoly VertexFlex(OpParams o)
         {
-            var tagList = StringToTagList(o.tags);
             var poly = Duplicate();
             for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
             {
                 var face = poly.Faces[faceIndex];
-                if (!IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc)) continue;
+                if (!IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc)) continue;
                 var faceCentroid = face.Centroid;
                 var faceVerts = face.GetVertices();
                 for (var vertexIndex = 0; vertexIndex < faceVerts.Count; vertexIndex++)
@@ -262,13 +259,12 @@ namespace Conway
 
         public ConwayPoly VertexRotate(OpParams o)
         {
-            var tagList = StringToTagList(o.tags);
             var poly = Duplicate();
             for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
             {
                 float amount = o.GetValueA(this, faceIndex);
                 var face = poly.Faces[faceIndex];
-                if (!IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc)) continue;
+                if (!IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc)) continue;
                 var faceCentroid = face.Centroid;
                 var direction = face.Normal;
                 amount = amount * (float) (o.randomize ? random.NextDouble() : 1);
@@ -288,7 +284,6 @@ namespace Conway
 
         public ConwayPoly FaceScale(OpParams o)
         {
-            var tagList = StringToTagList(o.tags);
             var vertexPoints = new List<Vector3>();
             var faceIndices = new List<IEnumerable<int>>();
 
@@ -300,7 +295,7 @@ namespace Conway
                 float scale = o.GetValueA(this, faceIndex);
                 var _scale = scale * (o.randomize ? random.NextDouble() : 1) + 1;
                 var face = Faces[faceIndex];
-                var includeFace = IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc);
+                var includeFace = IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc);
                 int c = vertexPoints.Count;
 
                 vertexPoints.AddRange(face.GetVertices()
@@ -323,7 +318,6 @@ namespace Conway
 
         public ConwayPoly FaceRotate(OpParams o, int axis = 1)
         {
-            var tagList = StringToTagList(o.tags);
             var vertexPoints = new List<Vector3>();
             var faceIndices = new List<IEnumerable<int>>();
 
@@ -338,7 +332,7 @@ namespace Conway
                 amount = amount * (float) (o.randomize ? random.NextDouble() : 1);
                 var _angle = (360f / face.Sides) * amount;
 
-                var includeFace = IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc);
+                var includeFace = IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc);
 
                 int c = vertexPoints.Count;
                 var faceVertices = new List<int>();
@@ -381,7 +375,6 @@ namespace Conway
 
         public ConwayPoly VertexRemove(OpParams o, bool invertLogic)
         {
-            var tagList = StringToTagList(o.tags);
             var allFaceIndices = new List<List<int>>();
             var faceRoles = new List<Roles>();
             var vertexRoles = new List<Roles>();
@@ -396,7 +389,7 @@ namespace Conway
                 for (var idx = 0; idx < oldFaceIndices.Count; idx++)
                 {
                     var vertexIndex = oldFaceIndices[idx];
-                    bool keep = IncludeVertex(vertexIndex, o.facesel, tagList, o.filterFunc);
+                    bool keep = IncludeVertex(vertexIndex, o.facesel, o.GetTagList(), o.filterFunc);
                     keep = invertLogic ? !keep : keep;
                     if (!keep)
                     {
@@ -467,7 +460,6 @@ namespace Conway
 
         public ConwayPoly _FaceRemove(OpParams o, bool invertLogic = false)
         {
-            var tagList = StringToTagList(o.tags);
             var faceRoles = new List<Roles>();
             var vertexRoles = new List<Roles>();
             var facesToRemove = new List<Face>();
@@ -480,7 +472,7 @@ namespace Conway
             {
                 var face = Faces[faceIndex];
                 bool removeFace;
-                removeFace = IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc);
+                removeFace = IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc);
                 removeFace = invertLogic ? !removeFace : removeFace;
                 if (removeFace)
                 {
@@ -541,7 +533,6 @@ namespace Conway
             // return (poly1, poly2);
             // But that's slower - especially on complex polys.
             
-            var tagList = StringToTagList(o.tags);
             var existingFaceIndices = ListFacesByVertexIndices();
             var existingFaceRoles = new Dictionary<Vector3, Roles>();
             var existingVertexRoles = new Dictionary<Vector3, Roles>();
@@ -569,7 +560,7 @@ namespace Conway
                     existingVertexRoles[vert.Position] = VertexRoles[existingFaceIndices[faceIndex][vertIndex]];
                 }
                 
-                if (IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc))
+                if (IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc))
                 {
                     faceList1.Add(newPoly1.Faces[faceIndex]);
                 }
@@ -633,14 +624,13 @@ namespace Conway
         {
             // This will only work if the faces are split and don't share vertices
 
-            var tagList = StringToTagList(o.tags);
             var offsetList = new List<float>();
 
             for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
             {
                 float offset = o.GetValueA(this, faceIndex);
                 if (o.randomize) offset = (float) random.NextDouble() * offset;
-                var vertexOffset = IncludeFace(faceIndex, o.facesel, tagList, o.filterFunc) ? offset : 0;
+                var vertexOffset = IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc) ? offset : 0;
                 for (var i = 0; i < Faces[faceIndex].GetVertices().Count; i++)
                 {
                     offsetList.Add(vertexOffset);
@@ -902,9 +892,9 @@ namespace Conway
         public ConwayPoly AppendMany(ConwayPoly stashed, FaceSelections facesel, string tags = "", float scale = 1,
             float angle = 0, float offset = 0, bool toFaces = true, Func<FilterParams, bool> filter = null)
         {
-            var tagList = StringToTagList(tags);
             var result = Duplicate();
 
+            var tagList = OpParams.GetTagList(tags);
             if (toFaces)
             {
                 for (var i = 0; i < Faces.Count; i++)

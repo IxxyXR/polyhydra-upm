@@ -354,8 +354,6 @@ namespace Conway
         {
             // TODO - preserve planar faces
 
-            var tagList = StringToTagList(o.tags);
-
             var vertexPoints = new List<Vector3>();
             var faceIndices = ListFacesByVertexIndices();
 
@@ -363,7 +361,7 @@ namespace Conway
             {
                 float amount = o.GetValueA(this, vertexIndex);
                 var vertex = Vertices[vertexIndex];
-                if (IncludeVertex(vertexIndex, o.facesel, tagList, o.filterFunc))
+                if (IncludeVertex(vertexIndex, o.facesel, o.GetTagList(), o.filterFunc))
                 {
                     vertexPoints.Add(Vector3.LerpUnclamped(vertex.Position, vertex.Position.normalized, amount));
                     VertexRoles[vertexIndex] = Roles.Existing;
