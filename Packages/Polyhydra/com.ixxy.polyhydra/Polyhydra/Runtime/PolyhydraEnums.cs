@@ -29,7 +29,7 @@ public static class PolyHydraEnums
 		Uniform,
 		Grid,
 		Johnson,
-		// Waterman, TODO
+		Waterman,
 		Other
 	}
 
