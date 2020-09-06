@@ -9,8 +9,6 @@
 		"email": "andy@ixxy.co.uk",
 		"url": "http://www.polyhydra.org.uk"
 	},
-	"dependencies": {
-	},
-	"scopedRegistries": [
-	]
+	"dependencies": {},
+	"scopedRegistries": []
 }
