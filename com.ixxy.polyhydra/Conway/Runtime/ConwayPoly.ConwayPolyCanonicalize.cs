@@ -301,55 +301,6 @@ namespace Conway
             return canonicalized;
         }
 
-        public ConwayPoly Hinge(float amount)
-        {
-            // Rotate singly connected faces around the connected edge
-            foreach (Face f in Faces)
-            {
-                Halfedge hinge = null;
-
-                // Find a single connected edge
-                foreach (Halfedge e in f.GetHalfedges())
-                {
-                    if (e.Pair != null) // This edge is connected
-                    {
-                        if (hinge == null) // Our first connected edge
-                        {
-                            // Record the first connected edge and keep looking
-                            hinge = e;
-                        }
-                        else // We already found a hinge for this face
-                        {
-                            // Therefore this Face has more than 1 connected edge
-                            hinge = null;
-                            break;
-                        }
-                    }
-                }
-
-                if (hinge != null) // We found a single hinge for this face
-                {
-                    Vector3 axis = hinge.Vector;
-                    Quaternion rotation = Quaternion.AngleAxis(amount, axis);
-
-                    var vs = f.GetVertices();
-                    for (var i = 0; i < vs.Count; i++)
-                    {
-                        Vertex v = vs[i];
-                        // Only rotate vertices that aren't part of the hinge
-                        if (v != hinge.Vertex && v != hinge.Pair.Vertex)
-                        {
-                            v.Position -= hinge.Vertex.Position;
-                            v.Position = rotation * v.Position;
-                            v.Position += hinge.Vertex.Position;
-                        }
-                    }
-                }
-            }
-
-            return this;
-        }
-
         public ConwayPoly Spherize(OpParams o)
         {
             // TODO - preserve planar faces

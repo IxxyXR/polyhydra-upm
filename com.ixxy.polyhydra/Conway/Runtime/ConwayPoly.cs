@@ -818,6 +818,9 @@ namespace Conway
 				case Ops.Canonicalize:
 					polyResult = Canonicalize(0.1f, 0.1f);
 					break;
+				case Ops.ConvexHull:
+					polyResult = ConvexHull();
+					break;
 				case Ops.Spherize:
 					polyResult = Spherize(opParams);
 					break;
