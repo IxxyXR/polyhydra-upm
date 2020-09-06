@@ -58,7 +58,7 @@ namespace QuickHull3D
         /// Constructs a vertex with the specified coordinates
         /// and index.
         /// </summary>
-        public Vertex(double x, double y, double z, int idx)
+        public Vertex(float x, float y, float z, int idx)
         {
             Point = new Point3d(x, y, z);
             Index = idx;

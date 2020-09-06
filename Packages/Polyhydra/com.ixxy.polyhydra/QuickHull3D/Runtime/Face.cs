@@ -12,8 +12,9 @@
  */
 
 using System;
+using UnityEngine;
 
-namespace QuickHull3D
+ namespace QuickHull3D
 {
     /// <summary>
     /// Basic triangular face used to form the hull.
@@ -33,7 +34,7 @@ namespace QuickHull3D
         /// The normal of the plane associated with this face.
         /// </summary>
         public Vector3d Normal { get; private set; }
-        public double Area { get; private set; }
+        public float Area { get; private set; }
         public Point3d Centroid { get; private set; }
         public Face Next { get; set; }
         public int Mark { get; set; } = VISIBLE;
@@ -41,14 +42,14 @@ namespace QuickHull3D
         public int VertexCount { get; private set; }
 
 
-        private double planeOffset;
+        private float planeOffset;
         public const int VISIBLE = 1;
         public const int NON_CONVEX = 2;
         public const int DELETED = 3;
 
         public void ComputeCentroid(Point3d centroid)
         {
-            centroid.SetAll(0.0);
+            centroid.SetAll(0.0f);
             HalfEdge he = He0;
             do
             {
@@ -56,10 +57,10 @@ namespace QuickHull3D
                 he = he.Next;
             }
             while (he != He0);
-            centroid.Scale(1.0 / VertexCount);
+            centroid.Scale(1.0f / VertexCount);
         }
 
-        public void ComputeNormal(Vector3d normal, double minArea)
+        public void ComputeNormal(Vector3d normal, float minArea)
         {
             ComputeNormal(normal);
 
@@ -69,11 +70,11 @@ namespace QuickHull3D
                 // components parallel to the longest edge
 
                 HalfEdge hedgeMax = null;
-                double lenSqrMax = 0;
+                float lenSqrMax = 0;
                 HalfEdge hedge = He0;
                 do
                 {
-                    double lenSqr = hedge.LengthSquared;
+                    float lenSqr = hedge.LengthSquared;
                     if (lenSqr > lenSqrMax)
                     {
                         hedgeMax = hedge;
@@ -85,11 +86,11 @@ namespace QuickHull3D
 
                 Point3d p2 = hedgeMax.Head.Point;
                 Point3d p1 = hedgeMax.Tail.Point;
-                double lenMax = Math.Sqrt(lenSqrMax);
-                double ux = (p2.x - p1.x) / lenMax;
-                double uy = (p2.y - p1.y) / lenMax;
-                double uz = (p2.z - p1.z) / lenMax;
-                double dot = normal.x * ux + normal.y * uy + normal.z * uz;
+                float lenMax = Mathf.Sqrt(lenSqrMax);
+                float ux = (p2.x - p1.x) / lenMax;
+                float uy = (p2.y - p1.y) / lenMax;
+                float uz = (p2.z - p1.z) / lenMax;
+                float dot = normal.x * ux + normal.y * uy + normal.z * uz;
                 normal.x -= dot * ux;
                 normal.y -= dot * uy;
                 normal.z -= dot * uz;
@@ -106,19 +107,19 @@ namespace QuickHull3D
             Point3d p0 = He0.Head.Point;
             Point3d p2 = he1.Head.Point;
 
-            double d2x = p2.x - p0.x;
-            double d2y = p2.y - p0.y;
-            double d2z = p2.z - p0.z;
+            float d2x = p2.x - p0.x;
+            float d2y = p2.y - p0.y;
+            float d2z = p2.z - p0.z;
 
-            normal.SetAll(0.0);
+            normal.SetAll(0.0f);
 
             VertexCount = 2;
 
             while (he2 != He0)
             {
-                double d1x = d2x;
-                double d1y = d2y;
-                double d1z = d2z;
+                float d1x = d2x;
+                float d1y = d2y;
+                float d1z = d2z;
 
                 p2 = he2.Head.Point;
                 d2x = p2.x - p0.x;
@@ -156,7 +157,7 @@ namespace QuickHull3D
             }
         }
 
-        private void ComputeNormalAndCentroid(double minArea)
+        private void ComputeNormalAndCentroid(float minArea)
         {
             ComputeNormal(Normal, minArea);
             ComputeCentroid(Centroid);
@@ -176,7 +177,7 @@ namespace QuickHull3D
             return CreateTriangle(v0, v1, v2, 0);
         }
 
-        public static Face CreateTriangle(Vertex v0, Vertex v1, Vertex v2, double minArea)
+        public static Face CreateTriangle(Vertex v0, Vertex v1, Vertex v2, float minArea)
         {
             Face face = new Face();
             HalfEdge he0 = new HalfEdge(v0, face);
@@ -283,7 +284,7 @@ namespace QuickHull3D
         /// 
         /// <param name="p">the point</param>
         /// <returns>distance from the point to the plane</returns>
-        public double DistanceToPlane(Point3d p)
+        public float DistanceToPlane(Point3d p)
         {
             return Normal.x * p.x + Normal.y * p.y + Normal.z * p.z - planeOffset;
         }
@@ -377,7 +378,7 @@ namespace QuickHull3D
         {
             // do a sanity check on the face
             HalfEdge hedge = He0;
-            double maxd = 0;
+            float maxd = 0;
             int numv = 0;
 
             if (VertexCount < 3)
@@ -409,7 +410,7 @@ namespace QuickHull3D
                 {
                     throw new InternalErrorException($"face {VertexString}: opposite face {oppFace.VertexString} not on hull");
                 }
-                double d = Math.Abs(DistanceToPlane(hedge.Head.Point));
+                float d = Mathf.Abs(DistanceToPlane(hedge.Head.Point));
                 if (d > maxd)
                 {
                     maxd = d;
@@ -487,7 +488,7 @@ namespace QuickHull3D
             return numDiscarded;
         }
 
-        private double AreaSquared(HalfEdge hedge0, HalfEdge hedge1)
+        private float AreaSquared(HalfEdge hedge0, HalfEdge hedge1)
         {
             // return the squared area of the triangle defined
             // by the half edge hedge0 and the point at the
@@ -497,22 +498,22 @@ namespace QuickHull3D
             Point3d p1 = hedge0.Head.Point;
             Point3d p2 = hedge1.Head.Point;
 
-            double dx1 = p1.x - p0.x;
-            double dy1 = p1.y - p0.y;
-            double dz1 = p1.z - p0.z;
+            float dx1 = p1.x - p0.x;
+            float dy1 = p1.y - p0.y;
+            float dz1 = p1.z - p0.z;
 
-            double dx2 = p2.x - p0.x;
-            double dy2 = p2.y - p0.y;
-            double dz2 = p2.z - p0.z;
+            float dx2 = p2.x - p0.x;
+            float dy2 = p2.y - p0.y;
+            float dz2 = p2.z - p0.z;
 
-            double x = dy1 * dz2 - dz1 * dy2;
-            double y = dz1 * dx2 - dx1 * dz2;
-            double z = dx1 * dy2 - dy1 * dx2;
+            float x = dy1 * dz2 - dz1 * dy2;
+            float y = dz1 * dx2 - dx1 * dz2;
+            float z = dx1 * dy2 - dy1 * dx2;
 
             return x * x + y * y + z * z;
         }
 
-        public void Triangulate(FaceList newFaces, double minArea)
+        public void Triangulate(FaceList newFaces, float minArea)
         {
             HalfEdge hedge;
 

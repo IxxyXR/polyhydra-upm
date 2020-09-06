@@ -92,6 +92,7 @@ namespace Conway
         Stretch,
         Slice,
 
+        ConvexHull,
         Spherize,
         Canonicalize,
 

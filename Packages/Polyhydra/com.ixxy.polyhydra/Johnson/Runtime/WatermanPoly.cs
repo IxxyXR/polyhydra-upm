@@ -85,7 +85,7 @@ namespace Johnson
 			float scale = (float) (R / radius);
 			int IR = (int) (radius + 1);
 
-			var points = new List<double>();
+			var points = new List<float>();
 			float R2x, R2y, R2;
 			for (int i = -IR; i <= IR; i++)
 			{
@@ -111,7 +111,7 @@ namespace Johnson
 							if (R2 <= radius2 && R2 > radius2 - 400)
 							{
 								var scaledVector = new Vector3(i, j, k) * scale;
-								points.AddRange(new[]{(double)scaledVector.x, (double)scaledVector.y, (double)scaledVector.z});
+								points.AddRange(new[]{scaledVector.x, scaledVector.y, scaledVector.z});
 							}
 						}
 					}
@@ -122,8 +122,8 @@ namespace Johnson
 			var faces = new List<int[]>();
 			
 			var hull = new QuickHull3D.Hull();
-			hull.Build(points.ToArray(), points.Count / 3);
-			verts = hull.GetVertices().Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList();
+			hull.Build(points.ToArray());
+			verts = hull.GetVertices().Select(v => new Vector3(v.x, v.y, v.z)).ToList();
 			faces = hull.GetFaces().ToList();
 			var faceRoles = Enumerable.Repeat(ConwayPoly.Roles.New, faces.Count);
 			var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, verts.Count);
