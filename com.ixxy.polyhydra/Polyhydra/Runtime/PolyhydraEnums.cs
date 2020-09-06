@@ -728,6 +728,14 @@ public static class PolyHydraEnums
 			}
 		},
 		{
+			Ops.ConvexHull,
+			new OpConfig
+			{
+				usesFaces = false,
+				usesAmount = false,
+			}
+		},
+		{
 			Ops.Spherize,
 			new OpConfig
 			{
