@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using QuickHull3D;
 using UnityEngine;
 
 namespace Conway
@@ -1098,6 +1099,23 @@ namespace Conway
             }
         
             return mergedPoly;
+        }
+        
+        public ConwayPoly ConvexHull()
+        {
+            var points = Vertices.Select(p=>new Point3d(p.Position.x, p.Position.y, p.Position.z)).ToArray();
+            var verts = new List<Vector3>();
+            var faces = new List<int[]>();
+			
+            var hull = new Hull();
+            hull.Build(points);
+            verts = hull.GetVertices().Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList();
+            faces = hull.GetFaces().ToList();
+            var faceRoles = Enumerable.Repeat(ConwayPoly.Roles.New, faces.Count);
+            var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, verts.Count);
+            var conway = new ConwayPoly(verts, faces, faceRoles, vertexRoles);
+			
+            return conway;
         }
 
         // public ConwayPoly MergeCoplanarFaces(float threshold, int failSafeLimit=500)
