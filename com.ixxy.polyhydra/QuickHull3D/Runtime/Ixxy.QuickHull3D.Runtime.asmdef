@@ -1,10 +1,6 @@
 {
-    "name": "Ixxy.Conway.Runtime",
-    "references": [
-        "GUID:19a1e529cd747d049bb311988deeb64e",
-        "GUID:d60e483dbdfd1ef4e91c34837bd71a7e",
-        "GUID:d8a81626fb22d994587cf9da7346257b"
-    ],
+    "name": "Ixxy.QuickHull3D.Runtime",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
