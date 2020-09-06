@@ -13,8 +13,6 @@ public class WatermanTest : MonoBehaviour
     [Range(0, 6)]
     public int c = 0;
 
-    public bool DoublePrecision;
-
     public bool ApplyOps;
     public Ops op1;
     public FaceSelections op1Facesel;
