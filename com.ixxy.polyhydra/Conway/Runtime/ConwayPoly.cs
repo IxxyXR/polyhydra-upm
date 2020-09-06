@@ -438,11 +438,11 @@ namespace Conway
 						return Math.Abs(angle) < TOLERANCE || Math.Abs(angle - 180) < TOLERANCE;
 					};
 				case FaceSelections.FacingIn:
-					return p => Vector3.Angle(-p.poly.Faces[p.index].Normal, p.poly.Faces[p.index].Centroid) >
-					            90 - TOLERANCE;
-				case FaceSelections.FacingOut:
 					return p => Vector3.Angle(-p.poly.Faces[p.index].Normal, p.poly.Faces[p.index].Centroid) <
 					            90 + TOLERANCE;
+				case FaceSelections.FacingOut:
+					return p => Vector3.Angle(-p.poly.Faces[p.index].Normal, p.poly.Faces[p.index].Centroid) >
+					            90 - TOLERANCE;
 				case FaceSelections.TopHalf:
 					return p => p.poly.Faces[p.index].Centroid.y > 0;
 				case FaceSelections.Existing:
