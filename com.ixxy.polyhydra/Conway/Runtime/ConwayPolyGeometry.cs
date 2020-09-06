@@ -4,6 +4,7 @@ using System.Linq;
 using QuickHull3D;
 using UnityEngine;
 
+
 namespace Conway
 {
     public partial class ConwayPoly
@@ -1109,7 +1110,7 @@ namespace Conway
 			
             var hull = new Hull();
             hull.Build(points);
-            verts = hull.GetVertices().Select(v => new Vector3(v.x, v.y, v.z)).ToList();
+            verts = hull.GetVertices().Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList();
             faces = hull.GetFaces().ToList();
             var faceRoles = Enumerable.Repeat(ConwayPoly.Roles.New, faces.Count);
             var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, verts.Count);

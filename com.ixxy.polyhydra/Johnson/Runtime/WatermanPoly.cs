@@ -16,7 +16,7 @@ namespace Johnson
 {
 	public static class WatermanPoly
 	{
-		public static ConwayPoly Build(float R = 1.0f, int root = 2, int c = 0, bool triangularFaces=false)
+		public static ConwayPoly Build(float R = 1.0f, int root = 2, int c = 0)
 		{
 			ConwayPoly conway;
 			
@@ -85,8 +85,11 @@ namespace Johnson
 			float scale = (float) (R / radius);
 			int IR = (int) (radius + 1);
 
-			var points = new List<float>();
-			float R2x, R2y, R2;
+			var verts = new List<Vector3>();
+			var faces = new List<int[]>();
+
+			var points = new List<double>();
+			double R2x, R2y, R2;
 			for (int i = -IR; i <= IR; i++)
 			{
 				R2x = (i - center.x) * (i - center.x);
@@ -111,20 +114,19 @@ namespace Johnson
 							if (R2 <= radius2 && R2 > radius2 - 400)
 							{
 								var scaledVector = new Vector3(i, j, k) * scale;
-								points.AddRange(new[]{scaledVector.x, scaledVector.y, scaledVector.z});
+								points.AddRange(new[]{(double)scaledVector.x, (double)scaledVector.y, (double)scaledVector.z});
 							}
 						}
 					}
 				}
+			
+				
+				var hull = new QuickHull3D.Hull();
+				hull.Build(points.ToArray());
+				verts = hull.GetVertices().Select(v => new Vector3((float)v.x, (float)v.y, (float)v.z)).ToList();
+				faces = hull.GetFaces().ToList();
+
 			}
-			
-			var verts = new List<Vector3>();
-			var faces = new List<int[]>();
-			
-			var hull = new QuickHull3D.Hull();
-			hull.Build(points.ToArray());
-			verts = hull.GetVertices().Select(v => new Vector3(v.x, v.y, v.z)).ToList();
-			faces = hull.GetFaces().ToList();
 			var faceRoles = Enumerable.Repeat(ConwayPoly.Roles.New, faces.Count);
 			var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, verts.Count);
 			conway = new ConwayPoly(verts, faces, faceRoles, vertexRoles);
