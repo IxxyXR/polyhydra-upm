@@ -45,6 +45,6 @@ namespace QuickHull3D
 	    /// <param name="x">first element</param>
 	    /// <param name="y">second element</param>
 	    /// <param name="z">third element</param>
-        public Point3d(float x, float y, float z) : base(x, y, z) { }
+        public Point3d(double x, double y, double z) : base(x, y, z) { }
     }
 }

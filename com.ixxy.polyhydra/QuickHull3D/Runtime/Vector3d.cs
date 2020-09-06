@@ -12,10 +12,8 @@
  */
 
 using System;
-using UnityEngine;
-using Random = System.Random;
 
- namespace QuickHull3D
+namespace QuickHull3D
 {
     /// <summary>
     /// A three-element vector. This class is actually a reduced version of the
@@ -28,24 +26,24 @@ using Random = System.Random;
     public class Vector3d
     {
         /// <summary>
-        /// Precision of a float.
+        /// Precision of a double.
         /// </summary>
-        private const float DOUBLE_PREC = 2.2204460492503131e-16f;
+        private const double DOUBLE_PREC = 2.2204460492503131e-16;
 
         /// <summary>
         /// First element
         /// </summary>
-        public float x;
+        public double x;
 
         /// <summary>
         /// Second element
         /// </summary>
-        public float y;
+        public double y;
 
         /// <summary>
         /// Third element
         /// </summary>
-        public float z;
+        public double z;
 
         /// <summary>
         /// Creates a 3-vector and initializes its elements to 0.
@@ -67,7 +65,7 @@ using Random = System.Random;
         /// <param name="x">first element</param>
         /// <param name="y">second element</param>
         /// <param name="z">third element</param>
-        public Vector3d(float x, float y, float z)
+        public Vector3d(double x, double y, double z)
             => Set(x, y, z);
 
 
@@ -81,7 +79,7 @@ using Random = System.Random;
         /// <param name="index">element index</param>
         /// <returns>element value throws IndexOutOfRangeException
         /// if i is not in the range 0 to 2.</returns>
-        public float this[int index]
+        public double this[int index]
         {
             get
             {
@@ -136,7 +134,7 @@ using Random = System.Random;
         /// <param name="x">value for first element</param>
         /// <param name="y">value for second element</param>
         /// <param name="z">value for third element</param>
-        public void Set(float x, float y, float z)
+        public void Set(double x, double y, double z)
         {
             this.x = x;
             this.y = y;
@@ -147,7 +145,7 @@ using Random = System.Random;
         /// Sets the elements of this vector to given value.
         /// </summary>
         /// <param name="value">the value to set</param>
-        public void SetAll(float value)
+        public void SetAll(double value)
             => Set(value, value, value);
 
         /// <summary>
@@ -159,13 +157,13 @@ using Random = System.Random;
         /// <param name="lower">lower random value (inclusive)</param>
         /// <param name="upper">upper random value (exclusive)</param>
         /// <param name="generator">random number generator</param>
-        public void SetRandom(float lower, float upper, Random generator)
+        public void SetRandom(double lower, double upper, Random generator)
         {
-            float range = upper - lower;
+            double range = upper - lower;
 
-            x = (float)generator.NextDouble() * range + lower;
-            y = (float)generator.NextDouble() * range + lower;
-            z = (float)generator.NextDouble() * range + lower;
+            x = generator.NextDouble() * range + lower;
+            y = generator.NextDouble() * range + lower;
+            z = generator.NextDouble() * range + lower;
         }
 
         #endregion
@@ -223,7 +221,7 @@ using Random = System.Random;
         /// </summary>
         /// 
         /// <param name="s">scaling factor</param>
-        public void Scale(float s)
+        public void Scale(double s)
             => Set(s * x, s * y, s * z);
 
         /// <summary>
@@ -233,20 +231,20 @@ using Random = System.Random;
         /// 
         /// <param name="s">scaling factor</param>
         /// <param name="v1">vector to be scaled</param>
-        public void Scale(float s, Vector3d v1)
+        public void Scale(double s, Vector3d v1)
             => Set(s * v1.x, s * v1.y, s * v1.z);
 
         /// <summary>
         /// The 2 norm of this vector. This is the square root of the
         /// sum of the squares of the elements.
         /// </summary>
-        public float Norm => Mathf.Sqrt(NormSquared);
+        public double Norm => Math.Sqrt(NormSquared);
 
         /// <summary>
         /// The square of the 2 norm of this vector. This
         /// is the sum of the squares of the elements.
         /// </summary>
-        public float NormSquared
+        public double NormSquared
             => Dot(this);
 
         /// <summary>
@@ -254,8 +252,8 @@ using Random = System.Random;
         /// </summary>
         /// 
         /// <returns>distance between this vector and v</return>
-        public float Distance(Vector3d v)
-            => Mathf.Sqrt(DistanceSquared(v));
+        public double Distance(Vector3d v)
+            => Math.Sqrt(DistanceSquared(v));
 
         /// <summary>
         /// Returns the squared of the Euclidean distance between this vector
@@ -263,10 +261,10 @@ using Random = System.Random;
         /// </summary>
         /// 
         /// <return>squared distance between this vector and v</returns>
-        public float DistanceSquared(Vector3d v)
+        public double DistanceSquared(Vector3d v)
             => DeltaSqr(x, v.x) + DeltaSqr(y, v.y) + DeltaSqr(z, v.z);
 
-        private static float DeltaSqr(float v0, float v1)
+        private static double DeltaSqr(double v0, double v1)
         {
             var d = v0 - v1;
             return d * d;
@@ -278,7 +276,7 @@ using Random = System.Random;
         /// 
         /// <param name="v1">right-hand vector</param>
         /// <return>dot product</returns>
-        public float Dot(Vector3d v1)
+        public double Dot(Vector3d v1)
             => x * v1.x + y * v1.y + z * v1.z;
 
 
@@ -287,10 +285,10 @@ using Random = System.Random;
         /// </summary>
         public void Normalize()
         {
-            float lenSqr = NormSquared;
-            if (Mathf.Abs(lenSqr - 1) > 2 * DOUBLE_PREC)
+            double lenSqr = NormSquared;
+            if (Math.Abs(lenSqr - 1) > 2 * DOUBLE_PREC)
             {
-                Scale(1.0f / Mathf.Sqrt(lenSqr));
+                Scale(1.0 / Math.Sqrt(lenSqr));
             }
         }
 

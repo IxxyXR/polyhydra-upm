@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using QuickHull3D;
 using UnityEngine;
 
 namespace Conway
@@ -1101,23 +1100,6 @@ namespace Conway
             return mergedPoly;
         }
 
-        public ConwayPoly ConvexHull()
-        {
-            var points = Vertices.Select(p=>new Point3d(p.Position.x, p.Position.y, p.Position.z)).ToArray();
-            var verts = new List<Vector3>();
-            var faces = new List<int[]>();
-			
-            var hull = new Hull();
-            hull.Build(points);
-            verts = hull.GetVertices().Select(v => new Vector3(v.x, v.y, v.z)).ToList();
-            faces = hull.GetFaces().ToList();
-            var faceRoles = Enumerable.Repeat(ConwayPoly.Roles.New, faces.Count);
-            var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, verts.Count);
-            var conway = new ConwayPoly(verts, faces, faceRoles, vertexRoles);
-			
-            return conway;
-        }
-
         // public ConwayPoly MergeCoplanarFaces(float threshold, int failSafeLimit=500)
         // {
         //     // Another aborted attempt
@@ -1412,55 +1394,6 @@ namespace Conway
                 facesel = FaceSelections.Existing;
             }
             return poly;
-        }
-        
-        public ConwayPoly Hinge(float amount)
-        {
-            // Rotate singly connected faces around the connected edge
-            foreach (Face f in Faces)
-            {
-                Halfedge hinge = null;
-
-                // Find a single connected edge
-                foreach (Halfedge e in f.GetHalfedges())
-                {
-                    if (e.Pair != null) // This edge is connected
-                    {
-                        if (hinge == null) // Our first connected edge
-                        {
-                            // Record the first connected edge and keep looking
-                            hinge = e;
-                        }
-                        else // We already found a hinge for this face
-                        {
-                            // Therefore this Face has more than 1 connected edge
-                            hinge = null;
-                            break;
-                        }
-                    }
-                }
-
-                if (hinge != null) // We found a single hinge for this face
-                {
-                    Vector3 axis = hinge.Vector;
-                    Quaternion rotation = Quaternion.AngleAxis(amount, axis);
-
-                    var vs = f.GetVertices();
-                    for (var i = 0; i < vs.Count; i++)
-                    {
-                        Vertex v = vs[i];
-                        // Only rotate vertices that aren't part of the hinge
-                        if (v != hinge.Vertex && v != hinge.Pair.Vertex)
-                        {
-                            v.Position -= hinge.Vertex.Position;
-                            v.Position = rotation * v.Position;
-                            v.Position += hinge.Vertex.Position;
-                        }
-                    }
-                }
-            }
-
-            return this;
         }
 
         /// <summary>

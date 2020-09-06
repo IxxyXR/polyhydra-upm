@@ -105,13 +105,13 @@ namespace QuickHull3D
         /// <summary>
         /// The length of this half-edge.
         /// </summary>
-        public float Length
+        public double Length
             => (Tail != null) ? Head.Point.Distance(Tail.Point) : -1;
 
         /// <summary>
         /// The length squared of this half-edge.
         /// </summary>
-        public float LengthSquared
+        public double LengthSquared
             => (Tail != null) ? Head.Point.DistanceSquared(Tail.Point) : -1;
      
 
@@ -122,19 +122,19 @@ namespace QuickHull3D
         // 	 *
         // 	 * A product > 0 indicates a left turn WRT the normal
         // 	 */
-        // 	public float turnProduct (HalfEdge he1, Vector3d nrml)
+        // 	public double turnProduct (HalfEdge he1, Vector3d nrml)
         // 	 { 
         // 	   Point3d pnt0 = tail().pnt;
         // 	   Point3d pnt1 = head().pnt;
         // 	   Point3d pnt2 = he1.head().pnt;
 
-        // 	   float del0x = pnt1.x - pnt0.x;
-        // 	   float del0y = pnt1.y - pnt0.y;
-        // 	   float del0z = pnt1.z - pnt0.z;
+        // 	   double del0x = pnt1.x - pnt0.x;
+        // 	   double del0y = pnt1.y - pnt0.y;
+        // 	   double del0z = pnt1.z - pnt0.z;
 
-        // 	   float del1x = pnt2.x - pnt1.x;
-        // 	   float del1y = pnt2.y - pnt1.y;
-        // 	   float del1z = pnt2.z - pnt1.z;
+        // 	   double del1x = pnt2.x - pnt1.x;
+        // 	   double del1y = pnt2.y - pnt1.y;
+        // 	   double del1z = pnt2.z - pnt1.z;
 
         // 	   return (nrml.x*(del0y*del1z - del0z*del1y) + 
         // 		   nrml.y*(del0z*del1x - del0x*del1z) + 

@@ -14,9 +14,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
 
- namespace QuickHull3D
+namespace QuickHull3D
 {
 
     /// <summary>
@@ -75,9 +74,9 @@ using UnityEngine;
     ///    }
     /// </code>
     /// 
-    /// As a convenience, there are also <see cref="Build(float[])"/>
-    /// and <see cref="GetVertices(float[])"/> methods which
-    /// pass point information using an array of floats.
+    /// As a convenience, there are also <see cref="Build(double[])"/>
+    /// and <see cref="GetVertices(double[])"/> methods which
+    /// pass point information using an array of doubles.
     ///
     /// <h3><a name=distTol>Robustness</h3> Because this algorithm uses floating
     /// point arithmetic, it is potentially vulnerable to errors arising from
@@ -91,7 +90,7 @@ using UnityEngine;
     /// This tolerance represents the smallest distance that can be reliably computed
     /// within the available numeric precision. It is normally computed automatically
     /// from the point data, although an application may
-    /// <see cref="setExplicitDistanceTolerance(float)">set this tolerance explicitly</see>.
+    /// <see cref="setExplicitDistanceTolerance(double)">set this tolerance explicitly</see>.
     ///
     /// <p>Numerical problems are more likely to arise in situations where data
     /// points lie on or within the faces or edges of the convex hull. We have
@@ -153,12 +152,12 @@ using UnityEngine;
         /// Specifies that the distance tolerance should be
         /// computed automatically from the input point data.
         /// </summary>
-        public const float AUTOMATIC_TOLERANCE = -1;
+        public const double AUTOMATIC_TOLERANCE = -1;
 
         protected int findIndex = -1;
 
         // estimated size of the point set
-        protected float charLength;
+        protected double charLength;
 
         /// <summary>
         /// Enables/Disables the printing of debugging diagnostics.
@@ -188,9 +187,9 @@ using UnityEngine;
 
 
         /// <summary>
-        /// Precision of a float.
+        /// Precision of a double.
         /// </summary>
-        private const float DOUBLE_PREC = 2.2204460492503131e-16f;  // TODO what's the real precious for floats?
+        private const double DOUBLE_PREC = 2.2204460492503131e-16;
 
 
         /// <summary>
@@ -203,7 +202,7 @@ using UnityEngine;
         /// points, but it can be set explicitly by the application.
         /// </summary>
         /// <seealso cref="ExplicitDistanceTolerance"/>
-        public float DistanceTolerance { get; private set; }
+        public double DistanceTolerance { get; private set; }
 
         /// <summary>
         /// Sets an explicit distance tolerance for convexity tests.
@@ -211,7 +210,7 @@ using UnityEngine;
         /// then the tolerance will be computed automatically from the point data.
         /// </summary>
         /// <seealso cref="DistanceTolerance"/>
-        public float ExplicitDistanceTolerance { get; set; } = AUTOMATIC_TOLERANCE;
+        public double ExplicitDistanceTolerance { get; set; } = AUTOMATIC_TOLERANCE;
 
 
         private void AddPointToFace(Vertex vtx, Face face)
@@ -274,7 +273,7 @@ using UnityEngine;
         /// <summary>
         /// Creates a convex hull object and initializes it to the convex hull
         /// of a set of points whose coordinates are given by an
-        /// array of floats.
+        /// array of doubles.
         /// </summary>
         /// <param name="coords">x, y, and z coordinates of each input
         /// point. The length of this array will be three times
@@ -282,7 +281,7 @@ using UnityEngine;
         /// <exception cref="ArgumentException">the number of input points is less
         /// than four, or the points appear to be coincident, colinear, or
         /// coplanar.</exception>
-        public Hull(float[] coords)
+        public Hull(double[] coords)
         {
             Build(coords, coords.Length / 3);
         }
@@ -314,7 +313,7 @@ using UnityEngine;
             return null;
         }
 
-        protected void SetHull(float[] coords, int nump,
+        protected void SetHull(double[] coords, int nump,
                    int[][] faceIndices, int numf)
         {
             InitBuffers(nump);
@@ -355,7 +354,7 @@ using UnityEngine;
         //    }
         //}
 
-        //protected void setFromQhull(float[] coords, int nump, bool triangulate)
+        //protected void setFromQhull(double[] coords, int nump, bool triangulate)
         //{
         //    String commandStr = "./qhull i";
         //    if (triangulate)
@@ -441,7 +440,7 @@ using UnityEngine;
 
         /// <summary>
         /// Constructs the convex hull of a set of points whose
-        /// coordinates are given by an array of floats.
+        /// coordinates are given by an array of doubles.
         /// </summary>
         /// <param name="coords">x, y, and z coordinates of each input
         /// point. The length of this array will be three times
@@ -449,14 +448,14 @@ using UnityEngine;
         /// <exception cref="ArgumentException">the number of input points is less
         /// than four, or the points appear to be coincident, colinear, or
         /// coplanar.</exception>
-        public void Build(float[] coords)
+        public void Build(double[] coords)
         {
             Build(coords, coords.Length / 3);
         }
 
         /// <summary>
         /// Constructs the convex hull of a set of points whose
-        /// coordinates are given by an array of floats.
+        /// coordinates are given by an array of doubles.
         /// </summary>
         /// <param name="coords">x, y, and z coordinates of each input</param>
         /// point. The length of this array must be at least three times
@@ -466,7 +465,7 @@ using UnityEngine;
         /// than four or greater than 1/3 the length of <code>coords</code>,
         /// or the points appear to be coincident, colinear, or
         /// coplanar.</exception>
-        public void Build(float[] coords, int nump)
+        public void Build(double[] coords, int nump)
         {
             if (nump < 4)
 
@@ -528,7 +527,7 @@ using UnityEngine;
         /// </summary>
         public void Triangulate()
         {
-            float minArea = 1000 * charLength * DOUBLE_PREC;
+            double minArea = 1000 * charLength * DOUBLE_PREC;
             newFaces.Clear();
             foreach (var face in faces)
             {
@@ -576,7 +575,7 @@ using UnityEngine;
             numPoints = nump;
         }
 
-        protected void SetPoints(float[] coords, int nump)
+        protected void SetPoints(double[] coords, int nump)
         {
             for (int i = 0; i < nump; i++)
             {
@@ -645,14 +644,14 @@ using UnityEngine;
 
             // this epsilon formula comes from QuickHull, and I'm
             // not about to quibble.
-            charLength = Mathf.Max(max.x - min.x, max.y - min.y);
-            charLength = Mathf.Max(max.z - min.z, charLength);
+            charLength = Math.Max(max.x - min.x, max.y - min.y);
+            charLength = Math.Max(max.z - min.z, charLength);
             if (ExplicitDistanceTolerance == AUTOMATIC_TOLERANCE)
             {
                 DistanceTolerance =
-               3 * DOUBLE_PREC * (Mathf.Max(Mathf.Abs(max.x), Mathf.Abs(min.x)) +
-                      Mathf.Max(Mathf.Abs(max.y), Mathf.Abs(min.y)) +
-                      Mathf.Max(Mathf.Abs(max.z), Mathf.Abs(min.z)));
+               3 * DOUBLE_PREC * (Math.Max(Math.Abs(max.x), Math.Abs(min.x)) +
+                      Math.Max(Math.Abs(max.y), Math.Abs(min.y)) +
+                      Math.Max(Math.Abs(max.z), Math.Abs(min.z)));
             }
             else
             {
@@ -665,12 +664,12 @@ using UnityEngine;
         /// </summary>
         protected void CreateInitialSimplex()
         {
-            float max = 0;
+            double max = 0;
             int imax = 0;
 
             for (int i = 0; i < 3; i++)
             {
-                float diff = maxVtxs[i].Point[i] - minVtxs[i].Point[i];
+                double diff = maxVtxs[i].Point[i] - minVtxs[i].Point[i];
                 if (diff > max)
                 {
                     max = diff;
@@ -696,14 +695,14 @@ using UnityEngine;
             Vector3d diff02 = new Vector3d();
             Vector3d nrml = new Vector3d();
             Vector3d xprod = new Vector3d();
-            float maxSqr = 0;
+            double maxSqr = 0;
             u01.Sub(vtx[1].Point, vtx[0].Point);
             u01.Normalize();
             for (int i = 0; i < numPoints; i++)
             {
                 diff02.Sub(pointBuffer[i].Point, vtx[0].Point);
                 xprod.Cross(u01, diff02);
-                float lenSqr = xprod.NormSquared;
+                double lenSqr = xprod.NormSquared;
                 if (lenSqr > maxSqr &&
                 pointBuffer[i] != vtx[0] &&  // paranoid
                 pointBuffer[i] != vtx[1])
@@ -713,18 +712,18 @@ using UnityEngine;
                     nrml.Set(xprod);
                 }
             }
-            if (Mathf.Sqrt(maxSqr) <= 100 * DistanceTolerance)
+            if (Math.Sqrt(maxSqr) <= 100 * DistanceTolerance)
             {
                 throw new ArgumentException("Input points appear to be colinear");
             }
             nrml.Normalize();
 
 
-            float maxDist = 0;
-            float d0 = vtx[2].Point.Dot(nrml);
+            double maxDist = 0;
+            double d0 = vtx[2].Point.Dot(nrml);
             for (int i = 0; i < numPoints; i++)
             {
-                float dist = Mathf.Abs(pointBuffer[i].Point.Dot(nrml) - d0);
+                double dist = Math.Abs(pointBuffer[i].Point.Dot(nrml) - d0);
                 if (dist > maxDist &&
                 pointBuffer[i] != vtx[0] &&  // paranoid
                 pointBuffer[i] != vtx[1] &&
@@ -734,7 +733,7 @@ using UnityEngine;
                     vtx[3] = pointBuffer[i];
                 }
             }
-            if (Mathf.Abs(maxDist) <= 100 * DistanceTolerance)
+            if (Math.Abs(maxDist) <= 100 * DistanceTolerance)
             {
                 throw new ArgumentException("Input points appear to be coplanar");
             }
@@ -798,7 +797,7 @@ using UnityEngine;
                 Face maxFace = null;
                 for (int k = 0; k < 4; k++)
                 {
-                    float dist = tris[k].DistanceToPlane(v.Point);
+                    double dist = tris[k].DistanceToPlane(v.Point);
                     if (dist > maxDist)
                     {
                         maxFace = tris[k];
@@ -822,7 +821,7 @@ using UnityEngine;
         /// Returns the vertex points in this hull.
         /// </summary>
         /// <returns>array of vertex points</returns>
-        /// <see cref="GetVertices(float[])"/>
+        /// <see cref="GetVertices(double[])"/>
         /// <see cref="GetFaces()"/>
         public Point3d[] GetVertices()
         {
@@ -843,7 +842,7 @@ using UnityEngine;
         /// <returns>the number of vertices</returns>
         /// <see cref="GetVertices()"/>
         /// <see cref="GetFaces()"/>
-        public int GetVertices(float[] coords)
+        public int GetVertices(double[] coords)
         {
             for (int i = 0; i < numVertices; i++)
             {
@@ -1029,14 +1028,14 @@ using UnityEngine;
             {
                 vtxNext = vtx.Next;
 
-                float maxDist = DistanceTolerance;
+                double maxDist = DistanceTolerance;
                 Face maxFace = null;
                 for (Face newFace = newFaces.First; newFace != null;
                  newFace = newFace.Next)
                 {
                     if (newFace.Mark == Face.VISIBLE)
                     {
-                        float dist = newFace.DistanceToPlane(vtx.Point);
+                        double dist = newFace.DistanceToPlane(vtx.Point);
                         if (dist > maxDist)
                         {
                             maxDist = dist;
@@ -1081,7 +1080,7 @@ using UnityEngine;
                     for (Vertex vtx = vtxNext; vtx != null; vtx = vtxNext)
                     {
                         vtxNext = vtx.Next;
-                        float dist = absorbingFace.DistanceToPlane(vtx.Point);
+                        double dist = absorbingFace.DistanceToPlane(vtx.Point);
                         if (dist > DistanceTolerance)
                         {
                             AddPointToFace(vtx, absorbingFace);
@@ -1098,7 +1097,7 @@ using UnityEngine;
         private const int NONCONVEX_WRT_LARGER_FACE = 1;
         private const int NONCONVEX = 2;
 
-        protected float OppFaceDistance(HalfEdge he)
+        protected double OppFaceDistance(HalfEdge he)
         {
             return he.Face.DistanceToPlane(he.Opposite.Face.Centroid);
         }
@@ -1112,7 +1111,7 @@ using UnityEngine;
             {
                 Face oppFace = hedge.OppositeFace;
                 bool merge = false;
-                float dist1;
+                double dist1;
 
                 if (mergeType == NONCONVEX)
                 { // then merge faces if they are definitively non-convex
@@ -1265,12 +1264,12 @@ using UnityEngine;
             {
                 Face eyeFace = claimed.First.Face;
                 Vertex eyeVtx = null;
-                float maxDist = 0;
+                double maxDist = 0;
                 for(    Vertex vtx = eyeFace.Outside;
                         vtx != null && vtx.Face == eyeFace;
                         vtx = vtx.Next)
                 {
-                    float dist = eyeFace.DistanceToPlane(vtx.Point);
+                    double dist = eyeFace.DistanceToPlane(vtx.Point);
                     if (dist > maxDist)
                     {
                         maxDist = dist;
@@ -1390,9 +1389,9 @@ using UnityEngine;
         }
 
         protected bool CheckFaceConvexity(
-           Face face, float tol, TextWriter ps)
+           Face face, double tol, TextWriter ps)
         {
-            float dist;
+            double dist;
             HalfEdge he = face.He0;
             do
             {
@@ -1430,7 +1429,7 @@ using UnityEngine;
             return true;
         }
 
-        protected bool CheckFaces(float tol, TextWriter ps)
+        protected bool CheckFaces(double tol, TextWriter ps)
         {
             // check edge convexity
             bool convex = true;
@@ -1450,13 +1449,13 @@ using UnityEngine;
         /// <summary>
         /// Checks the correctness of the hull using the distance tolerance
         /// returned by <see cref="DistanceTolerance"/>; see
-        /// <see cref="Check(TextWriter, float)"/> for details.
+        /// <see cref="Check(TextWriter, double)"/> for details.
         /// </summary>
         /// 
         /// <param name="ps">print stream for diagnostic messages; may be
         /// set to <code>null</code> if no messages are desired.</param>
         /// <returns>true if the hull is valid</returns>
-        /// <see cref="Check(TextWriter, float)"/>
+        /// <see cref="Check(TextWriter, double)"/>
         public bool Check(TextWriter ps)
         {
             return Check(ps, DistanceTolerance);
@@ -1481,13 +1480,13 @@ using UnityEngine;
         /// <param name="tol">distance tolerance</param>
         /// <returns>true if the hull is valid</returns>
         /// <see cref="Check(TextWriter)"/>
-        public bool Check(TextWriter ps, float tol)
+        public bool Check(TextWriter ps, double tol)
 
         {
             // check to make sure all edges are fully connected
             // and that the edges are convex
-            float dist;
-            float pointTol = 10 * tol;
+            double dist;
+            double pointTol = 10 * tol;
 
             if (!CheckFaces(DistanceTolerance, ps))
             {
