@@ -1184,6 +1184,55 @@ namespace Conway
         //     return new ConwayPoly();
         // }
 
+        public ConwayPoly Hinge(float amount)
+        {
+            // Rotate singly connected faces around the connected edge
+            foreach (Face f in Faces)
+            {
+                Halfedge hinge = null;
+
+                // Find a single connected edge
+                foreach (Halfedge e in f.GetHalfedges())
+                {
+                    if (e.Pair != null) // This edge is connected
+                    {
+                        if (hinge == null) // Our first connected edge
+                        {
+                            // Record the first connected edge and keep looking
+                            hinge = e;
+                        }
+                        else // We already found a hinge for this face
+                        {
+                            // Therefore this Face has more than 1 connected edge
+                            hinge = null;
+                            break;
+                        }
+                    }
+                }
+
+                if (hinge != null) // We found a single hinge for this face
+                {
+                    Vector3 axis = hinge.Vector;
+                    Quaternion rotation = Quaternion.AngleAxis(amount, axis);
+
+                    var vs = f.GetVertices();
+                    for (var i = 0; i < vs.Count; i++)
+                    {
+                        Vertex v = vs[i];
+                        // Only rotate vertices that aren't part of the hinge
+                        if (v != hinge.Vertex && v != hinge.Pair.Vertex)
+                        {
+                            v.Position -= hinge.Vertex.Position;
+                            v.Position = rotation * v.Position;
+                            v.Position += hinge.Vertex.Position;
+                        }
+                    }
+                }
+            }
+
+            return this;
+        }
+
         public ConwayPoly ExtendBoundaries(OpParams o)
         {
             float amount = o.GetValueA(this, 0);
@@ -1194,7 +1243,7 @@ namespace Conway
             return poly;
         }
 
-        public ConwayPoly SplitLoop(List<Tuple<int, int>> loop)
+        public ConwayPoly SplitLoop(List<Tuple<int, int>> loop, float ratio = 0.5f)
         {
             var poly = Duplicate();
             var vertexRoles = poly.VertexRoles;
@@ -1206,7 +1255,7 @@ namespace Conway
             {
                 var face = faces[loopItem.Item1];
                 var edge = face.GetHalfedges()[loopItem.Item2];
-                Vector3 pos = edge.Midpoint;
+                Vector3 pos = edge.PointAlongEdge(ratio);
                 var newVert = new Vertex(pos);
                 poly.Vertices.Add(newVert);
                 vertexRoles.Add(Roles.New);
@@ -1241,12 +1290,7 @@ namespace Conway
                 var initialEdge = face.GetHalfedges()[loopItem.Item2];
                 var currentEdge = initialEdge;
                 var nextFace = faces[nextLoopItem.Item1];
-                var nextEdge = nextFace.GetHalfedges()[nextLoopItem.Item2];
-
-                var faceHalfEdges = face.GetHalfedges();
-                var newVert1 = poly.Vertices[firstNewVertexIndex + loopIndex];
-                var newVert2 = poly.Vertices[firstNewVertexIndex + ActualMod(loopIndex + 1, loop.Count)];
-
+                
                 var newFace1 = new List<int>();
                 int counter = 0;
                 bool finished = false;
@@ -1302,7 +1346,7 @@ namespace Conway
                 if (newFace2.Count >= 3)
                 {
                     facesToAdd.Add(newFace2);
-                    newFaceRoles.Add(Roles.New);
+                    newFaceRoles.Add(Roles.NewAlt);
                     var prevFaceTagSet = poly.FaceTags[loopItem.Item1];
                     newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
                 }
@@ -1391,29 +1435,22 @@ namespace Conway
             return loop;
         }
 
-        public ConwayPoly Dome(FaceSelections facesel, float height=1f, int segments = 4, float curve1=0.1f, float curve2=0.1f)
+        public ConwayPoly Dome(FaceSelections facesel, float height=1f, int segments = 4, Easing.EasingType easingType = Easing.EasingType.Linear, bool lace=false)
         {
-            
-            // Bit hacky.
-            // Would be better to extend Loft to accept an "interations" param
-            
-            var poly = Duplicate();
-            for (float segmentIndex = 0; segmentIndex <= segments; segmentIndex++)
-            {
-                float i = (float)segmentIndex / segments;
-                poly = poly.Loft(new OpParams
-                {
-                    valueA = 0.001f + (Mathf.Abs(Mathf.Sin(i * Mathf.PI * curve1))*curve2),
-                    // valueB = height/segments,
-                    valueB = (0.001f + (Mathf.Abs(Mathf.Cos(i * Mathf.PI * curve1))*0.05f) * height),
-                    facesel = facesel,
-                });
-                
-                facesel = FaceSelections.Existing;
-            }
-            return poly;
-        }
 
+
+            
+            var ratioValues = new List<float>();
+            var offsetValues = new List<float>();
+            for (float segment = 0; segment < segments; segment++)
+            {
+                float i = segment / segments;
+                ratioValues.Add(i);
+                offsetValues.Add(Easing.Funcs[easingType](i));
+            }
+            return LoftAlongProfile(new OpParams(1, height, facesel), ratioValues, offsetValues, lace: lace);
+        }
+        
         /// <summary>
 		/// Thickens each mesh edge in the plane of the mesh surface.
 		/// </summary>

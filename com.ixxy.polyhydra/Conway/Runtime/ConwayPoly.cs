@@ -485,70 +485,89 @@ namespace Conway
 		public bool IncludeVertex(int vertexIndex, FaceSelections vertexsel,
 			IEnumerable<Tuple<string, TagType>> tagList = null, Func<FilterParams, bool> filterFunc = null)
 		{
-			float angle;
+			bool include = true;
+			if (tagList != null && tagList.Any())
+			{  // Return true if any tags match
+				var vert = Vertices[vertexIndex];
+				foreach (var face in vert.GetVertexFaces())
+				{
+					// Bit clunky and slow
+					include = include & tagList.Intersect(FaceTags[Faces.IndexOf(face)]).Any();
+				}
+			}
+			filterFunc = filterFunc ?? VertexselToVertexFilterFunc(vertexsel);
+			return include && filterFunc(new FilterParams(this, vertexIndex));
+		}
+		
+		public Func<FilterParams, bool> VertexselToVertexFilterFunc(FaceSelections vertexsel)
+		{
 			switch (vertexsel)
 			{
 				case FaceSelections.All:
-					return true;
+					return p => true;
 				// TODO
 				case FaceSelections.PSided:
-					return Vertices[vertexIndex].Halfedges.Count == basePolyhedraInfo.P;
+					return p=>Vertices[p.index].Halfedges.Count == basePolyhedraInfo.P;
 				case FaceSelections.QSided:
-					return Vertices[vertexIndex].Halfedges.Count == basePolyhedraInfo.Q;
+					return p=>Vertices[p.index].Halfedges.Count == basePolyhedraInfo.Q;
 				case FaceSelections.ThreeSided:
-					return Vertices[vertexIndex].Halfedges.Count <= 3; // Weird but it will do for now
+					return p=>Vertices[p.index].Halfedges.Count <= 3; // Weird but it will do for now
 				case FaceSelections.FourSided:
-					return Vertices[vertexIndex].Halfedges.Count == 4;
+					return p=>Vertices[p.index].Halfedges.Count == 4;
 				case FaceSelections.FiveSided:
-					return Vertices[vertexIndex].Halfedges.Count == 5;
+					return p=>Vertices[p.index].Halfedges.Count == 5;
 				case FaceSelections.SixSided:
-					return Vertices[vertexIndex].Halfedges.Count == 6;
+					return p=>Vertices[p.index].Halfedges.Count == 6;
 				case FaceSelections.SevenSided:
-					return Vertices[vertexIndex].Halfedges.Count == 7;
+					return p=>Vertices[p.index].Halfedges.Count == 7;
 				case FaceSelections.EightSided:
-					return Vertices[vertexIndex].Halfedges.Count == 8;
+					return p=>Vertices[p.index].Halfedges.Count == 8;
 				case FaceSelections.FacingUp:
-					return Vertices[vertexIndex].Normal.y > TOLERANCE;
+					return p=>Vertices[p.index].Normal.y > TOLERANCE;
 				case FaceSelections.FacingLevel:
-					return Math.Abs(Vertices[vertexIndex].Normal.y) < TOLERANCE;
+					return p=>Math.Abs(Vertices[p.index].Normal.y) < TOLERANCE;
 				case FaceSelections.FacingDown:
-					return Vertices[vertexIndex].Normal.y < -TOLERANCE;
+					return p=>Vertices[p.index].Normal.y < -TOLERANCE;
 				case FaceSelections.FacingCenter:
-					angle = Vector3.Angle(-Vertices[vertexIndex].Normal, Vertices[vertexIndex].Position);
-					return Math.Abs(angle) < TOLERANCE || Math.Abs(angle - 180) < TOLERANCE;
+					return p=>
+					{
+						var vertex = p.poly.Vertices[p.index];
+						var angle = Vector3.Angle(-Vertices[p.index].Normal, Vertices[p.index].Position);
+						return Math.Abs(angle) < TOLERANCE || Math.Abs(angle - 180) < TOLERANCE;
+					};
 				case FaceSelections.FacingIn:
-					return Vector3.Angle(-Vertices[vertexIndex].Normal, Vertices[vertexIndex].Position) >
+					return p=>Vector3.Angle(-Vertices[p.index].Normal, Vertices[p.index].Position) >
 					       90 - TOLERANCE;
 				case FaceSelections.FacingOut:
-					return Vector3.Angle(-Vertices[vertexIndex].Normal, Vertices[vertexIndex].Position) <
+					return p=>Vector3.Angle(-Vertices[p.index].Normal, Vertices[p.index].Position) <
 					       90 + TOLERANCE;
 				case FaceSelections.Existing:
-					return VertexRoles[vertexIndex] == Roles.Existing;
+					return p=>VertexRoles[p.index] == Roles.Existing;
 				case FaceSelections.Ignored:
-					return VertexRoles[vertexIndex] == Roles.Ignored;
+					return p=>VertexRoles[p.index] == Roles.Ignored;
 				case FaceSelections.New:
-					return VertexRoles[vertexIndex] == Roles.New;
+					return p=>VertexRoles[p.index] == Roles.New;
 				case FaceSelections.NewAlt:
-					return VertexRoles[vertexIndex] == Roles.NewAlt;
+					return p=>VertexRoles[p.index] == Roles.NewAlt;
 				case FaceSelections.AllNew:
-					return VertexRoles[vertexIndex] == Roles.New || VertexRoles[vertexIndex] == Roles.NewAlt;
+					return p=>VertexRoles[p.index] == Roles.New || VertexRoles[p.index] == Roles.NewAlt;
 				case FaceSelections.Odd:
-					return vertexIndex % 2 == 1;
+					return p=>p.index % 2 == 1;
 				case FaceSelections.Even:
-					return vertexIndex % 2 == 0;
+					return p=>p.index % 2 == 0;
 				case FaceSelections.OnlyFirst:
-					return vertexIndex == 0;
+					return p=>p.index == 0;
 				case FaceSelections.ExceptFirst:
-					return vertexIndex != 0;
+					return p=>p.index != 0;
 				case FaceSelections.Inner:
-					return !Vertices[vertexIndex].HasNakedEdge();
+					return p=>!Vertices[p.index].HasNakedEdge();
 				case FaceSelections.Outer:
-					return Vertices[vertexIndex].HasNakedEdge();
+					return p=>Vertices[p.index].HasNakedEdge();
 				case FaceSelections.Random:
-					return random.NextDouble() < 0.5;
+					return p=>random.NextDouble() < 0.5;
 			}
 
-			return Vertices[vertexIndex].Halfedges.Count == FaceSelectionToSides(vertexsel);
+			return p => p.poly.Vertices[p.index].Halfedges.Count == FaceSelectionToSides(vertexsel);
 		}
 
 		public void InitOctree()
