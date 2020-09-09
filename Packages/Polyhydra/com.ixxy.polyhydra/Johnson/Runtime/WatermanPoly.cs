@@ -16,7 +16,7 @@ namespace Johnson
 {
 	public static class WatermanPoly
 	{
-		public static ConwayPoly Build(float R = 1.0f, int root = 2, int c = 0, bool triangularFaces=false)
+		public static ConwayPoly Build(float R = 1.0f, int root = 2, int c = 0, bool mergeFaces=false)
 		{
 			ConwayPoly conway;
 			
@@ -128,7 +128,11 @@ namespace Johnson
 			var faceRoles = Enumerable.Repeat(ConwayPoly.Roles.New, faces.Count);
 			var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, verts.Count);
 			conway = new ConwayPoly(verts, faces, faceRoles, vertexRoles);
-			
+			if (mergeFaces)
+			{
+				conway = conway.MergeCoplanarFaces(.01f, 2000);
+			}
+
 			return conway;
 		}
 	}

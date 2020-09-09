@@ -18,8 +18,7 @@ public class DomeTest2 : MonoBehaviour
 
     public float DomeHeight = 1f;
     public int DomeSegments = 8;
-    [Range(0.001f, 1f)] public float DomeCurve1 = .01f;
-    [Range(0.001f, 2f)] public float DomeCurve2 = .01f;
+    public Easing.EasingType easingType;
     public PolyHydraEnums.ColorMethods ColorMethod;
     
     
@@ -77,7 +76,7 @@ public class DomeTest2 : MonoBehaviour
         walls = walls.Shell(0.025f);
         
         // Add domes to the roofs
-        var domes = roofs.Dome(FaceSelections.All, DomeHeight, DomeSegments, DomeCurve1, DomeCurve2);
+        var domes = roofs.Dome(FaceSelections.All, DomeHeight, DomeSegments, easingType);
 
         // Make nice patterns on the ground
         var ground = grid.Dual();

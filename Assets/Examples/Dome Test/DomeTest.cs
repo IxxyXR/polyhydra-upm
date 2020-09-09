@@ -1,4 +1,5 @@
 ﻿using Conway;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 
@@ -24,8 +25,8 @@ public class DomeTest : MonoBehaviour
     public FaceSelections domeFaceSel;
     public float DomeHeight = 1f;
     public int DomeSegments = 8;
-    [Range(0.001f, 1f)] public float DomeCurve1 = .01f;
-    [Range(0.001f, 2f)] public float DomeCurve2 = .01f;
+    public bool Lace;
+    public Easing.EasingType easingType;
     public Ops op2;
     public FaceSelections op2Facesel;
     public float op2Amount1 = 0;
@@ -60,13 +61,13 @@ public class DomeTest : MonoBehaviour
             var o1 = new OpParams {valueA = op1Amount1 * Mathf.Abs(op1Animate ? Mathf.Sin(Time.time) : 1), valueB = op1Amount2, facesel = op1Facesel};
             poly = poly.ApplyOp(op1, o1);
         }
-        poly = poly.Dome(domeFaceSel, DomeHeight, DomeSegments, DomeCurve1, DomeCurve2);
+        poly = poly.Dome(domeFaceSel, DomeHeight, DomeSegments, easingType, lace: Lace);
         if (ApplyOp)
         {
             var o2 = new OpParams {valueA = op2Amount1 * Mathf.Abs(op2Animate ? Mathf.Cos(Time.time * .6f) : 1), valueB = op2Amount2, facesel = op2Facesel};
             poly = poly.ApplyOp(op2, o2);
         }
-        //poly = poly.Transform(Position, Rotation, Scale);
+        poly = poly.Transform(Position, Rotation, Scale);
 
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;

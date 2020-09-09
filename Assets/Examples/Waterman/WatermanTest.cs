@@ -13,6 +13,8 @@ public class WatermanTest : MonoBehaviour
     [Range(0, 6)]
     public int c = 0;
 
+    public bool MergeFaces = false;
+
     public bool ApplyOps;
     public Ops op1;
     public FaceSelections op1Facesel;
@@ -61,7 +63,7 @@ public class WatermanTest : MonoBehaviour
     [ContextMenu("Generate")]
     public void Generate()
     {
-         poly = WatermanPoly.Build(1f, root, c);
+         poly = WatermanPoly.Build(1f, root, c, MergeFaces);
 
         if (ApplyOps)
         {
@@ -83,7 +85,7 @@ public class WatermanTest : MonoBehaviour
     }
 
     void OnDrawGizmos () {
-        // GizmoHelper.DrawGizmos(poly, false, false, true);
+        // GizmoHelper.DrawGizmos(poly, transform, true, false, false);
 	}
 
 

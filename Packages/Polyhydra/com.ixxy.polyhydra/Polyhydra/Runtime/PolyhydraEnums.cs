@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Conway;
+using UnityEngine;
 
 
 public static class PolyHydraEnums
@@ -777,5 +779,5 @@ public static class PolyHydraEnums
 			}
 		}
 	};
-
+	
 }

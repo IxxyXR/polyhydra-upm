@@ -37,7 +37,6 @@ public static class GizmoHelper
 		{
 			int gizmoColor = 0;
 			var faces = poly.Faces;
-			var verts = poly.Vertices;
 			for (int f = 0; f < faces.Count; f++)
 			{
 				Gizmos.color = Color.white;

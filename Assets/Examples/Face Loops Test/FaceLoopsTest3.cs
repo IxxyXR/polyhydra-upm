@@ -14,6 +14,8 @@ public class FaceLoopsTest3 : MonoBehaviour
     public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
     [Range(3, 32)] public int sides=5;
     [Range(0, 32)] public int splits;
+    [Range(0, 16)] public int edgeIndex;
+    [Range(0.001f, .999f)] public float splitRatio = 0.5f;
     public PolyHydraEnums.ColorMethods ColorMethod;
     
     public bool ApplyOp;
@@ -49,18 +51,21 @@ public class FaceLoopsTest3 : MonoBehaviour
         poly = JohnsonPoly.Build(JohnsonPolyType, sides);
 
         
-        // if (ApplyOp)
-        // {
-        // }
-
         Face face;
+        var sidesFilter = poly.FaceselToFaceFilterFunc(FaceSelections.FourSided);
+        var roleFilter = poly.FaceselToFaceFilterFunc(FaceSelections.New);
+        Func<FilterParams, bool> filterFunc = x => sidesFilter(x);
         for (int i = 0; i < splits; i++)
         {
-            face = poly.GetFace(new OpParams(FaceSelections.FourSided), 0);
+            face = poly.GetFace(new OpParams(filterFunc), 0);
             if (face != null)
             {
-                poly = poly.SplitLoop(poly.GetFaceLoop(face.GetHalfedges()[0]));
+                var edges = face.GetHalfedges();
+                poly = poly.SplitLoop(poly.GetFaceLoop(edges[edgeIndex % edges.Count]), splitRatio);
             }
+            // Change the filter after the first loop iteration as we can
+            // ensure we get the right face based on it's role
+            filterFunc = x => sidesFilter(x) && roleFilter(x);
         }
         
         if (ApplyOp)
