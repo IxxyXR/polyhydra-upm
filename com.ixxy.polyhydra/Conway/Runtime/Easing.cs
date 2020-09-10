@@ -38,7 +38,6 @@ public static class Easing
 	public enum EasingType
 	{
 		Linear,
-		BounceOut,
 		EaseInQuad,
 		EaseOutQuad,
 		EaseInOutQuad,
@@ -67,13 +66,13 @@ public static class Easing
 		EaseOutElastic,
 		EaseInOutElastic,
 		EaseInBounce,
+		EaseOutBounce,
 		EaseInOutBounce,
 	}
 	
 	public static Dictionary<EasingType, Func<float, float>> Funcs = new Dictionary<EasingType, Func<float, float>>
     {
 	    {EasingType.Linear, (x => x)},
-        {EasingType.BounceOut, _bounceOut},
         {EasingType.EaseInQuad, (x => x * x)},
         {EasingType.EaseOutQuad, (x => 1 - (1 - x) * (1 - x))},
         {EasingType.EaseInOutQuad, (x => x < 0.5 ? 2 * x * x : 1 - Mathf.Pow(-2 * x + 2, 2) / 2)},
@@ -132,6 +131,7 @@ public static class Easing
                         : (Mathf.Pow(2, -20 * x + 10) * Mathf.Sin((20 * x - 11.125f) * _c5)) / 2 + 1)
         },
         {EasingType.EaseInBounce, (x => 1 - _bounceOut(1 - x))},
+        {EasingType.EaseOutBounce, _bounceOut},
         {EasingType.EaseInOutBounce, (x => x < 0.5
                 ? (1 - _bounceOut(1 - 2 * x)) / 2
                 : (1 + _bounceOut(2 * x - 1)) / 2)
