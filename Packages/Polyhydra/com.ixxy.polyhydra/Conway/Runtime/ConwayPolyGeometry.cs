@@ -1435,11 +1435,8 @@ namespace Conway
             return loop;
         }
 
-        public ConwayPoly Dome(FaceSelections facesel, float height=1f, int segments = 4, Easing.EasingType easingType = Easing.EasingType.Linear, bool lace=false)
+        public ConwayPoly LoftAlongProfile(FaceSelections facesel, float height=1f, int segments = 4, Easing.EasingType easingType = Easing.EasingType.Linear, bool lace=false)
         {
-
-
-            
             var ratioValues = new List<float>();
             var offsetValues = new List<float>();
             for (float segment = 0; segment < segments; segment++)
@@ -1448,8 +1445,229 @@ namespace Conway
                 ratioValues.Add(i);
                 offsetValues.Add(Easing.Funcs[easingType](i));
             }
-            return LoftAlongProfile(new OpParams(1, height, facesel), ratioValues, offsetValues, lace: lace);
+            return LoftAlongProfile(new OpParams(1, height, facesel), ratioValues, offsetValues);
         }
+        
+                public ConwayPoly LoftAlongProfile(OpParams o, AnimationCurve profile,
+            AnimationCurve shear = null, AnimationCurve shearDirection = null,
+            bool flipProfile = false)
+        {
+            List<float> offsetValues, ratioValues;
+            if (flipProfile)
+            {
+                offsetValues = profile.keys.Select(x => 1 - x.value).ToList();
+                ratioValues = profile.keys.Select(x => x.time).ToList();
+            }
+            else
+            {
+                ratioValues = profile.keys.Select(x => 1 - x.value).ToList();
+                offsetValues = profile.keys.Select(x => x.time).ToList();
+            }
+            
+            List<float> shearValues = null;
+            if (shear != null)
+            {
+                shearValues = new List<float>();
+                foreach (var key in profile.keys)
+                {
+                    shearValues.Add(shear.Evaluate(key.time));
+                }
+            }
+
+            List<float> shearDirectionValues = null;
+            if (shear != null && shearDirection != null)
+            {
+                shearDirectionValues = new List<float>();
+                foreach (var key in profile.keys)
+                {
+                    shearDirectionValues.Add(shearDirection.Evaluate(key.time));
+                }
+            }
+            return LoftAlongProfile(o, 
+                ratioValues, offsetValues, 
+                shearValues, shearDirectionValues);
+        }
+
+        public ConwayPoly LoftAlongProfile(OpParams o, 
+            List<float> ratioValues, List<float> offsetValues, 
+            List<float> shearValues = null, List<float> shearDirectionValues = null)
+        {
+            bool lace = false;  // TODO
+            
+            var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
+            var faceIndices = new List<int[]>();
+            var vertexPoints = new List<Vector3>();
+            var existingVertices = new Dictionary<Vector3, int>();
+            var newVertices = new Dictionary<((Guid, Guid)?, int), int>();
+
+            var faceRoles = new List<Roles>();
+            var vertexRoles = new List<Roles>();
+
+            for (var i = 0; i < Vertices.Count; i++)
+            {
+                vertexPoints.Add(Vertices[i].Position);
+                vertexRoles.Add(Roles.Existing);
+                existingVertices[vertexPoints[i]] = i;
+            }
+
+            int vertexIndex = vertexPoints.Count();
+
+            // Create new vertices
+            for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
+            {
+                float ratio = o.GetValueA(this, faceIndex);
+                float offset = o.GetValueB(this, faceIndex);
+                var prevFaceTagSet = FaceTags[faceIndex];
+                var face = Faces[faceIndex];
+                int faceSides = face.Sides;
+                var faceNormal = face.Normal;
+                var offsetVector = faceNormal * (float) (offset * (o.randomize ? random.NextDouble() : 1));
+
+                if (IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc))
+                {
+                    
+                    var edge = face.Halfedge;
+                    var centroid = face.Centroid;
+
+                    int initialVertIndex = vertexPoints.Count;
+                    
+                    for (int section = 0; section < offsetValues.Count; section++)
+                    {
+
+                        float profileX = offsetValues[section];
+                        float profileY = ratioValues[section];
+
+                        // Create a new face for each existing face
+                        int newV = -1;
+                        int prevNewV = -1;
+                        int prevOtherNewV = -1;
+                        int otherv1;
+                        int otherv2;
+
+                        // Create vertices                        
+                        for (int i = 0; i < faceSides; i++)
+                        {
+                            Vector3 origin = (lace && section % 2 != 0) ? edge.Midpoint : edge.Vertex.Position;
+                            var newVertex = Vector3.LerpUnclamped(
+                                origin,
+                                centroid,
+                                ratio * profileY
+                            );
+
+                            newVertex += offsetVector * profileX;
+
+                            if (shearValues != null && shearValues[section] != 0)
+                            {
+                                float amount = shearValues[section];
+                                float direction = shearDirectionValues?[section] ?? 0;
+                                Vector3 tangent, tangentLeft, tangentUp, t1, t2;
+
+                                t1 = Vector3.Cross(faceNormal, Vector3.forward);
+                                t2 = Vector3.Cross(faceNormal, Vector3.left);
+
+                                if (t1.magnitude > t2.magnitude)
+                                {
+                                    tangentUp = t1;
+                                }
+                                else
+                                {
+                                    tangentUp = t2;
+                                }
+
+                                t2 = Vector3.Cross(faceNormal, Vector3.up);
+
+                                if (t1.magnitude > t2.magnitude)
+                                {
+                                    tangentLeft = t1;
+                                }
+                                else
+                                {
+                                    tangentLeft = t2;
+                                }
+
+                                tangent = Vector3.SlerpUnclamped(tangentUp, tangentLeft, direction);
+                                var vector = tangent * (amount * (float) (o.randomize ? random.NextDouble() : 1));
+                                newVertex = newVertex + vector;
+                            }
+
+                            vertexPoints.Add(newVertex);
+                            vertexRoles.Add(Roles.New);
+                            newVertices[(edge.Name, section)] = vertexIndex++;
+                            edge = edge.Next;
+                        }
+
+                        // Only build faces from the second row onwards
+                        if (section == 0) continue;
+                        
+                        int sectionVertIndexOffset = initialVertIndex + (section * faceSides);
+                        
+                        // Generate new faces
+                        for (int i = 0; i < faceSides; i++)
+                        {
+                            if (lace)
+                            {
+                                var newEdgeFace1 = new[]
+                                {
+                                    sectionVertIndexOffset + i - faceSides,
+                                    sectionVertIndexOffset + ((i + 1) % faceSides) - faceSides,
+                                    sectionVertIndexOffset + ((i + 1) % (faceSides))
+                                };
+                                faceIndices.Add(newEdgeFace1);
+                                faceRoles.Add(section % 2 == 0 ? Roles.New : Roles.NewAlt);
+                                newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                                
+                                var newEdgeFace2 = new[]
+                                {
+                                    sectionVertIndexOffset + i - faceSides,
+                                    sectionVertIndexOffset + ((i + 1) % (faceSides)),
+                                    sectionVertIndexOffset + i
+                                };
+                                faceIndices.Add(newEdgeFace2);
+                                faceRoles.Add(section % 2 == 0 ? Roles.New : Roles.NewAlt);
+                                newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+
+
+                            }
+                            else
+                            {
+                                var newEdgeFace = new[]
+                                {
+                                    sectionVertIndexOffset + i - faceSides,
+                                    sectionVertIndexOffset + ((i + 1) % faceSides) - faceSides,
+                                    sectionVertIndexOffset + ((i + 1) % (faceSides)),
+                                    sectionVertIndexOffset + i,
+                                };
+                                faceIndices.Add(newEdgeFace);
+                                faceRoles.Add(section % 2 == 0 ? Roles.New : Roles.NewAlt);
+                                newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                                
+                            }
+                        }
+
+                    }
+
+                    // Cap
+                    var newInsetFace = new List<int>();
+                    for (int i = faceSides; i > 0; i--)
+                    {
+                        newInsetFace.Add(vertexPoints.Count - i);
+                    };
+                    faceIndices.Add(newInsetFace.ToArray());
+                    faceRoles.Add(Roles.Existing);
+                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                }
+            }
+            
+            var poly = new ConwayPoly(vertexPoints, faceIndices, faceRoles, vertexRoles, newFaceTags);
+            //Add the ignored faces back in
+            var ignored = FaceRemove(new OpParams(o.facesel));
+            ignored.SetFaceRoles(Roles.Ignored);
+            ignored.SetVertexRoles(Roles.Ignored);
+            poly.Append(ignored);
+            return poly;
+        }
+
+
         
         /// <summary>
 		/// Thickens each mesh edge in the plane of the mesh surface.
