@@ -16,6 +16,7 @@ public class LoftProfileTest3 : MonoBehaviour
     public bool FlipProfile;
 
     [Range(0,1)]public float Jitter;
+    public FaceSelections faceSelection;
     [Range(0,1)]public float Density;
 
     public float DomeHeight = 1f;
@@ -63,7 +64,9 @@ public class LoftProfileTest3 : MonoBehaviour
         // Generate the ground grid and extrude random buildings
         var grid = Grids.Grids.MakeGrid(GridType, GridShape, width, depth);
         grid = grid.VertexRotate(new OpParams(Jitter, randomValues: true));
-        var floors = grid.FaceKeep(new OpParams(.1f, pickRandomly));
+        var faceSelectionFunc = grid.FaceselToFaceFilterFunc(faceSelection);
+        Func<FilterParams, bool> filterFunc = x => pickRandomly(x) && faceSelectionFunc(x);
+        var floors = grid.FaceKeep(new OpParams(.1f, filterFunc));
         var houses = floors.Loft(new OpParams(0, x=>Random.Range(.5f, 1.5f)));
         var (walls, roofs) = houses.Split(new OpParams(FaceSelections.Existing));
         

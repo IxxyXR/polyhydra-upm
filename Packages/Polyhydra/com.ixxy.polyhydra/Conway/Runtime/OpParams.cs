@@ -196,28 +196,25 @@ namespace Conway
             tags = selectByTags;
         }
 
-        public List<Tuple<string, ConwayPoly.TagType>> GetTagList(bool extrovertOnly=false)
+        public List<Tuple<string, ConwayPoly.TagType>> TagListFromString(bool introvert=false)
         {
             if (_tagList == null)
             {
-                _tagList = GetTagList(tags);
+                _tagList = TagListFromString(tags);
             }
 
             return _tagList;
         }
 
-        public static List<Tuple<string, ConwayPoly.TagType>> GetTagList(string tagString, bool extrovertOnly=false)
+        public static List<Tuple<string, ConwayPoly.TagType>> TagListFromString(string tagString, bool introvert=false)
         {
             var tagList = new List<Tuple<string, ConwayPoly.TagType>>();
             if (!string.IsNullOrEmpty(tagString))
             {
                 var substrings = tagString.Split(',');
                 if (substrings.Length == 0) substrings = new[] {tagString};
-                tagList = substrings.Select(item => new Tuple<string, ConwayPoly.TagType>(item, ConwayPoly.TagType.Extrovert)).ToList();
-                if (!extrovertOnly)
-                {
-                    tagList.Concat(substrings.Select(item => new Tuple<string, ConwayPoly.TagType>(item, ConwayPoly.TagType.Introvert)));
-                }
+                var tagType = introvert ? ConwayPoly.TagType.Introvert : ConwayPoly.TagType.Extrovert;
+                tagList = substrings.Select(item => new Tuple<string, ConwayPoly.TagType>(item, tagType)).ToList();
             }
 
             return tagList;

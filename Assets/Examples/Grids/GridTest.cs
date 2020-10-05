@@ -20,12 +20,14 @@ public class GridTest : MonoBehaviour
     public FaceSelections op1Facesel;
     public float op1Amount1 = 0;
     public float op1Amount2 = 0;
+    [Range(1, 5)] public int op1iterations;
     public bool op1Animate;
     public Ops op2;
     public FaceSelections op2Facesel;
     public float op2Amount1 = 0;
     public float op2Amount2 = 0;
     public bool op2Animate;
+    [Range(1, 5)] public int op2iterations;
     public PolyHydraEnums.ColorMethods ColorMethod;
 
     void Start()
@@ -52,10 +54,16 @@ public class GridTest : MonoBehaviour
         var poly = Grids.Grids.MakeGrid(GridType, GridShape, width, depth);
         if (ApplyOp)
         {
-            var o1 = new OpParams {valueA = op1Amount1 * Mathf.Abs(op1Animate ? Mathf.Sin(Time.time) : 1), valueB = op1Amount2, facesel = op1Facesel};
-            poly = poly.ApplyOp(op1, o1);
-            var o2 = new OpParams {valueA = op2Amount1 * Mathf.Abs(op2Animate ? Mathf.Cos(Time.time * .6f) : 1), valueB = op2Amount2, facesel = op2Facesel};
-            poly = poly.ApplyOp(op2, o2);
+            for (var i = 0; i < op1iterations; i++)
+            {
+                var o1 = new OpParams {valueA = op1Amount1 * Mathf.Abs(op1Animate ? Mathf.Sin(Time.time) : 1), valueB = op1Amount2, facesel = op1Facesel};
+                poly = poly.ApplyOp(op1, o1);
+            }
+            for (var i = 0; i < op2iterations; i++)
+            {
+                var o2 = new OpParams {valueA = op2Amount1 * Mathf.Abs(op2Animate ? Mathf.Cos(Time.time * .6f) : 1), valueB = op2Amount2, facesel = op2Facesel};
+                poly = poly.ApplyOp(op2, o2);
+            }
         }
         poly = poly.Transform(Position, Rotation, Scale);
 

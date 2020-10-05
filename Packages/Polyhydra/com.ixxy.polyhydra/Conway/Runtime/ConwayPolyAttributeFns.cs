@@ -13,7 +13,7 @@ namespace Conway
             var centroids = new List<Vector3>();
             for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
             {
-                if (!IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc)) continue;
+                if (!IncludeFace(faceIndex, o.facesel, o.TagListFromString(), o.filterFunc)) continue;
                 centroids.Add(Faces[faceIndex].Centroid);
             }
 

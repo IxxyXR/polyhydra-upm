@@ -73,13 +73,14 @@ public class FaceLoopsTest : MonoBehaviour
         var edges = face.GetHalfedges();
         var startingEdge = edges[ConwayPoly.ActualMod(StartingEdge, edges.Count)];
         loop = poly.GetFaceLoop(startingEdge);
+        var faceIndices = loop.Select(x=>x.Item1).ToList();
         if (LoopAction == LoopActions.Remove)
         {
-            poly = poly.FaceRemove(false, loop.Select(x=>x.Item1).ToList());
+            poly = poly.FaceRemove(false, faceIndices);
         }
         else if (LoopAction == LoopActions.Keep)
         {
-            poly = poly.FaceRemove(true, loop.Select(x=>x.Item1).ToList());
+            poly = poly.FaceRemove(true, faceIndices);
         }
         else if (LoopAction == LoopActions.SplitFaces)
         {
@@ -87,9 +88,9 @@ public class FaceLoopsTest : MonoBehaviour
         }
         else if (LoopAction == LoopActions.Split)
         {
-            var otherPoly = poly.FaceRemove(false, loop.Select(x=>x.Item1).ToList());
-            poly = poly.FaceRemove(true, loop.Select(x=>x.Item1).ToList());
+            ConwayPoly otherPoly;
             
+            (otherPoly, poly) = poly.Split(new OpParams(x=>faceIndices.Contains(x.index)));
             poly.FaceRoles = Enumerable.Repeat(ConwayPoly.Roles.Existing, poly.Faces.Count).ToList();
             poly.VertexRoles = Enumerable.Repeat(ConwayPoly.Roles.Existing, poly.Vertices.Count).ToList();
             otherPoly.FaceRoles = Enumerable.Repeat(ConwayPoly.Roles.New, otherPoly.Faces.Count).ToList();
@@ -100,10 +101,9 @@ public class FaceLoopsTest : MonoBehaviour
         else if (LoopAction == LoopActions.SetRole)
         {
             var faceRoles = new List<ConwayPoly.Roles>();
-            var loopIndices = loop.Select(x => x.Item1);
             for (var faceIndex = 0; faceIndex < poly.Faces.Count; faceIndex++)
             {
-                faceRoles.Add(loopIndices.Contains(faceIndex) ? ConwayPoly.Roles.Existing : ConwayPoly.Roles.New);
+                faceRoles.Add(faceIndices.Contains(faceIndex) ? ConwayPoly.Roles.Existing : ConwayPoly.Roles.New);
             }
             poly.FaceRoles = faceRoles;
         }

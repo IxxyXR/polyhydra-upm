@@ -312,7 +312,7 @@ namespace Conway
             {
                 float amount = o.GetValueA(this, vertexIndex);
                 var vertex = Vertices[vertexIndex];
-                if (IncludeVertex(vertexIndex, o.facesel, o.GetTagList(), o.filterFunc))
+                if (IncludeVertex(vertexIndex, o.facesel, o.TagListFromString(), o.filterFunc))
                 {
                     vertexPoints.Add(Vector3.LerpUnclamped(vertex.Position, vertex.Position.normalized, amount));
                     VertexRoles[vertexIndex] = Roles.Existing;
