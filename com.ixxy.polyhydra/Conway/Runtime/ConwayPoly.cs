@@ -387,12 +387,13 @@ namespace Conway
 		}
 
 		public bool IncludeFace(int faceIndex, FaceSelections facesel,
-			IEnumerable<Tuple<string, TagType>> tagList = null, Func<FilterParams, bool> filterFunc = null)
+			IEnumerable<Tuple<string, TagType>> tagList = null, 
+			Func<FilterParams, bool> filterFunc = null)
 		{
 			bool include = true;
 			if (tagList != null && tagList.Any())
-			{  // Return true if any tags match
-				include = tagList.Intersect(FaceTags[faceIndex]).Any();
+			{  // Return true if any tag strings match
+				include = tagList.Select(x=>x.Item1).Intersect(FaceTags[faceIndex].Select(x=>x.Item1)).Any();
 			}
 			filterFunc = filterFunc ?? FaceselToFaceFilterFunc(facesel);
 			return include && filterFunc(new FilterParams(this, faceIndex));
@@ -893,7 +894,7 @@ namespace Conway
 			for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
 			{
 				var face = Faces[faceIndex];
-				if (IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc))
+				if (IncludeFace(faceIndex, o.facesel, o.TagListFromString(), o.filterFunc))
 				{
 					matchedFaces.Add(face);
 				}

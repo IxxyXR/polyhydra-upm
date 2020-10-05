@@ -311,7 +311,7 @@ namespace Conway
             {
                 float amount = o.GetValueA(this, vertexIndex);
                 var v = Vertices[vertexIndex];
-                if (IncludeVertex(vertexIndex, o.facesel, o.GetTagList(), o.filterFunc))
+                if (IncludeVertex(vertexIndex, o.facesel, o.TagListFromString(), o.filterFunc))
                 {
                     foreach (var edge in v.Halfedges)
                     {
@@ -362,7 +362,7 @@ namespace Conway
                         pos2 = faceEdges[ActualMod((i + 1), faceEdges.Count)].PointAlongEdge(1 - amount);
                     }
 
-                    if (IncludeVertex(GetVertID(edge.Vertex), o.facesel, o.GetTagList(), o.filterFunc))
+                    if (IncludeVertex(GetVertID(edge.Vertex), o.facesel, o.TagListFromString(), o.filterFunc))
                     {
                         centerFace.Add(newVerts[pos1]);
                         centerFace.Add(newVerts[pos2]);
@@ -387,7 +387,7 @@ namespace Conway
                 float amount = o.GetValueA(this, vertexIndex);
 
                 var vertex = Vertices[vertexIndex];
-                if (!IncludeVertex(GetVertID(vertex), o.facesel, o.GetTagList(), o.filterFunc)) continue;
+                if (!IncludeVertex(GetVertID(vertex), o.facesel, o.TagListFromString(), o.filterFunc)) continue;
                 bool boundary = false;
                 var edges = vertex.Halfedges;
 
@@ -1050,7 +1050,7 @@ namespace Conway
             {
                 var prevFaceTagSet = FaceTags[faceIndex];
                 bool includeFace = selectedFaces == null || selectedFaces.Contains(faceIndex);
-                includeFace &= IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc);
+                includeFace &= IncludeFace(faceIndex, o.facesel, o.TagListFromString(), o.filterFunc);
                 if (includeFace)
                 {
                     var face = Faces[faceIndex];
@@ -1413,11 +1413,12 @@ namespace Conway
             {
                 float ratio = o.GetValueA(this, faceIndex);
                 float offset = o.GetValueB(this, faceIndex);
-                var prevFaceTagSet = FaceTags[faceIndex];
+                var prevExtrovertTags = FaceTags[faceIndex].Where(x=>x.Item2==TagType.Extrovert);
+                var prevFaceTags = FaceTags[faceIndex];
                 var face = Faces[faceIndex];
                 var offsetVector = face.Normal * (float) (offset * (o.randomize ? random.NextDouble() : 1));
 
-                if (IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc))
+                if (IncludeFace(faceIndex, o.facesel, o.TagListFromString(), o.filterFunc))
                 {
                     var edge = face.Halfedge;
                     var centroid = face.Centroid;
@@ -1459,7 +1460,7 @@ namespace Conway
                                 faceRoles.Add(Roles.NewAlt);
                             }
 
-                            newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                            newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevExtrovertTags));
                         }
 
                         prevNewV = newV;
@@ -1478,12 +1479,12 @@ namespace Conway
                     };
                     faceIndices.Add(finalFace);
                     faceRoles.Add(Roles.New);
-                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevExtrovertTags));
 
                     // Inner face
                     faceIndices.Add(newInsetFace);
                     faceRoles.Add(Roles.Existing);
-                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTags));
                 }
                 else
                 {
@@ -1492,7 +1493,7 @@ namespace Conway
                             x => existingVertices[x.Vertex.Position]
                         ).ToArray());
                     faceRoles.Add(Roles.Ignored);
-                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
+                    newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTags));
                 }
             }
 
@@ -1669,7 +1670,7 @@ namespace Conway
                 var face = Faces[faceIndex];
                 var offsetVal = (float) (offset * (o.randomize ? random.NextDouble() : 1));
                 var offsetVector = face.Normal * offsetVal;
-                if (joined || opposite || IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc))
+                if (joined || opposite || IncludeFace(faceIndex, o.facesel, o.TagListFromString(), o.filterFunc))
                 {
                     var edge = face.Halfedge;
                     var centroid = face.Centroid;
@@ -1847,7 +1848,7 @@ namespace Conway
                 float ratio = o.GetValueA(this, faceIndex);
                 var prevFaceTagSet = FaceTags[faceIndex];
                 var face = Faces[faceIndex];
-                if (join || IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc))
+                if (join || IncludeFace(faceIndex, o.facesel, o.TagListFromString(), o.filterFunc))
                 {
                     var edge = face.Halfedge;
                     var centroid = face.Centroid;
@@ -2668,7 +2669,7 @@ namespace Conway
                         newInnerVertices[edge.Name],
                     };
                     faceIndices.Add(innerFace);
-                    faceRoles.Add(j % 2 == 0 ? Roles.Existing : Roles.ExistingAlt);
+                    faceRoles.Add((j % 2) == 1 && (edges.Count % 2) == 0 ? Roles.ExistingAlt : Roles.Existing);
                     newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
 
                     var edgeFace1 = new List<int>
@@ -3027,7 +3028,7 @@ namespace Conway
             for (int faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
             {
                 var prevFaceTagSet = FaceTags[faceIndex];
-                bool includeFace = IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc);
+                bool includeFace = IncludeFace(faceIndex, o.facesel, o.TagListFromString(), o.filterFunc);
                 var face = Faces[faceIndex];
                 if (includeFace && face.Sides % 2 == 0)  // Only even sided faces
                 {
@@ -3059,7 +3060,7 @@ namespace Conway
                             initialVertIndex
                         }
                     );
-                    faceRoles.Add(Roles.New);
+                    faceRoles.Add(Roles.NewAlt);
                     newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
                     
                     faceIndices.Add(
@@ -3070,7 +3071,7 @@ namespace Conway
                             oppositeVertIndex
                         }
                     );
-                    faceRoles.Add(Roles.New);
+                    faceRoles.Add(Roles.NewAlt);
                     newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
 
                     var newFace1 = new List<int>();
@@ -3082,7 +3083,7 @@ namespace Conway
                     newFace1.Add(oppositeVertIndex);
                     newFace1.Add(initialVertIndex);
                     faceIndices.Add(newFace1);
-                    faceRoles.Add(Roles.NewAlt);
+                    faceRoles.Add(Roles.New);
                     newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
                     
                     var newFace2 = new List<int>();
@@ -3094,7 +3095,7 @@ namespace Conway
                     newFace2.Add(initialVertIndex);
                     newFace2.Add(oppositeVertIndex);
                     faceIndices.Add(newFace2);
-                    faceRoles.Add(Roles.NewAlt);
+                    faceRoles.Add(Roles.New);
                     newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
                 }
                 else
@@ -3132,7 +3133,7 @@ namespace Conway
                 var edges = face.GetHalfedges();
                 int oppositeVertexIndex = (vertexOffset + (face.Sides / 2) % face.Sides);
                 var prevFaceTagSet = FaceTags[faceIndex];
-                bool includeFace = IncludeFace(faceIndex, o.facesel, o.GetTagList(), o.filterFunc);
+                bool includeFace = IncludeFace(faceIndex, o.facesel, o.TagListFromString(), o.filterFunc);
                 if (includeFace && face.Sides % 2 == 0 )  // Only even sided faces > 4
                 {
                     var newFace1 = new List<int>();
@@ -3143,7 +3144,7 @@ namespace Conway
                     }
                     newFace1.Add(vlookup[edges[oppositeVertexIndex].Vertex.Name]);
                     faceIndices.Add(newFace1);
-                    faceRoles.Add(Roles.NewAlt);
+                    faceRoles.Add(Roles.New);
                     newFaceTags.Add(new HashSet<Tuple<string, TagType>>(prevFaceTagSet));
                     
                     var newFace2 = new List<int>();

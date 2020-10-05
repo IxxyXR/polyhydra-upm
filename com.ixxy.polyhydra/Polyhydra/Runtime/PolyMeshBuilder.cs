@@ -42,7 +42,7 @@ public static class PolyMeshBuilder
 
     public static Mesh BuildMeshFromConwayPoly(
 		ConwayPoly conway,
-		bool generateSubmeshes,
+		bool generateSubmeshes = false,
 		Color[] colors = null,
 		PolyHydraEnums.ColorMethods colorMethod = PolyHydraEnums.ColorMethods.ByRole,
 		bool largeMeshFormat = true
@@ -74,7 +74,8 @@ public static class PolyMeshBuilder
 		var meshUVs = new List<Vector2>();
 		var edgeUVs = new List<Vector2>();
 		var barycentricUVs = new List<Vector3>();
-		var miscUVs = new List<Vector4>();
+		var miscUVs1 = new List<Vector4>();
+		var miscUVs2 = new List<Vector4>();
 
 		List<ConwayPoly.Roles> uniqueRoles = null;
 		List<int> uniqueSides = null;
@@ -172,7 +173,8 @@ public static class PolyMeshBuilder
 			}
 			faceScale /= face.Sides;
 
-			var miscUV = new Vector4(faceScale, face.Sides, faceCentroid.magnitude, ((float)i)/faceIndices.Length);
+			var miscUV1 = new Vector4(faceScale, face.Sides, faceCentroid.magnitude, ((float)i)/faceIndices.Length);
+			var miscUV2 = new Vector4(faceCentroid.x, faceCentroid.y, faceCentroid.z, i);
 
 			var faceTris = new List<int>();
 
@@ -201,7 +203,8 @@ public static class PolyMeshBuilder
 
 					meshNormals.AddRange(Enumerable.Repeat(faceNormal, 3));
 					meshColors.AddRange(Enumerable.Repeat(color, 3));
-					miscUVs.AddRange(Enumerable.Repeat(miscUV, 3));
+					miscUVs1.AddRange(Enumerable.Repeat(miscUV1, 3));
+					miscUVs2.AddRange(Enumerable.Repeat(miscUV2, 3));
 				}
 			}
 			else
@@ -225,7 +228,8 @@ public static class PolyMeshBuilder
 				edgeUVs.AddRange(Enumerable.Repeat(new Vector2(1, 1), 3));
 				meshNormals.AddRange(Enumerable.Repeat(faceNormal, 3));
 				meshColors.AddRange(Enumerable.Repeat(color, 3));
-				miscUVs.AddRange(Enumerable.Repeat(miscUV, 3));
+				miscUVs1.AddRange(Enumerable.Repeat(miscUV1, 3));
+				miscUVs2.AddRange(Enumerable.Repeat(miscUV2, 3));
 			}
 
 			if (generateSubmeshes)
@@ -283,7 +287,8 @@ public static class PolyMeshBuilder
 		target.SetUVs(0, meshUVs);
 		target.SetUVs(1, edgeUVs);
 		target.SetUVs(2, barycentricUVs);
-		target.SetUVs(3, miscUVs);
+		target.SetUVs(3, miscUVs1);
+		target.SetUVs(4, miscUVs2);
 
 		target.RecalculateTangents();
 		return target;
