@@ -311,7 +311,7 @@ GameObject:
   - component: {fileID: 1378306807}
   - component: {fileID: 1378306810}
   m_Layer: 0
-  m_Name: BlendShapes
+  m_Name: BlendShapes Sequencer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -326,11 +326,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1378306806}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9186ba358eb992f459f7d322a4440385, type: 3}
+  m_Script: {fileID: 11500000, guid: cb49e43ff56e3b44eaa193e71bb7e844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  JohnsonPolyType: 7
-  sides: 6
+  duration: 4
+  transitionRatio: 1
+  JohnsonPolyType: 5
+  sides: 4
   ColorMethod: 1
   PreMorph:
     op: 0
@@ -338,20 +340,30 @@ MonoBehaviour:
     opAmount1: 0
     opAmount2: 0
   Morphs:
-  - op: 4
+  - op: 15
     opFacesel: 0
     opAmount1Start: 0.001
     opAmount1End: 0.49999
     opAmount2Start: 0.001
     opAmount2End: 0.49999
-    frequency: 1
   - op: 40
-    opFacesel: 14
-    opAmount1Start: 0
+    opFacesel: 28
+    opAmount1Start: -0.2
     opAmount1End: 0.2
     opAmount2Start: 0
     opAmount2End: 0
-    frequency: 1.333
+  - op: 18
+    opFacesel: 28
+    opAmount1Start: 0.001
+    opAmount1End: 0.49999
+    opAmount2Start: 0.001
+    opAmount2End: 0.49999
+  - op: 39
+    opFacesel: 28
+    opAmount1Start: 0.001
+    opAmount1End: 0.49999
+    opAmount2Start: 0.001
+    opAmount2End: 0.49999
   PostMorph:
     op: 0
     opFacesel: 13

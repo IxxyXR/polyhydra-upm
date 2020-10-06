@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 
-public class PolyMorphSimpler : MonoBehaviour
+public class BlendShapes : MonoBehaviour
 {
     [Serializable]
     public struct PolyOpItem
@@ -57,7 +57,6 @@ public class PolyMorphSimpler : MonoBehaviour
 
     public Mesh MakeMorphTarget(int morphIndex, float amount)
     {
-        Debug.Log($"Making morphIndex {morphIndex}");
         var morphedPoly = poly.Duplicate();
         for (var i = 0; i < Morphs.Count; i++)
         {
@@ -147,6 +146,5 @@ public class PolyMorphSimpler : MonoBehaviour
             
             polymorphSkinnedMeshRenderer.SetBlendShapeWeight(blendFrame, Mathf.Lerp(0, 100, val));
         }
-        polymorphSkinnedMeshRenderer.sharedMesh.RecalculateNormals();
-        polymorphSkinnedMeshRenderer.sharedMesh.RecalculateTangents();        }
+    }
 }
