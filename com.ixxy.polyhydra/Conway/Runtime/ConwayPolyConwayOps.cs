@@ -1516,11 +1516,8 @@ namespace Conway
 
             for (var vertexIndex = 0; vertexIndex < Vertices.Count; vertexIndex++)
             {
-                float offset = o.GetValueB(this, vertexIndex);
-
-                var offsetVal = (float) (offset * (o.randomize ? random.NextDouble() : 1));
                 var pos = Vertices[vertexIndex].Position;
-                vertexPoints.Add(pos - Vertices[vertexIndex].Normal * offsetVal);
+                vertexPoints.Add(pos);
                 vertexRoles.Add(Roles.Existing);
                 existingVertices[pos] = vertexIndex;
             }
@@ -1530,7 +1527,10 @@ namespace Conway
             // Create new edge vertices
             foreach (var edge in Halfedges)
             {
-                vertexPoints.Add(edge.Midpoint);
+                var pos = edge.Midpoint;
+                float offset = o.GetValueB(this, Faces.IndexOf(edge.Face));
+                var offsetVal = (float) (offset * (o.randomize ? random.NextDouble() : 1));
+                vertexPoints.Add(pos - edge.Face.Normal * offsetVal);
                 vertexRoles.Add(Roles.New);
                 newEdgeVertices[edge.PairedName] = currentVertexIndex++;
             }
@@ -2305,9 +2305,6 @@ namespace Conway
 
         public ConwayPoly Propeller(OpParams o)
         {
-            float ratio = o.GetValueA(this, 0);
-            ratio = 1 - ratio;
-
             var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
 
             var faceIndices = new List<int[]>();
@@ -2331,6 +2328,7 @@ namespace Conway
             for (var i = 0; i < Halfedges.Count; i++)
             {
                 var edge = Halfedges[i];
+                float ratio = 1 - o.GetValueA(this, Faces.IndexOf(edge.Face));
                 vertexPoints.Add(edge.PointAlongEdge(ratio));
                 newEdgeVertices[edge.Name.ToString()] = vertexIndex++;
                 vertexRoles.Add(Roles.New);
@@ -2414,7 +2412,6 @@ namespace Conway
 
         public ConwayPoly Whirl(OpParams o)
         {
-            float ratio = o.GetValueA(this, 0);
             var newFaceTags = new List<HashSet<Tuple<string, TagType>>>();
 
             var faceIndices = new List<int[]>();
@@ -2438,6 +2435,8 @@ namespace Conway
             for (var i = 0; i < Halfedges.Count; i++)
             {
                 var edge = Halfedges[i];
+                // Choosing a face index is a bit arbitrary but what can we do?
+                float ratio = o.GetValueA(this, Faces.IndexOf(edge.Face));
                 vertexPoints.Add(edge.PointAlongEdge(ratio));
                 vertexRoles.Add(Roles.New);
                 newEdgeVertices[edge.Name.ToString()] = vertexIndex++;
@@ -2463,6 +2462,7 @@ namespace Conway
                     var edge = edges[i];
                     var direction = (face.Centroid - edge.Midpoint) * 2;
                     var pointOnEdge = vertexPoints[newEdgeVertices[edge.Name.ToString()]];
+                    float ratio = o.GetValueA(this, Faces.IndexOf(edge.Face));
                     vertexPoints.Add(Vector3.LerpUnclamped(pointOnEdge, pointOnEdge + direction, ratio));
                     vertexRoles.Add(Roles.NewAlt);
                     newInnerVertices[edge.Name.ToString()] = vertexIndex++;
