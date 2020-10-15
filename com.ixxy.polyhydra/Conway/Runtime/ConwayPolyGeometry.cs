@@ -35,7 +35,7 @@ namespace Conway
                 v.Position = Vector3.Reflect(v.Position, axis);
             }
         }
-
+        
         public ConwayPoly AddCopy(Vector3 axis, float amount, FaceSelections facesel = FaceSelections.All,
             string tags = "")
         {
@@ -120,6 +120,16 @@ namespace Conway
             }
         }
 
+        public void Morph(ConwayPoly target, float amount, bool reverseVertexOrder)
+        {
+            int minVertCount = Mathf.Min(Vertices.Count, target.Vertices.Count);
+            for (var i = 0; i < minVertCount; i++)
+            {
+                var targetPos = target.Vertices[reverseVertexOrder ? minVertCount - i - 1 : i].Position;
+                Vertices[i].Position = Vector3.LerpUnclamped(Vertices[i].Position, targetPos, amount);
+            }
+        }
+        
         public ConwayPoly SitLevel(float faceFactor = 0)
         {
             int faceIndex = Mathf.FloorToInt(Faces.Count * faceFactor);

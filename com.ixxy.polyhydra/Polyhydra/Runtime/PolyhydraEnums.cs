@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Conway;
 using UnityEngine;
 
@@ -42,6 +43,7 @@ public static class PolyHydraEnums
 		Cylinder,
 		Cone,
 		Sphere,
+		Polar,
 //		Conic_Frustum,
 //		Mobius,
 //		Torus_Trefoil,
@@ -129,11 +131,29 @@ public static class PolyHydraEnums
 	    public bool usesFaces = false;
 	    public bool usesRandomize = false;
 	    public FaceSelections faceSelection = FaceSelections.All;
+	    public int[,] matrix;
+    }
+    
+    public static (int v, int e, int f) CalcVef(ConwayPoly poly, Ops op)
+    {
+	    var matrix = OpConfigs[op].matrix;
+	    int v = poly.Vertices.Count;
+	    int e = poly.EdgeCount;
+	    int f = poly.Faces.Count;
+	    return (
+		    (matrix[0, 0] * v) + (matrix[0, 1] * e) + (matrix[0, 2] * f),
+		    (matrix[1, 0] * v) + (matrix[1, 1] * e) + (matrix[1, 2] * f),
+		    (matrix[2, 0] * v) + (matrix[2, 1] * e) + (matrix[2, 2] * f)
+	    );
     }
 
-	public static Dictionary<Ops, OpConfig> OpConfigs = new Dictionary<Ops, OpConfig>
+    public static Dictionary<Ops, OpConfig> OpConfigs = new Dictionary<Ops, OpConfig>
 	{
-		{Ops.Identity, new OpConfig {usesAmount = false}},
+		{Ops.Identity, new OpConfig
+		{
+			usesAmount = false,
+			matrix = new int[,]{{1,0,0},{0,1,0},{0,0,1}}
+		}},
 		{
 			Ops.Kis,
 			new OpConfig
@@ -141,18 +161,28 @@ public static class PolyHydraEnums
 				usesFaces = true,
 				amountDefault = 0.1f,
 				amountMin = -6, amountMax = 6, amountSafeMin = -0.5f, amountSafeMax = 0.999f,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{1,0,1},{0,3,0},{0,2,0}}
 			}
 		},
-		{Ops.Dual, new OpConfig {usesAmount = false}},
-		{Ops.Ambo, new OpConfig {usesAmount = false}},
+		{Ops.Dual, new OpConfig
+		{
+			usesAmount = false,
+			matrix = new int[,]{{0,0,1},{0,1,0},{1,0,0}}
+		}},
+		{Ops.Ambo, new OpConfig
+		{
+			usesAmount = false,
+			matrix = new int[,]{{0,1,0},{0,2,0},{1,0,1}}
+		}},
 		{
 			Ops.Zip,
 			new OpConfig
 			{
 				amountDefault = 0.5f,
 				amountMin = -2f, amountMax = 2f, amountSafeMin = 0.0001f, amountSafeMax = .999f,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{0,2,0},{0,3,0},{1,0,1}}
 			}
 		},
 		{
@@ -160,7 +190,8 @@ public static class PolyHydraEnums
 			new OpConfig
 			{
 				amountDefault = 0.5f,
-				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f
+				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
+				matrix = new int[,]{{0,2,0},{0,4,0},{1,1,1}}
 			}
 		},
 		{
@@ -172,7 +203,9 @@ public static class PolyHydraEnums
 				usesAmount2 = true,
 				amount2Default = 0.25f,
 				amount2Min = -6, amount2Max = 6, amount2SafeMin = 0.001f, amount2SafeMax = 0.4999f,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{0,4,0},{0,6,0},{1,1,1}}
+
 			}
 		},
 		{
@@ -180,7 +213,8 @@ public static class PolyHydraEnums
 			new OpConfig
 			{
 				amountDefault = 0.5f,
-				amountMin = -1f, amountMax = 2f, amountSafeMin = -0.5f, amountSafeMax = 0.999f
+				amountMin = -1f, amountMax = 2f, amountSafeMin = -0.5f, amountSafeMax = 0.999f,
+				matrix = new int[,]{{1,0,1},{0,2,0},{0,1,0}}
 			}
 		},
 		{ // TODO Support random
@@ -189,8 +223,9 @@ public static class PolyHydraEnums
 			{
 				amountDefault = 0f,
 				amountMin = -6, amountMax = 6, amountSafeMin = -0.5f, amountSafeMax = 0.5f,
-				usesRandomize = true
-			}
+				usesRandomize = true,
+				matrix = new int[,]{{1,0,1},{0,3,0},{0,2,0}}
+}
 		},
 		{
 			Ops.Ortho,
@@ -198,7 +233,8 @@ public static class PolyHydraEnums
 			{
 				amountDefault = 0.1f,
 				amountMin = -6, amountMax = 6, amountSafeMin = -0.5f, amountSafeMax = 0.999f,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{1,1,1},{0,4,0},{0,2,0}}
 			}
 		},
 		{
@@ -210,7 +246,9 @@ public static class PolyHydraEnums
 				usesAmount2 = true,
 				amount2Default = 0f,
 				amount2Min = -3, amount2Max = 3, amount2SafeMin = -0.5f, amount2SafeMax = 0.99f,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{1,1,1},{0,6,0},{0,4,0}}
+
 			}
 		},
 		{
@@ -220,7 +258,8 @@ public static class PolyHydraEnums
 				usesFaces = true,
 				amountDefault = 0.3f,
 				amountMin = -6, amountMax = 6, amountSafeMin = 0.001f, amountSafeMax = 0.499f,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{0,2,0},{0,3,0},{1,0,1}},
 			}
 		},
 		{
@@ -230,7 +269,8 @@ public static class PolyHydraEnums
 				amountDefault = 0.33f,
 				amountMin = -.5f, amountMax = 0.5f, amountSafeMin = 0.001f, amountSafeMax = 0.499f,
 				usesAmount2 = true,
-				amount2Min = -3, amount2Max = 3, amount2SafeMin = -0.5f, amount2SafeMax = 1
+				amount2Min = -3, amount2Max = 3, amount2SafeMin = -0.5f, amount2SafeMax = 1.0f,
+				matrix = new int[,]{{1,2,1},{0,5,0},{0,2,0}}
 			}
 		},
 		{
@@ -238,13 +278,15 @@ public static class PolyHydraEnums
 			new OpConfig
 			{
 				amountDefault = 0.5f,
-				amountMin = -1f, amountMax = 1f, amountSafeMin = 0.001f, amountSafeMax = 0.999f
+				amountMin = -1f, amountMax = 1f, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
+				matrix = new int[,]{{0,2,0},{0,5,0},{1,2,1}}
 			}
 		},
 		{Ops.Subdivide, new OpConfig
 		{
 			amountDefault = 0,
 			amountMin = -3, amountMax = 3, amountSafeMin = -0.5f, amountSafeMax = 1,
+			matrix = new int[,]{{1,1,0},{0,6,0},{0,0,5}}
 		}},
 		{
 			Ops.Loft,
@@ -255,7 +297,8 @@ public static class PolyHydraEnums
 				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
 				usesAmount2 = true,
 				amount2Min = -3, amount2Max = 3, amount2SafeMin = -1, amount2SafeMax = 1,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{1,2,0},{0,5,0},{0,2,1}}
 			}
 		},
 		{
@@ -263,7 +306,8 @@ public static class PolyHydraEnums
 			new OpConfig
 			{
 				amountDefault = 0.5f,
-				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f
+				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
+				matrix = new int[,]{{1,2,0},{0,4,0},{0,1,1}}
 			}
 		},
 		{
@@ -274,7 +318,8 @@ public static class PolyHydraEnums
 				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
 				usesAmount2 = true,
 				amount2Min = -3, amount2Max = 3, amount2SafeMin = -0.5f, amount2SafeMax = 1,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{1,3,0},{0,6,0},{0,2,1}}
 			}
 		},
 		{
@@ -286,7 +331,8 @@ public static class PolyHydraEnums
 				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
 				usesAmount2 = true,
 				amount2Min = -3, amount2Max = 3, amount2SafeMin = -0.5f, amount2SafeMax = 1,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{1,2,0},{0,7,0},{0,4,1}}
 			}
 		},
 		{
@@ -297,7 +343,8 @@ public static class PolyHydraEnums
 				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
 				usesAmount2 = true,
 				amount2Min = -3, amount2Max = 3, amount2SafeMin = -0.5f, amount2SafeMax = 1,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{1,2,0},{0,6,0},{0,3,1}}
 			}
 		},
 		{
@@ -308,7 +355,8 @@ public static class PolyHydraEnums
 				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
 				usesAmount2 = true,
 				amount2Min = -3, amount2Max = 3, amount2SafeMin = -0.5f, amount2SafeMax = 1,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{1,2,0},{0,7,0},{0,4,1}}
 			}
 		},
 		{
@@ -319,6 +367,7 @@ public static class PolyHydraEnums
 				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
 				usesAmount2 = true,
 				amount2Min = -3, amount2Max = 3, amount2SafeMin = -0.5f, amount2SafeMax = 1,
+				matrix = new int[,]{{1,2,1},{0,8,0},{0,5,0}}
 			}
 		},
 		{
@@ -326,7 +375,8 @@ public static class PolyHydraEnums
 			new OpConfig
 			{
 				usesFaces = true,
-				amountDefault = 0.5f, amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f
+				amountDefault = 0.5f, amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
+				matrix = new int[,]{{1,2,1},{0,7,0},{0,4,0}}
 			}
 		},
 		{
@@ -334,7 +384,8 @@ public static class PolyHydraEnums
 			new OpConfig
 			{
 				amountDefault = 0.5f,
-				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f
+				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
+				matrix = new int[,]{{1,2,1},{0,6,0},{0,3,0}}
 			}
 		},
 		{
@@ -345,6 +396,7 @@ public static class PolyHydraEnums
 				amountMin = 2, amountMax = 8, amountSafeMin = 1, amountSafeMax = 6,
 				usesAmount2 = true,
 				amount2Min = -3, amount2Max = 3, amount2SafeMin = -0.5f, amount2SafeMax = 1,
+				matrix = new int[,]{{1,2,1},{0,7,0},{0,4,0}}  // Only valid for n=1
 			}
 		},
 		{
@@ -355,6 +407,7 @@ public static class PolyHydraEnums
 				amountMin = 2, amountMax = 8, amountSafeMin = 1, amountSafeMax = 6,
 				usesAmount2 = true,
 				amount2Min = -3, amount2Max = 3, amount2SafeMin = -0.5f, amount2SafeMax = 1,
+				matrix = new int[,]{{1,2,1},{1,7,0},{1,4,0}}  // Only valid for n=1
 			}
 		},
 		// {
@@ -372,7 +425,8 @@ public static class PolyHydraEnums
 			new OpConfig
 			{
 				amountDefault = 0.25f,
-				amountMin = -4, amountMax = 4, amountSafeMin = 0f, amountSafeMax = 0.5f
+				amountMin = -4, amountMax = 4, amountSafeMin = 0f, amountSafeMax = 0.5f,
+				matrix = new int[,]{{1,2,0},{0,5,0},{0,2,1}}
 			}
 		},
 		{
@@ -380,7 +434,8 @@ public static class PolyHydraEnums
 			new OpConfig
 			{
 				amountDefault = 0.25f,
-				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.5f
+				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.5f,
+				matrix = new int[,]{{1,4,0},{0,7,0},{0,2,1}}
 			}
 		},
 		{
@@ -388,7 +443,8 @@ public static class PolyHydraEnums
 			new OpConfig
 			{
 				amountDefault = 0.33f,
-				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f
+				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
+				matrix = new int[,]{{0,2,1},{0,7,0},{1,4,0}}
 			}
 		},
 		{
@@ -398,7 +454,8 @@ public static class PolyHydraEnums
 				usesFaces = true,
 				amountDefault = 0.1f,
 				amountMin = -6, amountMax = 6, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{1,2,1},{0,9,0},{3,4,0}}
 			}
 		},
 		{
@@ -408,7 +465,8 @@ public static class PolyHydraEnums
 				usesFaces = true,
 				amountDefault = 0.33f,
 				amountMin = -6, amountMax = 6, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{3,4,0},{0,9,0},{1,2,1}}
 			}
 		},
 		{
@@ -417,7 +475,8 @@ public static class PolyHydraEnums
 			{
 				amountDefault = 0.5f,
 				amountMin = -1, amountMax = 1, amountSafeMin = -1, amountSafeMax = 0.999f,
-				usesRandomize = true
+				usesRandomize = true,
+				matrix = new int[,]{{1,3,1},{0,10,0},{0,6,0}}
 			}
 		},
 
@@ -426,7 +485,9 @@ public static class PolyHydraEnums
 			new OpConfig
 			{
 				amountDefault = 0.5f,
-				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f
+				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
+				matrix = new int[,]{{1,3,0},{0,8,0},{3,0,5}}
+				
 			}
 		},
 		{
@@ -434,7 +495,8 @@ public static class PolyHydraEnums
 			new OpConfig
 			{
 				amountDefault = 0.5f,
-				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f
+				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
+				matrix = new int[,]{{0,3,0},{0,6,0},{1,2,1}}
 			}
 		},
 		{
