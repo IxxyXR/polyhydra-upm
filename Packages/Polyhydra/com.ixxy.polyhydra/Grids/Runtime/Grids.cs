@@ -8,7 +8,7 @@ namespace Grids
 {
     public static class Grids
     {
-        public static ConwayPoly MakeGrid(PolyHydraEnums.GridTypes gridType, PolyHydraEnums.GridShapes gridShape, int p, int q)
+        public static ConwayPoly MakeGrid(PolyHydraEnums.GridTypes gridType, PolyHydraEnums.GridShapes gridShape, int p, int q, bool weld=true)
 		{
 			ConwayPoly conway = null;
 
@@ -55,7 +55,7 @@ namespace Grids
 			}
 
 			// Welding only seems to work reliably on simpler shapes
-			if (gridShape != PolyHydraEnums.GridShapes.Plane) conway = conway.Weld(0.001f);
+			if (weld && gridShape != PolyHydraEnums.GridShapes.Plane) conway = conway.Weld(0.001f);
 
 			return conway;
 		}
@@ -84,29 +84,33 @@ namespace Grids
 					ut.sphere();
 					break;
 				case 5:
-					ut.mobius();
+					ut.conic_frust(0.00001f, cols, 0);
 					break;
-				case 6:
-					ut.torus_trefoil();
-					break;
-				case 7:
-					ut.klein();
-					break;
-				case 8:
-					ut.klein2();
-					break;
-				case 9:
-					ut.roman();
-					break;
-				case 10:
-					ut.roman_boy();
-					break;
-				case 11:
-					ut.cross_cap();
-					break;
-				case 12:
-					ut.cross_cap2();
-					break;
+
+				// case 5:
+				// 	ut.mobius();
+				// 	break;
+				// case 6:
+				// 	ut.torus_trefoil();
+				// 	break;
+				// case 7:
+				// 	ut.klein();
+				// 	break;
+				// case 8:
+				// 	ut.klein2();
+				// 	break;
+				// case 9:
+				// 	ut.roman();
+				// 	break;
+				// case 10:
+				// 	ut.roman_boy();
+				// 	break;
+				// case 11:
+				// 	ut.cross_cap();
+				// 	break;
+				// case 12:
+				// 	ut.cross_cap2();
+				// 	break;
 			}
 			var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, ut.raw_verts.Count);
 			var faceRoles = new List<ConwayPoly.Roles>();
@@ -195,6 +199,10 @@ namespace Grids
 			var poly = new ConwayPoly(ut.raw_verts, ut.raw_faces, faceRoles, vertexRoles);
 			poly.Recenter();
 			if (gridShape > 0 && weld) poly = poly.Weld(0.001f);
+			if (gridShape == 5)
+			{
+				poly = poly.Rotate(Vector3.left, 90);
+			}
 			return poly;
 		}
 

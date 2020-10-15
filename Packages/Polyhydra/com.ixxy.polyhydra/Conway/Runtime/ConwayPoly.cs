@@ -74,6 +74,18 @@ namespace Conway
 				return true;
 			}
 		}
+		
+		
+		public int EdgeCount
+		{
+			get
+			{
+				var nakedEdges = Halfedges.Count(x => x.Pair == null);
+				var fullEdges = (Halfedges.Count - nakedEdges) / 2;
+				return nakedEdges + fullEdges;
+			}
+		}
+		
 		// TODO
 		//        public BoundingBox BoundingBox {
 		//            get {
