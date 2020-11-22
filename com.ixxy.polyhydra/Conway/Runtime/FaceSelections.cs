@@ -46,6 +46,8 @@ namespace Conway
         Even,
         OnlyFirst,
         ExceptFirst,
+        OnlyLast,
+        ExceptLast,
         Random,
 
         // Edges

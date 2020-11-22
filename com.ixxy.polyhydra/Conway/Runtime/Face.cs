@@ -9,7 +9,7 @@ namespace Conway
 {
 
     public class Face
-{
+    {
 
         #region constructors
 
@@ -66,7 +66,6 @@ namespace Conway
 
             return result;
         }
-        
         
         public float GetArea()
         {
