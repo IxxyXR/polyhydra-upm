@@ -286,7 +286,7 @@ public static class PolyHydraEnums
 		{
 			amountDefault = 0,
 			amountMin = -3, amountMax = 3, amountSafeMin = -0.5f, amountSafeMax = 1,
-			matrix = new int[,]{{1,1,0},{0,6,0},{0,0,5}}
+			matrix = new int[,]{{0,1,1},{0,4,0},{1,2,0}}
 		}},
 		{
 			Ops.Loft,
@@ -487,7 +487,8 @@ public static class PolyHydraEnums
 				amountDefault = 0.5f,
 				amountMin = -4, amountMax = 4, amountSafeMin = 0.001f, amountSafeMax = 0.999f,
 				matrix = new int[,]{{1,3,0},{0,8,0},{3,0,5}}
-				
+				// What's this?
+				// matrix = new int[,]{{0,3,1},{0,8,0},{1,4,0}}
 			}
 		},
 		{
