@@ -53,22 +53,22 @@ namespace Conway
         Shell,
         Skeleton,
 
-        VertexScale,
-        VertexRotate,
-        VertexFlex,
-
         FaceOffset,
         FaceScale,
         FaceRotate,
+		FaceRotateX,
+		FaceRotateY,
         FaceSlide,
+
+        VertexScale,
+        VertexRotate,
+        VertexFlex,
 
         // PolarOffset,   TODO
         Hinge,
 
 //		Ribbon,
 //		FaceTranslate,
-//		FaceRotateX,
-//		FaceRotateY,
 
         AddDual,
         AddCopyX,

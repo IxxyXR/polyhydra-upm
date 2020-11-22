@@ -803,6 +803,8 @@ namespace Conway
             }
         }
 
+        // Poorly named. Actually just removes faces based on whether
+        // their centroid's y coord is in a specified range
         public ConwayPoly Slice(float lower, float upper, string tags = "")
         {
             if (lower > upper) (upper, lower) = (lower, upper);
@@ -815,13 +817,286 @@ namespace Conway
             return _FaceRemove(new OpParams {facesel = FaceSelections.All, tags = tags, filterFunc = slice}, true);
         }
 
+        public (ConwayPoly top, ConwayPoly bottom, ConwayPoly cap) SliceByPlane(Plane plane, bool Cap=false, bool includeTop=true, bool includeBottom=true, bool includeCap=false)
+        {
+            var topPoly = new ConwayPoly();
+            var topVerts = new List<Vector3>();
+            var topFaces = new List<IEnumerable<int>>();
+            var topFaceRoles = new List<Roles>();
+            var topVertexRoles = new List<Roles>();
+            var topNewVerts = new List<Vector3>();
+            var topNewFace = new List<int>();
+
+            var bottomPoly = new ConwayPoly();
+            var bottomVerts = new List<Vector3>();
+            var bottomFaces = new List<IEnumerable<int>>();
+            var bottomFaceRoles = new List<Roles>();
+            var bottomVertexRoles = new List<Roles>();
+            var bottomNewVerts = new List<Vector3>();
+            var bottomNewFace = new List<int>();
+
+            var capPoly = new ConwayPoly();
+            var capEdgeSegments = new List<(Vector3 start, Vector3? end)>();
+            var capVerts = new List<List<Vector3>>();
+            
+            bool flipCaps;
+
+            for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
+            {
+                var face = Faces[faceIndex];
+                
+                if (includeTop)
+                {
+                    topNewFace.Clear();
+                    topNewVerts.Clear();
+                }
+
+                if (includeBottom)
+                {
+                    bottomNewVerts.Clear();
+                    bottomNewFace.Clear();
+                }
+                
+                int edgeCounter = 0;
+                var edge = face.Halfedge;
+                
+                do
+                {
+                    var point = edge.Vertex.Position;
+                    var nextPoint = edge.Next.Vertex.Position;
+
+                    if (plane.GetSide(point))
+                    {
+                        if (includeTop)
+                        {
+                            topNewVerts.Add(point);
+                            topNewFace.Add(topNewVerts.Count - 1);
+                        }
+                    }
+                    else
+                    {
+                        if (includeBottom)
+                        {
+                            bottomNewVerts.Add(point);
+                            bottomNewFace.Add(bottomNewVerts.Count - 1);
+                        }
+                    }
+                    
+                    bool intersected = !plane.SameSide(point, nextPoint);
+
+                    if (intersected)
+                    {
+                        var vector = (nextPoint - point).normalized;
+                        Ray ray = new Ray(point, vector);
+                        float intersection;
+                        plane.Raycast(ray, out intersection);
+                        var newVert = point + (vector * intersection);
+
+                        if (includeTop)
+                        {
+                            topNewVerts.Add(newVert);
+                            topNewFace.Add(topNewVerts.Count - 1);
+                        }
+
+                        if (includeBottom)
+                        {
+                            bottomNewVerts.Add(newVert);
+                            bottomNewFace.Add(bottomNewVerts.Count - 1);
+                        }
+
+                        if (Cap || includeCap)
+                        {
+                            if (capEdgeSegments.Count > 0)
+                            {
+                                var lastCap = capEdgeSegments.Last();
+                                if (lastCap.Item2 == null)
+                                {
+                                    lastCap.Item2 = newVert;
+                                    capEdgeSegments[capEdgeSegments.Count - 1] = lastCap;
+                                }
+                                else
+                                {
+                                    capEdgeSegments.Add((newVert, null));
+                                }
+                            }
+                            else
+                            {
+                                capEdgeSegments.Add((newVert, null));
+                            }
+                        }
+                    }
+                    
+                    edge = edge.Next;
+                    edgeCounter++;
+                    
+                } while (edgeCounter < face.Sides);
+
+                if (includeTop && topNewVerts.Count > 0)
+                {
+                    topFaces.Add(topNewFace.Select(x => x + topVerts.Count).ToList());
+                    topVerts.AddRange(topNewVerts);
+                    topFaceRoles.Add(FaceRoles[Faces.IndexOf(face)]);
+                }
+                
+                if (includeBottom && bottomNewVerts.Count > 0)
+                {
+                    bottomFaces.Add(bottomNewFace.Select(x=>x+bottomVerts.Count).ToList());
+                    bottomVerts.AddRange(bottomNewVerts);
+                    bottomFaceRoles.Add(FaceRoles[Faces.IndexOf(face)]);
+                }
+            }
+
+            if ((Cap || includeCap) && capEdgeSegments.Count > 0)
+            {
+                // This isn't terribly reliable and the cap is sometimes facing the wrong direction.
+                // However welding the result will fix cap orientation
+                flipCaps = capEdgeSegments[0].end == capEdgeSegments[1].start;
+
+                if (capEdgeSegments.Count > 0)
+                {
+                    
+                    capVerts = new List<List<Vector3>>();
+                    var capEdgeSegmentsSeen = new HashSet <(Vector3 start, Vector3? end)>();
+                    int failsafe1 = 0;
+                    int seen = 0;
+                    
+                    do
+                    {
+                        int failsafe2 = 0;
+                        var thisCapVerts = new List<Vector3?>();
+                        (Vector3 start, Vector3? end) nextSegment;
+                        try
+                        {
+                            nextSegment = capEdgeSegments.First(x => !capEdgeSegmentsSeen.Contains(x));
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            break;
+                        }
+
+                        thisCapVerts.Add(nextSegment.start);
+                        thisCapVerts.Add(nextSegment.end);
+                        var nextVert = nextSegment.end;
+                        capEdgeSegmentsSeen.Add(nextSegment);
+                        seen++;
+
+                        do // Find a loop
+                        {
+                            try
+                            {
+                                nextSegment = capEdgeSegments.First(x => (x.start == nextVert || x.end == nextVert) && !capEdgeSegmentsSeen.Contains(x));
+                            }
+                            catch (InvalidOperationException)
+                            {
+                                break;
+                            }
+                            capEdgeSegmentsSeen.Add(nextSegment);
+                            seen++;
+                            if (nextSegment.start == nextVert)
+                            {
+                                nextVert = nextSegment.end;
+                            }
+                            else
+                            {
+                                nextVert = nextSegment.start;
+                            }
+
+                            thisCapVerts.Add(nextVert);
+                            failsafe2++;
+
+                        } while (nextVert!=thisCapVerts[0] && failsafe2 <= 30);
+                        if (thisCapVerts.Count>=3) capVerts.Add(thisCapVerts.Select(x => x.GetValueOrDefault()).ToList());
+                        failsafe1++;
+                    } while (seen < capVerts.Count || failsafe1 < 30);
+                }
+
+                List<int> CalcIndices(List<Vector3> newVerts, int existingVertCount)
+                {
+                    var indices = Enumerable.Range(0, newVerts.Count)
+                        .Select(x => x + existingVertCount)
+                        .ToList();
+                    return indices;
+                }
+
+                foreach (var cap in capVerts)
+                {
+                    if (Cap && includeTop)
+                    {
+                        var topCapIndices = CalcIndices(cap, topVerts.Count);
+                        if (flipCaps)
+                        {
+                            topCapIndices.Reverse();
+                        }
+                        topVerts.AddRange(cap);
+                        topFaces.Add(topCapIndices);
+                        topFaceRoles.Add(Roles.New);
+                    }
+
+                    if (Cap && includeBottom)
+                    {
+                        var bottomCapIndices = CalcIndices(cap, bottomVerts.Count);
+                        if (!flipCaps)
+                        {
+                            bottomCapIndices.Reverse();
+                        }
+                        bottomFaces.Add(bottomCapIndices);
+                        bottomVerts.AddRange(cap);
+                        bottomFaceRoles.Add(Roles.New);
+                    }
+                }
+            }
+
+            if (includeTop)
+            {
+                topVertexRoles.AddRange(Enumerable.Repeat(Roles.New, topVerts.Count));
+                topPoly = new ConwayPoly(topVerts, topFaces, topFaceRoles, topVertexRoles);
+            }
+
+            if (includeBottom)
+            {
+                bottomVertexRoles.AddRange(Enumerable.Repeat(Roles.New, bottomVerts.Count));
+                bottomPoly = new ConwayPoly(bottomVerts, bottomFaces, bottomFaceRoles, bottomVertexRoles);
+            }
+            
+            if (includeCap && capEdgeSegments.Count>0)
+            {
+                foreach (var cap in capVerts)
+                {
+                    capPoly = new ConwayPoly(
+                        cap,
+                        new List<List<int>> {Enumerable.Range(0, cap.Count).ToList()},
+                        new List<Roles>{Roles.New},
+                        Enumerable.Repeat(Roles.New, cap.Count)
+                    );
+                }
+            }
+
+            return (topPoly, bottomPoly, capPoly);
+        }
+
+        public (ConwayPoly inside, ConwayPoly outside) SliceByPoly(ConwayPoly slicePoly, bool Cap = false)
+        {
+            var outsidePoly = new ConwayPoly();
+            
+            var poly = Duplicate();
+
+            foreach (var sliceFace in slicePoly.Faces)
+            {
+                var result = poly.SliceByPlane(new Plane(sliceFace.Normal, sliceFace.Centroid), Cap);
+                outsidePoly.Append(result.top);
+                poly = result.bottom;
+            }
+
+            return (poly, outsidePoly);
+        }
+
         public ConwayPoly Weld(float distance)
         {
             if (distance < .00001f)
                 distance = .00001f; // We always weld by a very small amount. Disable the op if you don't want to weld at all.
             var vertexPoints = new List<Vector3>();
             var faceIndices = new List<IEnumerable<int>>();
-            var faceRoles = new List<Roles>();
+            var faceRoles = FaceRoles;
             var vertexRoles = new List<Roles>();
             var reverseDict = new Dictionary<Vertex, int>();
             var vertexReplacementDict = new Dictionary<int, int>();
@@ -870,7 +1145,9 @@ namespace Conway
                 faceIndices.Add(newFaceVertIndices);
             }
 
-            faceRoles = Enumerable.Repeat(Roles.New, faceIndices.Count).ToList();
+            // TODO check this makes sense
+            //faceRoles = Enumerable.Repeat(Roles.New, faceIndices.Count).ToList();
+            // TODO derive new vertex roles from previous or from face roles?
             vertexRoles = Enumerable.Repeat(Roles.New, vertexPoints.Count).ToList();
 
             return new ConwayPoly(vertexPoints, faceIndices, faceRoles, vertexRoles, FaceTags);

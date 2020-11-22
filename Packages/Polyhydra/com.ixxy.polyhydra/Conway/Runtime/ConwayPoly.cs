@@ -74,8 +74,18 @@ namespace Conway
 				return true;
 			}
 		}
-		
-		
+
+		public (int v, int e, int f) vef
+		{
+			get
+			{
+				int v = Vertices.Count;
+				int e = EdgeCount;
+				int f = Faces.Count;
+				return (v, e, f);
+			}
+		}
+
 		public int EdgeCount
 		{
 			get
@@ -477,6 +487,10 @@ namespace Conway
 					return p => p.index == 0;
 				case FaceSelections.ExceptFirst:
 					return p => p.index != 0;
+				case FaceSelections.OnlyLast:
+					return p => p.index == p.poly.Faces.Count - 1;
+				case FaceSelections.ExceptLast:
+					return p => p.index != p.poly.Faces.Count - 1;
 				case FaceSelections.Inner:
 					return p => !p.poly.Faces[p.index].HasNakedEdge();
 				case FaceSelections.Outer:
@@ -572,6 +586,10 @@ namespace Conway
 					return p=>p.index == 0;
 				case FaceSelections.ExceptFirst:
 					return p=>p.index != 0;
+				case FaceSelections.OnlyLast:
+					return p=>p.index == p.poly.Vertices.Count - 1;
+				case FaceSelections.ExceptLast:
+					return p=>p.index != p.poly.Vertices.Count - 1;
 				case FaceSelections.Inner:
 					return p=>!Vertices[p.index].HasNakedEdge();
 				case FaceSelections.Outer:
@@ -610,7 +628,10 @@ namespace Conway
 			// Add faces
 			foreach (IEnumerable<int> indices in facesByVertexIndices)
 			{
-				Faces.Add(indices.Select(i => Vertices[i]));
+				if (!Faces.Add(indices.Select(i => Vertices[i])))
+				{
+					var result = Faces.Add(indices.Reverse().Select(i => Vertices[i]));
+				};
 			}
 
 			// Find and link halfedge pairs
@@ -790,12 +811,12 @@ namespace Conway
 	//					case Ops.FaceTranslate:
 	//						conway = conway.FaceTranslate(new OpParams{filterFunc = faceFilter});
 	//						break;
-	//					case Ops.FaceRotateX:
-	//						conway = conway.FaceRotate(new OpParams{1, filterFunc = faceFilter});
-	//						break;
-	//					case Ops.FaceRotateY:
-	//						conway = conway.FaceRotate(new OpParams{2, filterFunc = faceFilter});
-	//						break;
+				case Ops.FaceRotateX:
+					polyResult = FaceRotate(opParams, 2);
+					break;
+				case Ops.FaceRotateY:
+					polyResult = FaceRotate(opParams, 1);
+					break;
 				case Ops.FaceRemove:
 					polyResult = FaceRemove(opParams);
 					break;
