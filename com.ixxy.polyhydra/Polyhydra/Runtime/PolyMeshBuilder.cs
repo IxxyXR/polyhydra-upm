@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Conway;
@@ -5,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using Wythoff;
 using Face = Conway.Face;
+using Random = UnityEngine.Random;
 
 
 public static class PolyMeshBuilder
