@@ -1074,20 +1074,88 @@ namespace Conway
             return (topPoly, bottomPoly, capPoly);
         }
 
-        public (ConwayPoly inside, ConwayPoly outside) SliceByPoly(ConwayPoly slicePoly, bool Cap = false)
+        public (ConwayPoly inside, ConwayPoly outside) SliceByPoly(ConwayPoly slicePoly, bool Cap = false, int faceCount = 0)
         {
             var outsidePoly = new ConwayPoly();
             
             var poly = Duplicate();
 
-            foreach (var sliceFace in slicePoly.Faces)
+            for (var i = 0; i < (faceCount==0 ? slicePoly.Faces.Count : Mathf.Min(faceCount, slicePoly.Faces.Count)); i++)
             {
+                var sliceFace = slicePoly.Faces[i];
                 var result = poly.SliceByPlane(new Plane(sliceFace.Normal, sliceFace.Centroid), Cap);
                 outsidePoly.Append(result.top);
                 poly = result.bottom;
             }
 
             return (poly, outsidePoly);
+        }
+
+        public ConwayPoly Segment(OpParams o)
+        {
+            
+            var newVertices = new List<Vector3>();
+            var newFaceIndices = new List<List<int>>();
+            var newFaceRoles = new List<Roles>();
+            var newVertexRoles = new List<Roles>();
+            
+            for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
+            {
+                var includeFace = IncludeFace(faceIndex, o.facesel, o.TagListFromString(), o.filterFunc);
+                 
+                if (includeFace)
+                {
+                    var oldFace = Faces[faceIndex];
+                    var oldEdges = oldFace.GetHalfedges();
+                    var normal = Vector3.LerpUnclamped(oldFace.Normal, oldFace.Centroid, o.valueB);
+                    var offset = normal * o.valueA;
+                    var centroid = Vector3.zero + offset;
+                    newVertices.Add(centroid);
+                    newVertexRoles.Add(Roles.New);
+                    int centroidIndex = newVertices.Count - 1;
+                    var newExistingFace = new List<int>();
+
+                    var firstEdge = oldEdges[0];
+                    newVertices.Add(firstEdge.Vertex.Position + offset);
+                    newVertexRoles.Add(Roles.Existing);
+                    int firstVertIndex = newVertices.Count - 1;
+
+                    var he = oldFace.GetHalfedges();
+                    for (var edgeIndex = 1; edgeIndex < he.Count; edgeIndex++)
+                    {
+                        var edge = he[edgeIndex];
+                        newVertices.Add(edge.Vertex.Position + offset);
+                        newVertexRoles.Add(Roles.Existing);
+                        newExistingFace.Add(newVertices.Count - 1);
+
+                        var newFace = new List<int>
+                        {
+                            newVertices.Count - 1,
+                            newVertices.Count - 2,
+                            centroidIndex
+                        };
+                        newFaceIndices.Add(newFace);
+                        newFaceRoles.Add(Roles.New);
+                        // newFaceTags.Add(new HashSet<Tuple<string, TagType>>());
+                    }
+                    
+                    newExistingFace.Add(firstVertIndex);
+                    newFaceIndices.Add(new List<int>
+                    {
+                        firstVertIndex,
+                        newVertices.Count - 1,
+                        centroidIndex
+                    });
+                    newFaceRoles.Add(Roles.New);
+
+                    newFaceIndices.Add(newExistingFace);
+                    newFaceRoles.Add(Roles.Existing);
+                    // newFaceTags.Add(new HashSet<Tuple<string, TagType>>());
+                }
+            }
+            // Debug.Log($"V: {newVertices.Count} F: {newFaceIndices.Count} R: {newVertexRoles.Count},{newFaceRoles.Count}");
+            var conway = new ConwayPoly(newVertices, newFaceIndices, newFaceRoles, newVertexRoles);
+            return conway;
         }
 
         public ConwayPoly Weld(float distance)
