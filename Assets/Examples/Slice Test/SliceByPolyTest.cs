@@ -1,5 +1,6 @@
 ﻿using Conway;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Wythoff;
 
 
@@ -27,15 +28,23 @@ public class SliceByPolyTest : MonoBehaviour
     public PolyHydraEnums.ColorMethods ColorMethod;
 
     [Space]
+    public PolyTypes SlicePolyType;
     public float animateSlice = 0;
-    public bool includeTop = true;
-    public bool includeBottom = true;
     public bool Weld;
     public bool Cap;
+    public bool ShowSlicePoly;
     public Vector3 SlicePosition;
     public Vector3 SliceRotation;
     public float SliceScale = 1f;
-    public Vector3 topTransform;
+    public Vector3 insideTransform;
+
+    [Space]
+    public bool VertexGizmos;
+    public bool FaceGizmos;
+    public bool EdgeGizmos;
+    public bool FaceCenterGizmos;
+
+    public int FaceCount;
 
     private ConwayPoly poly;
     
@@ -78,14 +87,17 @@ public class SliceByPolyTest : MonoBehaviour
         {
             pos.y = .1f + transform.position.y + ((Time.time % 2f) * animateSlice);
         }
-
-        var sliceWythoff = new WythoffPoly(PolyTypes.Cube, 3, 3);
+        
+        var sliceWythoff = new WythoffPoly(SlicePolyType, 3, 3);
         sliceWythoff.BuildFaces();
-        var slicePoly = new ConwayPoly(wythoff);
+        var slicePoly = new ConwayPoly(sliceWythoff);
         slicePoly = slicePoly.Transform(SlicePosition, SliceRotation, Vector3.one * SliceScale);
-        var result = poly.SliceByPoly(slicePoly, Cap);
+        var result = poly.SliceByPoly(slicePoly, Cap, FaceCount);
         poly = result.outside;
-        var top = result.outside.Transform(topTransform);
+        var inside = result.outside.Transform(insideTransform);
+        poly.Append(inside);
+        
+        if (ShowSlicePoly) poly.Append(slicePoly);
 
         if (Weld)
         {
@@ -103,7 +115,7 @@ public class SliceByPolyTest : MonoBehaviour
     }
     
     void OnDrawGizmos () {
-        // GizmoHelper.DrawGizmos(poly, transform, false, false, true, true);
+        GizmoHelper.DrawGizmos(poly, transform, VertexGizmos, FaceGizmos, EdgeGizmos, FaceCenterGizmos);
     }
 
 

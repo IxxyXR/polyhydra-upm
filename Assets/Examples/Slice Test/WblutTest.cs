@@ -59,7 +59,8 @@ public class WblutTest : MonoBehaviour
     
     private void Update()
     {
-        // Generate();
+        SliceAngle = new Vector3(Mathf.Sin(Time.time/7f + 5f) * 30, Mathf.Sin(Time.time/4f) * 50, 0);
+        Generate();
     }
 
     [ContextMenu("Generate")]
@@ -81,7 +82,7 @@ public class WblutTest : MonoBehaviour
             poly = poly.Canonicalize(0.01, 0.01);
         }
         
-        poly.Recenter();
+        // poly.Recenter();
 
         ConwayPoly DoSlices(ConwayPoly input, Vector3 axis)
         {
@@ -124,7 +125,7 @@ public class WblutTest : MonoBehaviour
             poly = poly.ApplyOp(op2, o2);
         }
 
-        poly.Recenter();
+        // poly.Recenter();
         
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;

@@ -107,7 +107,7 @@ public class SliceTest : MonoBehaviour
     }
     
     void OnDrawGizmos () {
-        GizmoHelper.DrawGizmos(poly, transform, true, false, false, false);
+        // GizmoHelper.DrawGizmos(poly, transform, true, false, false, false);
     }
 
 
