@@ -82,11 +82,12 @@ public class SliceByPolyTest : MonoBehaviour
         
         poly = poly.Transform(Position, Rotation, Scale);
 
-        var pos = SlicePosition;
+        var rot = SliceRotation;
         if (animateSlice > 0)
         {
-            pos.y = .1f + transform.position.y + ((Time.time % 2f) * animateSlice);
+            rot.y = Time.time * animateSlice;
         }
+        SliceRotation = rot;
         
         var sliceWythoff = new WythoffPoly(SlicePolyType, 3, 3);
         sliceWythoff.BuildFaces();
@@ -94,7 +95,7 @@ public class SliceByPolyTest : MonoBehaviour
         slicePoly = slicePoly.Transform(SlicePosition, SliceRotation, Vector3.one * SliceScale);
         var result = poly.SliceByPoly(slicePoly, Cap, FaceCount);
         poly = result.outside;
-        var inside = result.outside.Transform(insideTransform);
+        var inside = result.inside.Transform(insideTransform);
         poly.Append(inside);
         
         if (ShowSlicePoly) poly.Append(slicePoly);
