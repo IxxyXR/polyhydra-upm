@@ -1,6 +1,6 @@
 # Polyhydra
 
-![Screenshot](https://github.com/Ixxy-Open-Source/wythoff-polyhedra/blob/master/anim.gif)
+![Screenshot](https://pro2-bar-s3-cdn-cf1.myportfolio.com/1e3b6316-da77-4fd2-a111-e12070c11b10/2977d391-d8a0-4759-8f3b-fe112b8957b8_rwc_0x22x975x549x975.png?h=f2ff1682c51247d1bc76e926872686e2)
 
 Procedural generation of geometric forms in Unity.
 
