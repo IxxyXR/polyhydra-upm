@@ -171,6 +171,5 @@ public class PolyStats : MonoBehaviour
             Debug.Log($"{match.Key}: {lst}");
         }
     }
-
 }
 

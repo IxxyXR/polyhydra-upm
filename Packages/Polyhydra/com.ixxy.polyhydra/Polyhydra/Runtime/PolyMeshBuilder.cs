@@ -49,9 +49,7 @@ public static class PolyMeshBuilder
 		PolyHydraEnums.ColorMethods colorMethod = PolyHydraEnums.ColorMethods.ByRole,
 		bool largeMeshFormat = true
     )
-
-     
-	{
+    {
 
 		Vector2 calcUV(Vector3 point, Vector3 xAxis, Vector3 yAxis)
 		{

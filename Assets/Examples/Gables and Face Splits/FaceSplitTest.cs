@@ -16,7 +16,6 @@ public class FaceSplitTest : MonoBehaviour
     public Vector3 Position = Vector3.zero;
     public Vector3 Rotation = Vector3.zero;
     public Vector3 Scale = Vector3.one;
-    
 
     [Range(-2f, 2f)] public float amount1;
     [Range(-2f, 2f)] public float direction1;
