@@ -57,8 +57,8 @@ public class SineSliceTest : MonoBehaviour
     
     private void Update()
     {
-        if (AnimationSpeed>0)
-        SliceAngle = new Vector3(Mathf.Sin(Time.time*AnimationSpeed + 5f) * 60, Mathf.Sin(Time.time*AnimationSpeed*.7f) * 90, 0);
+        if (AnimationSpeed > 0)
+        SliceAngle = new Vector3(Mathf.Sin(Time.time*AnimationSpeed + 5f) * 30, Mathf.Sin(Time.time*AnimationSpeed*.7f) * 60, 0);
         Generate();
     }
 
