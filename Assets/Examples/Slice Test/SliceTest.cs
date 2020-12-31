@@ -37,6 +37,7 @@ public class SliceTest : MonoBehaviour
     public Vector3 topTransform;
 
     private ConwayPoly poly;
+    private ConwayPoly cap;
     
     void Start()
     {
@@ -107,7 +108,7 @@ public class SliceTest : MonoBehaviour
     }
     
     void OnDrawGizmos () {
-        // GizmoHelper.DrawGizmos(poly, transform, true, false, false, false);
+        GizmoHelper.DrawGizmos(cap, transform, true, false, false, false);
     }
 
 

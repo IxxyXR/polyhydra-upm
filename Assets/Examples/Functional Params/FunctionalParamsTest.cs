@@ -1,12 +1,29 @@
-﻿using System;
-using Conway;
+﻿using Conway;
+using Johnson;
+using NaughtyAttributes;
 using UnityEngine;
+using Wythoff;
 
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class FunctionalParamsTest : MonoBehaviour
 {
+    public enum ShapeTypes
+    {
+        Johnson,
+        Grid,
+        Wythoff,
+        Other
+    }
+
+    // Only used to hide inspector fields with "ShowIf"
+    private bool ShapeIsWythoff() => ShapeType == ShapeTypes.Wythoff;
+    private bool ShapeIsJohnson() => ShapeType == ShapeTypes.Johnson;
+    private bool ShapeIsGrid() => ShapeType == ShapeTypes.Grid;
+    private bool ShapeIsOther() => ShapeType == ShapeTypes.Other;
+    private bool ShapeIsGridOrOther() => ShapeType == ShapeTypes.Grid || ShapeType == ShapeTypes.Other;
+
     public enum Equations
     {
         LinearX,
@@ -16,10 +33,29 @@ public class FunctionalParamsTest : MonoBehaviour
         Perlin,
     }
 
+    public ShapeTypes ShapeType;
+    
+    [ShowIf("ShapeIsWythoff")]
+    public PolyTypes PolyType;
+    [ShowIf("ShapeIsJohnson")]
+    public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
+    [ShowIf("ShapeIsGrid")]
     public PolyHydraEnums.GridTypes GridType;
+    [ShowIf("ShapeIsGrid")]
     public PolyHydraEnums.GridShapes GridShape;
-    [Range(1,40)] public int width = 4;
-    [Range(1,40)] public int depth = 3;
+    [ShowIf("ShapeIsOther")]
+    public PolyHydraEnums.OtherPolyTypes OtherPolyType;
+    
+    [Range(1,40)] public int PrismP = 4;
+    [ShowIf("ShapeIsGridOrOther")] [Range(1,40)] public int PrismQ = 4;
+
+    public bool applyPreOp = false;
+    public Ops preOp;
+    public FaceSelections preOpFacesel;
+    public float preOpAmount1;
+    public float preOpAmount2;
+    public int preOpIterations = 1;
+
     public Equations Equation;
     public Ops op;
     public float frequency1;
@@ -36,9 +72,10 @@ public class FunctionalParamsTest : MonoBehaviour
     public Vector3 Position = Vector3.zero;
     public Vector3 Rotation = Vector3.zero;
     public Vector3 Scale = Vector3.one;
-
-
+    
     public PolyHydraEnums.ColorMethods ColorMethod;
+
+    private ConwayPoly poly;
 
     void Start()
     {
@@ -61,7 +98,33 @@ public class FunctionalParamsTest : MonoBehaviour
     [ContextMenu("Generate")]
     public void Generate()
     {
-        var poly = Grids.Grids.MakeGrid(GridType, GridShape, width, depth);
+        switch (ShapeType)
+        {
+            case ShapeTypes.Wythoff:
+                var wythoff = new WythoffPoly(PolyType, PrismP, PrismQ);
+                wythoff.BuildFaces();
+                poly = new ConwayPoly(wythoff);
+                break;
+            case ShapeTypes.Johnson:
+                poly = JohnsonPoly.Build(JohnsonPolyType, PrismP);
+                break;
+            case ShapeTypes.Grid:
+                poly = Grids.Grids.MakeGrid(GridType, GridShape, PrismP, PrismQ);
+                break;
+            case ShapeTypes.Other:
+                poly = JohnsonPoly.BuildOther(OtherPolyType, PrismP, PrismQ);
+                break;
+        }
+
+        if (applyPreOp)
+        {
+            var preOpParams = new OpParams {valueA = preOpAmount1, valueB = preOpAmount2, facesel = preOpFacesel};
+            for (int i = 0; i < preOpIterations; i++)
+            {
+                poly = poly.ApplyOp(preOp, preOpParams);
+            }
+        }
+
         OpParams amount1Func = null;
         switch (Equation)
         {
