@@ -195,11 +195,9 @@ namespace Conway
 					"faceRoles"
 				);
 			}
-
-			InitIndexed(verticesByPoints, facesByVertexIndices);
-
 			FaceRoles = faceRoles.ToList();
 			VertexRoles = vertexRoles.ToList();
+			InitIndexed(verticesByPoints, facesByVertexIndices);
 
 			CullUnusedVertices();
 			InitTags();
@@ -619,6 +617,8 @@ namespace Conway
 		private void InitIndexed(IEnumerable<Vector3> verticesByPoints,
 			IEnumerable<IEnumerable<int>> facesByVertexIndices)
 		{
+			var newRoles = new List<Roles>();
+			
 			// Add vertices
 			foreach (Vector3 p in verticesByPoints)
 			{
@@ -626,16 +626,30 @@ namespace Conway
 			}
 
 			// Add faces
-			foreach (IEnumerable<int> indices in facesByVertexIndices)
+			var faces = facesByVertexIndices.ToList();
+			for (int counter=0; counter<faces.Count(); counter++)
 			{
-				if (!Faces.Add(indices.Select(i => Vertices[i])))
+				List<int> indices = faces[counter].ToList();
+				
+				bool faceAdded;
+				
+				faceAdded = Faces.Add(indices.Select(i => Vertices[i]));
+				
+				if (!faceAdded)
 				{
-					var result = Faces.Add(indices.Reverse().Select(i => Vertices[i]));
-				};
+					indices.Reverse();
+					faceAdded = Faces.Add(indices.Select(i => Vertices[i]));
+				}
+
+				if (faceAdded)
+				{
+					newRoles.Add(FaceRoles[counter]);
+				}
 			}
 
 			// Find and link halfedge pairs
 			Halfedges.MatchPairs();
+			FaceRoles = newRoles;
 		}
 
 		public ConwayPoly ApplyOp(Ops op, OpParams opParams)
@@ -942,6 +956,16 @@ namespace Conway
 		{
 			var faces = GetFaces(o, index - 1);
 			return index < faces.Count ? faces[index] : null;
+		}
+
+		public Bounds GetBounds()
+		{
+			var bounds = new Bounds();
+			foreach (var vert in Vertices)
+			{
+				bounds.Encapsulate(vert.Position);
+			}
+			return bounds;
 		}
 	}
 }

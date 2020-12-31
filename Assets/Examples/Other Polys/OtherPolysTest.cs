@@ -41,36 +41,8 @@ public class OtherPolysTest : MonoBehaviour
     [ContextMenu("Generate")]
     public void Generate()
     {
-        ConwayPoly poly = null;
+        var poly = JohnsonPoly.BuildOther(otherPolyType, sides, segments);
 
-        // TODO move this into a method on JohnsonPoly
-        switch (otherPolyType)
-        {
-                case PolyHydraEnums.OtherPolyTypes.Polygon:
-                    poly = JohnsonPoly.Polygon(sides);
-                    break;
-                case PolyHydraEnums.OtherPolyTypes.UvSphere:
-                    poly = JohnsonPoly.UvSphere(sides, segments);
-                    break;
-                case PolyHydraEnums.OtherPolyTypes.UvHemisphere:
-                    poly = JohnsonPoly.UvHemisphere(sides, segments);
-                    break;
-                case PolyHydraEnums.OtherPolyTypes.GriddedCube:
-                    poly = JohnsonPoly.GriddedCube(sides);
-                    break;
-                case PolyHydraEnums.OtherPolyTypes.C_Shape:
-                    poly = JohnsonPoly.C_Shape();
-                    break;
-                case PolyHydraEnums.OtherPolyTypes.L_Shape:
-                    poly = JohnsonPoly.L_Shape();
-                    break;
-                case PolyHydraEnums.OtherPolyTypes.L_Alt_Shape:
-                    poly = JohnsonPoly.L_Alt_Shape();
-                    break;
-                case PolyHydraEnums.OtherPolyTypes.H_Shape:
-                    poly = JohnsonPoly.H_Shape();
-                    break;
-        }
         if (ApplyOp)
         {
             var o1 = new OpParams {valueA = op1Amount1, valueB = op1Amount2, facesel = op1Facesel};

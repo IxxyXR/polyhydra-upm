@@ -1005,7 +1005,13 @@ namespace Conway
                             failsafe2++;
 
                         } while (nextVert!=thisCapVerts[0] && failsafe2 <= 30);
-                        if (thisCapVerts.Count>=3) capVerts.Add(thisCapVerts.Select(x => x.GetValueOrDefault()).ToList());
+
+                        if (thisCapVerts.Count >= 3)
+                        {
+                            var capVertList = thisCapVerts.Select(x => x.GetValueOrDefault()).ToList();
+                            capVertList.RemoveAt(capVertList.Count - 1);
+                            capVerts.Add(capVertList);
+                        }
                         failsafe1++;
                     } while (seen < capVerts.Count || failsafe1 < 30);
                 }
