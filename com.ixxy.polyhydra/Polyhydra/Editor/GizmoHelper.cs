@@ -5,9 +5,9 @@ using UnityEngine;
 public static class GizmoHelper
 {
     public static void DrawGizmos(ConwayPoly poly, Transform transform, 
-	    bool vertexGizmos=false, bool faceGizmos=false, bool edgeGizmos=false, bool faceCenterGizmos=false)
+	    bool vertexGizmos=false, bool faceGizmos=false, bool edgeGizmos=false, bool faceCenterGizmos=false, float scale=1.0f)
     {
-		float GizmoRadius = .03f;
+		float GizmoRadius = .03f * scale;
 
 		if (vertexGizmos && poly!=null)
 		{
@@ -18,8 +18,8 @@ public static class GizmoHelper
 				{
 					Vector3 vert = poly.Vertices[i].Position;
 					Vector3 pos = transform.TransformPoint(vert);
-					Gizmos.DrawWireSphere(pos, GizmoRadius);
-					Handles.Label(pos + new Vector3(0, .15f, 0), i.ToString());
+					// Gizmos.DrawWireSphere(pos, GizmoRadius);
+					Handles.Label(pos + new Vector3(0, 0, 0), i.ToString());
 				}
 			}
 		}
@@ -54,8 +54,10 @@ public static class GizmoHelper
 
 				string label;
 
-				label = $"{f}:{face.Normal}";
-				Handles.Label(Vector3.Scale(face.Centroid, transform.lossyScale) + new Vector3(0, .03f, 0), label);
+				// label = $"{f}:{face.Normal}";
+				// label = poly.FaceRoles[f].ToString();
+				label = $"{f}";
+				Handles.Label(Vector3.Scale(face.Centroid, transform.lossyScale) + new Vector3(0, 0.03f * scale, 0), label);
 			}
 		}
 		if (edgeGizmos)
@@ -68,7 +70,7 @@ public static class GizmoHelper
 					transform.TransformPoint(edge.Vertex.Position),
 					transform.TransformPoint(edge.Next.Vertex.Position)
 				);
-				Gizmos.DrawWireCube(transform.TransformPoint(edge.PointAlongEdge(0.9f)), Vector3.one * 0.02f);
+				Gizmos.DrawWireCube(transform.TransformPoint(edge.PointAlongEdge(0.9f)), Vector3.one * 0.02f * scale);
 			}
 		}
     }

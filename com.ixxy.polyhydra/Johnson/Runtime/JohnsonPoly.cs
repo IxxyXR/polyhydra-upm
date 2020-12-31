@@ -913,5 +913,40 @@ namespace Johnson
 			}
 			return poly;
 		}
+		
+		public static ConwayPoly BuildOther(PolyHydraEnums.OtherPolyTypes otherPolyType, int p, int q)
+		{
+			ConwayPoly poly = null;
+
+			switch (otherPolyType)
+			{
+				case PolyHydraEnums.OtherPolyTypes.Polygon:
+					poly = Polygon(p);
+					break;
+				case PolyHydraEnums.OtherPolyTypes.UvSphere:
+					poly = UvSphere(p, q);
+					break;
+				case PolyHydraEnums.OtherPolyTypes.UvHemisphere:
+					poly = UvHemisphere(p, q);
+					break;
+				case PolyHydraEnums.OtherPolyTypes.GriddedCube:
+					poly = GriddedCube(p);
+					break;
+				case PolyHydraEnums.OtherPolyTypes.C_Shape:
+					poly = C_Shape();
+					break;
+				case PolyHydraEnums.OtherPolyTypes.L_Shape:
+					poly = L_Shape();
+					break;
+				case PolyHydraEnums.OtherPolyTypes.L_Alt_Shape:
+					poly = L_Alt_Shape();
+					break;
+				case PolyHydraEnums.OtherPolyTypes.H_Shape:
+					poly = H_Shape();
+					break;
+			}
+			return poly;
+		}
+
     }
 }
