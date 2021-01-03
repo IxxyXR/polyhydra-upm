@@ -60,11 +60,9 @@ namespace Conway {
                 newEdges[i].Face = newFace;
                 newEdges[i].Next = newEdges[(i + 1) % n];
                 newEdges[i].Prev = newEdges[(i + n - 1) % n];
-                // Remove check for performance reasons
-                // TODO hmmmmm...
-                // if (_mConwayPoly.Halfedges.Contains(newEdges[i].Name)) {
-                //     return false;
-                // }
+                if (_mConwayPoly.Halfedges.Contains(newEdges[i].Name)) {
+                    return false;
+                }
             }
 
             // add halfedges to mesh

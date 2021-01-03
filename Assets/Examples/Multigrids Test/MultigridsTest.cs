@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Conway;
 using Grids;
 using UnityEngine;
@@ -10,9 +11,19 @@ using UnityEngine;
 public class MultigridsTest : MonoBehaviour
 {
 
+    public enum ColorFunctions
+    {
+        Unchanged,
+        Mod,
+        ActualMod,
+        Normalized,
+        Abs
+    }
+
     [Range(1, 30)] public int Divisions = 5;
     [Range(3, 30)] public int Dimensions = 5;
     public float Offset = .2f;
+    public bool randomize;
 
     public float MinDistance = 0f;
     public float MaxDistance = 1f;
@@ -22,7 +33,6 @@ public class MultigridsTest : MonoBehaviour
     public float colorIntersect;
     public Gradient ColorGradient;
     public bool SharedVertices;
-    public bool Weld;
 
     public bool ApplyOp;
     public Ops op1;
@@ -33,8 +43,14 @@ public class MultigridsTest : MonoBehaviour
     public FaceSelections op2Facesel;
     public float op2Amount1 = 0;
     public float op2Amount2 = 0;
+    public Ops op3;
+    public FaceSelections op3Facesel;
+    public float op3Amount1 = 0;
+    public float op3Amount2 = 0;
 
     public PolyHydraEnums.ColorMethods ColorMethod;
+    public ColorFunctions ColorFunction;
+    public ConwayPoly.TagType TagType;
 
     public bool vertexGizmos;
     public bool faceGizmos;
@@ -60,47 +76,58 @@ public class MultigridsTest : MonoBehaviour
     public void Generate()
     {
         var multigrid = new MultiGrid(Divisions, Dimensions, Offset, MinDistance, MaxDistance, colorRatio, colorIndex, colorIntersect);
-        (poly, shapes, colors) = multigrid.Build(SharedVertices);
+        (poly, shapes, colors) = multigrid.Build(SharedVertices, randomize);
+        if (shapes.Count == 0) return;
         if (ColorMethod == PolyHydraEnums.ColorMethods.ByTags)
         {
+            float colorMin = colors.Min();
+            float colorMax = colors.Max();
+
             for (var faceIndex = 0; faceIndex < poly.Faces.Count; faceIndex++)
             {
                 var face = poly.Faces[faceIndex];
                 var colorIndex = colors[faceIndex];
-                string colorString = ColorUtility.ToHtmlStringRGB(ColorGradient.Evaluate(colorIndex));
+                float colorValue;
+                switch (ColorFunction)
+                {
+                    case ColorFunctions.Mod:
+                        colorValue = colorIndex % 1;
+                        break;
+                    case ColorFunctions.ActualMod:
+                        colorValue = PolyUtils.ActualMod(colorIndex, 1);
+                        break;
+                    case ColorFunctions.Normalized:
+                        colorValue = Mathf.InverseLerp(colorMin, colorMax, colorIndex);
+                        break;
+                    case ColorFunctions.Abs:
+                        colorValue = Mathf.Abs(colorIndex);
+                        break;
+                    default:
+                        colorValue = colorIndex;
+                        break;
+                }
+                string colorString = ColorUtility.ToHtmlStringRGB(ColorGradient.Evaluate(colorValue));
                 var tag = new Tuple<string, ConwayPoly.TagType>(
                     $"#{colorString}", 
-                    ConwayPoly.TagType.Extrovert);
+                    TagType);
                 poly.FaceTags[faceIndex].Add(tag);
             }
         }
 
-        // OpParams o = new OpParams(x=>
-        // {
-        //     float distance = x.poly.Faces[x.index].Centroid.magnitude;
-        //     return distance > MaxDistance || distance < MinDistance;
-        // });
-        // poly = poly.FaceRemove(o);
-
-        if (Weld)
-        {
-            poly = poly.Weld(.001f);
-        }
-        
         if (ApplyOp)
         {
             var o1 = new OpParams {valueA = op1Amount1, valueB = op1Amount2, facesel = op1Facesel};
             poly = poly.ApplyOp(op1, o1);
             var o2 = new OpParams {valueA = op2Amount1, valueB = op2Amount2, facesel = op2Facesel};
             poly = poly.ApplyOp(op2, o2);
+            var o3 = new OpParams {valueA = op3Amount1, valueB = op3Amount2, facesel = op3Facesel};
+            poly = poly.ApplyOp(op3, o3);
         }
 
-        
-        // Final Mesh
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;
     }
-    
+
     void OnDrawGizmos () {
         GizmoHelper.DrawGizmos(poly, transform, vertexGizmos, faceGizmos, edgeGizmos, faceCenterGizmos, 0.3f);
         if (shapeGizmos)
