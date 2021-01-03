@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Conway;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 
 namespace Grids
@@ -45,14 +46,16 @@ namespace Grids
         }
         
 
-        public (ConwayPoly poly, List<List<Vector2>> shapes, List<float> colors) Build(bool sharedVertices=true)
+        public (ConwayPoly poly, List<List<Vector2>> shapes, List<float> colors) Build(bool sharedVertices=true, bool random=false)
         {
-            var (shapes, colors) = GenerateShapes(Vector2.one);
+            var (shapes, colors) = GenerateShapes(Vector2.one, random);
             
             var faceRoles = new List<ConwayPoly.Roles>();
             var vertexDictionary = new Dictionary<Vector2, int>();
             var faceIndices = new List<List<int>>();
             var vertices = new List<Vector2>();
+
+            if (shapes.Count == 0) return (new ConwayPoly(), shapes, colors);
 
             float colorMin = colors.Min();
             float colorMax = colors.Max();
@@ -60,53 +63,65 @@ namespace Grids
             for (var shapeIndex = 0; shapeIndex < shapes.Count; shapeIndex++)
             {
                 var shape = shapes[shapeIndex];
-                var face = new List<int>();
-                for (var vertIndex = 0; vertIndex < shape.Count; vertIndex++)
+                
+                if (shape.Count == 5)
                 {
-                    Vector2 vert = shape[vertIndex];
+                    var face = new List<int>();
 
-                    if (sharedVertices)
+                    for (var vertIndex = 0; vertIndex < shape.Count; vertIndex++)
                     {
-                        if (!vertexDictionary.ContainsKey(vert))
-                        {
-                            vertexDictionary[vert] = vertexDictionary.Count;
-                        }
+                        Vector2 vert = shape[vertIndex];
 
-                        face.Add(vertexDictionary[vert]);
+                        if (sharedVertices)
+                        {
+                            if (!vertexDictionary.ContainsKey(vert))
+                            {
+                                vertexDictionary[vert] = vertexDictionary.Count;
+                            }
+
+                            face.Add(vertexDictionary[vert]);
+                        }
+                        else
+                        {
+                            vertices.Add(vert);
+                            face.Add(vertices.Count - 1);
+                        }
+                    }
+
+                    var normal = Vector3.Cross(shape[1] - shape[0], shape[2] - shape[0]);
+
+                    if (normal.z > 0)
+                    {
+                        faceIndices.Add(new List<int>{face[0], face[1], face[2], face[3]});
                     }
                     else
                     {
-                        vertices.Add(vert);
-                        face.Add(vertices.Count - 1);
+                        faceIndices.Add(new List<int>{face[3], face[2], face[1], face[0]});
                     }
-                }
-                
-                if (face.Count == 5)
-                {
-                    faceIndices.Add(new List<int>{face[0], face[1], face[2], face[3]});
                     float colorValue = Mathf.InverseLerp(colorMin, colorMax, colors[shapeIndex]);
-                    colors[shapeIndex] = colorValue;  // Write the normalized value back into colors
                     int roleIndex = Mathf.FloorToInt(colorValue * 4f);
                     var role = (ConwayPoly.Roles) roleIndex;
                     faceRoles.Add(role);
                 }
+                
             }
 
             if (sharedVertices)
             {
                 vertices = vertexDictionary.Keys.ToList();
             }
-            
+        
             var poly = new ConwayPoly(
                 vertices.Select(v=>new Vector3(v.x, 0, v.y)),
                 faceIndices,
                 faceRoles,
                 Enumerable.Repeat(ConwayPoly.Roles.New, vertices.Count)
             );
+            
             return (poly, shapes, colors);
         }
 
-        public (List<List<Vector2>> shapes, List<float> colors) GenerateShapes(Vector2 size)
+        public (List<List<Vector2>> shapes, List<float> colors) GenerateShapes(Vector2 size, bool random=false)
         {
 
             (Vector2 topLeft, Vector2 bottomRight) bounds = (Vector2.zero, -size);
@@ -114,7 +129,7 @@ namespace Grids
             float diameter = size.magnitude;
             float scale = diameter / 2f / divisions;
 
-            var rhombs = generateRhombs(divisions, dimensions , offset);
+            var rhombs = generateRhombs(divisions, dimensions , offset, random);
 
             var tf = new Vector2(size.x / 2f, size.y / 2f);
             tf *= scale;
@@ -126,17 +141,21 @@ namespace Grids
 
             var shapes = new List<List<Vector2>>();
             var colors = new List<float>();
+
+            float sqrMaxDistance = (MaxDistance * MaxDistance);
+            float sqrMinDistance = (MinDistance * MinDistance);
             
             for (int ii = 0; ii < rhombs.Count; ii++)
             {
                 var rhomb = rhombs[ii];
-                if (rhomb.shape.Any(o=>
+                List<Vector2> shape = rhomb.shape.Select(x=>x*tf).ToList();
+                
+                if (shape.Any(o=>
                 {
                     float distanceSqr = o.sqrMagnitude;
-                    return distanceSqr > (MaxDistance*MaxDistance) || distanceSqr < (MinDistance*MinDistance);
+                    return distanceSqr > sqrMaxDistance || distanceSqr < sqrMinDistance;
                 })) continue;
-                List<Vector2> shape = rhomb.shape.Select(x=>x*tf).ToList();
-
+                
                 // Vector2 center = (shape[0] + shape[1] + shape[2] + shape[3]) / 4f;
                 var lineWidthTransform = Vector2.one;
                 
@@ -323,7 +342,7 @@ namespace Grids
         }
 
 
-        public List<Rhomb> generateRhombs(int div, int lines, float offset)
+        public List<Rhomb> generateRhombs(int div, int lines, float offset, bool random=false)
         {
             var rhombs = new List<Rhomb>();
             var angles = new List<float>();
@@ -339,8 +358,15 @@ namespace Grids
                 angles.Add(angle);
             }
 
+            float randomRange = offset * .01f;
+            
             for (int i = 0; i < angles.Count; i++)
             {
+                float randomOffset = 0;
+                if (random)
+                {
+                    randomOffset = Random.Range(-randomRange, randomRange);
+                }
                 float angle1 = angles[i];
                 Vector2 p1 = new Vector2(totalLines * Mathf.Cos(angle1), -totalLines * Mathf.Sin(angle1));
                 Vector2 p2 = -p1;
@@ -349,7 +375,7 @@ namespace Grids
                 {
                     int index1 = halfLines - parallel1;
 
-                    Vector2 offset1 = new Vector2((index1 + offset) * Mathf.Sin(angle1), (index1 + offset) * Mathf.Cos(angle1));
+                    Vector2 offset1 = new Vector2((index1 + offset + randomOffset) * Mathf.Sin(angle1), (index1 + offset + randomOffset) * Mathf.Cos(angle1));
                     var l1 = (p1 + offset1, p2 + offset1);
 
                     for (int k = i + 1; k < angles.Count; k++)

@@ -70,6 +70,8 @@ public static class GizmoHelper
 					transform.TransformPoint(edge.Vertex.Position),
 					transform.TransformPoint(edge.Next.Vertex.Position)
 				);
+				// string label = $"{i}";
+				// Handles.Label(transform.TransformPoint(edge.PointAlongEdge(0.9f)), label);
 				Gizmos.DrawWireCube(transform.TransformPoint(edge.PointAlongEdge(0.9f)), Vector3.one * 0.02f * scale);
 			}
 		}
