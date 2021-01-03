@@ -10,15 +10,6 @@ namespace Grids
     public class MultiGrid
     {
 
-        public Gradient gradient;
-
-        public Color lineColor = Color.green;
-        public float lineWidth = 1f;
-
-        public Color connectorColor = Color.blue;
-        public Connector connectorType = Connector.None;
-        public float connectorWidth = 1f;
-
         private int divisions, dimensions;
         private float offset;
         
@@ -156,19 +147,8 @@ namespace Grids
                     return distanceSqr > sqrMaxDistance || distanceSqr < sqrMinDistance;
                 })) continue;
                 
-                // Vector2 center = (shape[0] + shape[1] + shape[2] + shape[3]) / 4f;
                 var lineWidthTransform = Vector2.one;
                 
-                // float scaleForLineWidth = Mathf.Abs(1f - (lineWidth/scale));
-                // lineWidthTransform *= scaleForLineWidth;
-                //
-                // Vector2 scaledCenter = new Vector2(center.x * lineWidthTransform.x, center.y * lineWidthTransform.y);
-                // lineWidthTransform = new Vector2(center.x - scaledCenter.x, center.y - scaledCenter.y);
-                // lineWidthTransform *= scaleForLineWidth;
-                //
-                // shape = shape.Select(x => x * lineWidthTransform).ToList();
-                
-                // if (!Intersected(shape, bounds).isEmpty() && BoundingRect(shape).width > 0)
                 if (true)
                 {
                     var p = new List<Vector2>();
@@ -213,132 +193,11 @@ namespace Grids
                         gradientPos *= 1 - ((1 - indexRatio) * Mathf.Abs(colorIndex));
                     }
                     colors.Add(float.IsNaN(gradientPos) ? 0 : gradientPos);
-
-                    ////grad.colorAt(c, gradientPos);
-                    ////gc.fillPainterPath(p, p.boundingRect().adjusted(-2, -2, 2, 2).toRect());
-
-                    // if (connectorType != Connector.None)
-                    // {
-                    //     ////gc.setBackgroundColor(config.getColor("connectorColor"));
-                    //     connectorWidth = connectorWidth * .5f;
-                    //     var pConnect = new List<Vector2>();
-                    //     float lower = connectorWidth / scale;
-                    //
-                    //     if (connectorType == Connector.Cross)
-                    //     {
-                    //         var cl = (shape[0], shape[1]).pointAt(0.5 - lower);
-                    //         pConnect.moveTo(cl);
-                    //         cl = (shape[0], shape[1]).pointAt(0.5 + lower);
-                    //         pConnect.lineTo(cl);
-                    //         cl = (shape[2], shape[3]).pointAt(0.5 - lower);
-                    //         pConnect.lineTo(cl);
-                    //         cl = (shape[2], shape[3]).pointAt(0.5 + lower);
-                    //         pConnect.lineTo(cl);
-                    //         pConnect.closeSubpath();
-                    //
-                    //         cl = (shape[1], shape[2]).pointAt(0.5 - lower);
-                    //         pConnect.moveTo(cl);
-                    //         cl = (shape[1], shape[2]).pointAt(0.5 + lower);
-                    //         pConnect.lineTo(cl);
-                    //         cl = (shape[3], shape[0]).pointAt(0.5 - lower);
-                    //         pConnect.lineTo(cl);
-                    //         cl = (shape[3], shape[0]).pointAt(0.5 + lower);
-                    //         pConnect.lineTo(cl);
-                    //         pConnect.closeSubpath();
-                    //
-                    //     }
-                    //     else if (connectorType == Connector.CornerDot)
-                    //     {
-                    //         Vector2 cW(connectorWidth, connectorWidth);
-                    //
-                    //         QRectF dot(shape.at
-                    //         (0) - cW, shape[0] + cW);
-                    //         pConnect.addEllipse(dot);
-                    //         dot = QRectF(shape[1] - cW, shape[1] + cW);
-                    //         pConnect.addEllipse(dot);
-                    //         dot = QRectF(shape[2] - cW, shape[2] + cW);
-                    //         pConnect.addEllipse(dot);
-                    //         dot = QRectF(shape[3] - cW, shape[3] + cW);
-                    //         pConnect.addEllipse(dot);
-                    //         pConnect = pConnect.intersected(p);
-                    //
-                    //     }
-                    //     else if (connectorType == Connector.CenterDot)
-                    //     {
-                    //
-                    //         QRectF dot(center
-                    //         -Vector2(connectorWidth, connectorWidth), center + Vector2(connectorWidth, connectorWidth));
-                    //         pConnect.addEllipse(dot);
-                    //
-                    //     }
-                    //     else
-                    //     {
-                    //         for (int i = 1; i < shape.Count; i++)
-                    //         {
-                    //             Path pAngle;
-                    //             Vector2 curPoint = shape[i];
-                    //              l1(curPoint, shape.at
-                    //             (i - 1));
-                    //             Vector2 np;
-                    //             if (i == 4)
-                    //             {
-                    //                 np = shape[1];
-                    //             }
-                    //             else
-                    //             {
-                    //                 np = shape[i]+ 1);
-                    //             }
-                    //
-                    //              l2(curPoint, np);
-                    //             float angleDiff = abs(fmod(abs(l1.angle() - l2.angle()) + 180, 360) - 180);
-                    //
-                    //             if (round(angleDiff) == 90)
-                    //             {
-                    //                 continue;
-                    //             }
-                    //
-                    //             if (angleDiff > 90 && connectorType == Connector.Acute)
-                    //             {
-                    //                 continue;
-                    //             }
-                    //
-                    //             if (angleDiff < 90 && connectorType == Connector.Obtuse)
-                    //             {
-                    //                 continue;
-                    //             }
-                    //
-                    //             float length = (l1.length() * 0.5) - connectorWidth;
-                    //             QRectF sweep(curPoint
-                    //             -Vector2(length, length), curPoint + Vector2(length, length));
-                    //             length = (l1.length() * 0.5) + connectorWidth;
-                    //             QRectF sweep2(curPoint
-                    //             -Vector2(length, length), curPoint + Vector2(length, length));
-                    //
-                    //             pAngle.moveTo(shape[i]);
-                    //             pAngle.addEllipse(sweep2);
-                    //             pAngle.addEllipse(sweep);
-                    //             pAngle = pAngle.intersected(p);
-                    //             pAngle.closeSubpath();
-                    //             pConnect.addPath(pAngle);
-                    //         }
-                    //
-                    //         pConnect.closeSubpath();
-                    //
-                    //     }
-                    //
-                    //     pConnect.setFillRule(Qt::WindingFill);
-                    //     gc.fillPainterPath(pConnect);
-                    //
-                    // }
-
                 }
-                
                 shapes.Add(shape);
-                
             }
             
             return (shapes, colors);
-
         }
 
 
@@ -383,7 +242,6 @@ namespace Grids
                         float angle2 = angles[k];
                         var p3 = new Vector2(totalLines * Mathf.Cos(angle2), -totalLines * Mathf.Sin(angle2));
                         Vector2 p4 = -p3;
-
                         
                         for (int parallel2 = 0; parallel2 < totalLines; parallel2++)
                         {
@@ -483,12 +341,6 @@ namespace Grids
 
             return new Vector2(x, y);
         }
-    }
-
-    public enum Connector
-    {
-        Cross,
-        None
     }
 
     public struct Rhomb
