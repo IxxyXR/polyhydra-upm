@@ -1,0 +1,5 @@
+Code in this directory is not covered by the main licence. 
+
+Multigrids is ported from https://github.com/kde/krita and is under the same licence (GPLv3)
+
+Portions of grids.cs is from Antiprism and is MIT but should be attributed to Adrian Rossiter and Roger Kaufman: https://github.com/antiprism/antiprism/blob/master/COPYING
