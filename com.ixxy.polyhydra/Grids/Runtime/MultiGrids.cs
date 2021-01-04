@@ -201,7 +201,7 @@ namespace Grids
         }
 
 
-        public List<Rhomb> generateRhombs(int div, int lines, float offset, bool random=false)
+        public List<Rhomb> generateRhombs(int div, int dim, float offset, bool random=false)
         {
             var rhombs = new List<Rhomb>();
             var angles = new List<float>();
@@ -209,23 +209,31 @@ namespace Grids
             int halfLines = div;
             int totalLines = (halfLines * 2) + 1;
 
+            float randomAngle = 0;
+            
             // Setup our imaginary lines...
-            int dimensions = lines;
-            for (int i = 0; i < dimensions; i++)
+            int dimensions = dim;
+            if (random)
             {
-                float angle = 2 * (Mathf.PI / lines) * i;
-                angles.Add(angle);
+                float angle = 0;
+                while (angle < Mathf.PI)
+                {
+                    angle += Random.Range(.00001f, Mathf.PI/(div/2f));
+                    angles.Add(angle);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < dimensions; i++)
+                {
+                    var angle = 2 * (Mathf.PI / dim) * i;
+                    angles.Add(angle);
+                }
             }
 
-            float randomRange = offset * .01f;
-            
+
             for (int i = 0; i < angles.Count; i++)
             {
-                float randomOffset = 0;
-                if (random)
-                {
-                    randomOffset = Random.Range(-randomRange, randomRange);
-                }
                 float angle1 = angles[i];
                 Vector2 p1 = new Vector2(totalLines * Mathf.Cos(angle1), -totalLines * Mathf.Sin(angle1));
                 Vector2 p2 = -p1;
@@ -234,7 +242,7 @@ namespace Grids
                 {
                     int index1 = halfLines - parallel1;
 
-                    Vector2 offset1 = new Vector2((index1 + offset + randomOffset) * Mathf.Sin(angle1), (index1 + offset + randomOffset) * Mathf.Cos(angle1));
+                    Vector2 offset1 = new Vector2((index1 + offset) * Mathf.Sin(angle1), (index1 + offset) * Mathf.Cos(angle1));
                     var l1 = (p1 + offset1, p2 + offset1);
 
                     for (int k = i + 1; k < angles.Count; k++)
