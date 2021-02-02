@@ -21,6 +21,7 @@ public class WythoffTest : MonoBehaviour
     public float op2Amount1 = 0;
     public float op2Amount2 = 0;
     public bool Canonicalize;
+    public bool Rescale;
     public Vector3 Position = Vector3.zero;
     public Vector3 Rotation = Vector3.zero;
     public Vector3 Scale = Vector3.one;
@@ -56,6 +57,8 @@ public class WythoffTest : MonoBehaviour
             poly = poly.Canonicalize(0.01, 0.01);
         }
         poly = poly.Transform(Position, Rotation, Scale);
+        
+        Debug.Log(poly.vef);
 
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;
