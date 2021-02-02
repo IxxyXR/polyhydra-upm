@@ -2602,11 +2602,9 @@ public class IsohedralTiling {
 
     public void setParameters(List<double> arr)
     {
-        Debug.Log($"{arr.Count} {parameters.Count}");
         if (arr.Count == parameters.Count - 1)
         {
             parameters = new List<double>(arr);
-            Debug.Log($"Set {parameters.Count} params. [0]={parameters[0]}");
             parameters.Add(1.0);
             Recompute();
         }

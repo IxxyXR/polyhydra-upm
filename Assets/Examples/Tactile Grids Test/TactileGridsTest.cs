@@ -3,7 +3,6 @@ using System.Linq;
 using Conway;
 using NaughtyAttributes;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
@@ -11,13 +10,12 @@ public class TactileGridsTest : MonoBehaviour
 {
     [Range(1,93)]
     public int TilingType = 1;
-    [ReadOnly] public int NumParams;
     [ReadOnly] public string TilingName;
-    public int RandomSeed = 12345;
-    [Range(0, 1f)]
-    public float randomScale = 0.6f;
-    [Range(0f, 1f)]
-    public float randomOffset = 0.5f;
+    [ReadOnly] public int NumParams;
+    [Range(0,2)]
+    public int ExtraVerts = 0;
+    public Vector2 NewVert1;
+    public Vector2 NewVert2;
     [Range(0f, 1f)]
     public float[] tilingParameters;
     public bool Weld=false;
@@ -45,8 +43,7 @@ public class TactileGridsTest : MonoBehaviour
     public bool faceGizmos;
     public bool edgeGizmos;
     public bool faceCenterGizmos;
-    public bool shapeGizmos;
-
+    
     public Gradient Colors;
     public float ColorRange;
     public float ColorOffset;
@@ -69,15 +66,13 @@ public class TactileGridsTest : MonoBehaviour
     public void Generate()
     {
 
-        Random.seed = RandomSeed;
-        
         var verts = new List<Vector3>();
         var faces = new List<List<int>>();
         var faceRoles = new List<ConwayPoly.Roles>();
 
-        void drawRandomTiling() {
+        void drawTiling() {
 
-            var (tiling, edges) = makeRandomTiling();
+            var (tiling, edges) = makeTiling();
 
             // Yuk
             List<IEnumerable<IEnumerable<IsohedralTiling.Thing>>> tiles = tiling.fillRegionBounds(-Size.x/2f, -Size.y/2f, Size.x/2f, Size.y/2f).ToList();
@@ -112,12 +107,12 @@ public class TactileGridsTest : MonoBehaviour
                         {
                             float[] S = IsohedralTiling.Multiply(T, si.T);
                             List<Vector2> seg = new[] {IsohedralTiling.Multiply(S, new Vector2(0, 0))}.ToList();
-
-                            if (si.shape != EdgeShape.I)
+                            
+                            if (si.shape != EdgeShape.I && ExtraVerts!=0)
                             {
                                 var ej = edges[si.id];
                                 seg.Add(IsohedralTiling.Multiply(S, ej[0]));
-                                seg.Add(IsohedralTiling.Multiply(S, ej[1]));
+                                if (ej.Count > 1) seg.Add(IsohedralTiling.Multiply(S, ej[1]));
                             }
 
                             seg.Add(IsohedralTiling.Multiply(S, new Vector2(1.0f, 0.0f)));
@@ -133,7 +128,6 @@ public class TactileGridsTest : MonoBehaviour
                                 verts.Add(new Vector3(seg[0].x, 0, seg[0].y));
                                 face.Add(verts.Count-1);
                             }
-
                             if (seg.Count == 2)
                             {
                                 verts.Add(new Vector3(seg[1].x, 0, seg[1].y));
@@ -143,10 +137,18 @@ public class TactileGridsTest : MonoBehaviour
                             {
                                 verts.Add(new Vector3(seg[1].x, 0, seg[1].y));
                                 face.Add(verts.Count-1);
-                                verts.Add(new Vector3(seg[2].x, 0, seg[2].y));
-                                face.Add(verts.Count-1);
-                                verts.Add(new Vector3(seg[3].x, 0, seg[3].y));
-                                face.Add(verts.Count-1);
+
+                                if (seg.Count > 2)
+                                {
+                                    verts.Add(new Vector3(seg[2].x, 0, seg[2].y));
+                                    face.Add(verts.Count-1);
+                                }
+
+                                if (seg.Count > 3)
+                                {
+                                    verts.Add(new Vector3(seg[3].x, 0, seg[3].y));
+                                    face.Add(verts.Count - 1);
+                                }
                             }
                         }
                         
@@ -166,11 +168,11 @@ public class TactileGridsTest : MonoBehaviour
             }
         }
 
-        (IsohedralTiling, List<List<Vector2>>) makeRandomTiling() {
+        (IsohedralTiling, List<List<Vector2>>) makeTiling() {
             
             if (!IsohedralTiling.tilingTypes.Contains(TilingType))
             {
-                Debug.Log("Invalid tiling type");
+                Debug.LogWarning("Invalid tiling type");
                 TilingType = PreviousTilingType;
             }
             
@@ -209,31 +211,46 @@ public class TactileGridsTest : MonoBehaviour
             }
 
 
-            // Make some random edge shapes.  Note that here, we sidestep the
+            // Make some edge shapes.  Note that here, we sidestep the
             // potential complexity of using .shape() vs. .parts() by checking
             // ahead of time what the intrinsic edge shape is and building
             // Bezier control points that have all necessary symmetries.
 
             var edges = new List<List<Vector2>>();
-            float randomScale2 = randomScale * 0.6f;
+
+            var newVert1 = new Vector2(NewVert1.x + 0.1f, NewVert1.y);
+            var newVert2 = new Vector2(NewVert2.x + 0.6f, NewVert2.y);
+            
             for (int i = 0; i < tiling.numEdgeShapes(); ++i) {
+                
                 var ej = new List<Vector2>();
                 EdgeShape shp = tiling.getEdgeShape(i);
-                if (shp == EdgeShape.I) {
-                    // Pass
+
+                if (shp == EdgeShape.I)
+                {
+                    // I Edges must look the same after both rotation and reflection
                 } else if (shp == EdgeShape.J)
                 {
-                    float randomValue = Random.value;
-                    ej.Add(new Vector2(randomValue * randomScale2, randomValue * randomScale - randomOffset));
-                    ej.Add(new Vector2(randomValue * randomScale2 + (randomOffset * 0.8f), randomValue * randomScale - randomOffset));
+                    // J Edges can be a path of any shape
+                    if (ExtraVerts > 0) 
+                    {
+                        ej.Add(newVert1);
+                        if (ExtraVerts > 1) ej.Add(newVert2);
+                    }
                 } else if (shp == EdgeShape.S) {
-                    float randomValue = Random.value;
-                    ej.Add(new Vector2(randomValue * randomScale2, randomValue * randomScale - randomOffset));
-                    ej.Add(new Vector2(1.0f - ej[0].x, -ej[0].y));
+                    // S Edges must look the same after a 180° rotation
+                    if (ExtraVerts > 0)
+                    {
+                        ej.Add(newVert1);
+                        ej.Add(new Vector2(1.0f - ej[0].x, -ej[0].y));
+                    }
                 } else if (shp == EdgeShape.U) {
-                    float randomValue = Random.value;
-                    ej.Add(new Vector2(randomValue * randomScale2, randomValue * randomScale - randomOffset));
-                    ej.Add(new Vector2(1.0f - ej[0].x, ej[0].y));
+                    // U Edges must look the same after reflecting across their length
+                    if (ExtraVerts > 0)
+                    {
+                        ej.Add(newVert1);
+                        ej.Add(new Vector2(1.0f - ej[0].x, ej[0].y));
+                    }
                 }
 
                 edges.Add(ej);
@@ -242,7 +259,7 @@ public class TactileGridsTest : MonoBehaviour
             return (tiling, edges);
         }
 
-        drawRandomTiling();
+        drawTiling();
             
         var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.Existing, verts.Count).ToList();
         poly = new ConwayPoly(verts, faces, faceRoles, vertexRoles);
