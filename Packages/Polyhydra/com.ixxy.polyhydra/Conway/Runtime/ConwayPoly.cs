@@ -75,6 +75,21 @@ namespace Conway
 			}
 		}
 
+		public int[] GetFaceCountsByType()
+		{
+			var faceCountsByType = new int[8];
+			foreach (var face in Faces)
+			{
+				int sides = face.Sides;
+				if (faceCountsByType.Length < sides + 1)
+				{
+					Array.Resize(ref faceCountsByType, sides + 1);
+				}
+				faceCountsByType[sides]++;
+			}
+			return faceCountsByType;
+		}
+
 		public (int v, int e, int f) vef
 		{
 			get

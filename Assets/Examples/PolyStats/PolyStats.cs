@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using Conway;
 using Johnson;
 using NaughtyAttributes;
@@ -19,156 +21,120 @@ public class PolyStats : MonoBehaviour
         Grid,
         Wythoff
     }
+    //
+    // // Only used to hide inspector fields with "ShowIf"
+    // private bool ShapeIsWythoff() => ShapeType == ShapeTypes.Wythoff;
+    // private bool ShapeIsJohnson() => ShapeType == ShapeTypes.Johnson;
+    // private bool ShapeIsGrid() => ShapeType == ShapeTypes.Grid;
 
-    // Only used to hide inspector fields with "ShowIf"
-    private bool ShapeIsWythoff() => ShapeType == ShapeTypes.Wythoff;
-    private bool ShapeIsJohnson() => ShapeType == ShapeTypes.Johnson;
-    private bool ShapeIsGrid() => ShapeType == ShapeTypes.Grid;
+    // public ShapeTypes ShapeType;
+    //
+    // [ShowIf("ShapeIsWythoff")]
+    // public PolyTypes PolyType;
+    //
+    // [ShowIf("ShapeIsJohnson")]
+    // public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
+    //
+    // [ShowIf("ShapeIsGrid")]
+    // public PolyHydraEnums.GridTypes GridType;
+    // [ShowIf("ShapeIsGrid")]
+    // public PolyHydraEnums.GridShapes GridShape;
+    //
+    // [Range(1,40)] public int P = 6;
+    // [ShowIf("ShapeIsGrid")] [Range(1,40)] public int Q = 6;
 
-    public ShapeTypes ShapeType;
-    
-    [ShowIf("ShapeIsWythoff")]
-    public PolyTypes PolyType1;
-    [ShowIf("ShapeIsWythoff")]
-    public PolyTypes PolyType2;
-    
-    [ShowIf("ShapeIsJohnson")]
-    public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType1;
-    [ShowIf("ShapeIsJohnson")]
-    public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType2;
-    
-    [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridTypes GridType;
-    [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridShapes GridShape1;
-    [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridShapes GridShape2;
-
-    [Range(1,40)] public int P1 = 6;
-    [Range(1,40)] public int P2 = 6;
-    [ShowIf("ShapeIsGrid")] [Range(1,40)] public int Q1 = 6;
-    [ShowIf("ShapeIsGrid")] [Range(1,40)] public int Q2 = 6;
-
-    [BoxGroup("Op 1"), Label("")] public Ops op1;
-    [BoxGroup("Op 1"), Label("Faces")] public FaceSelections op1Facesel;
-    [BoxGroup("Op 1"), Range(0, 3f), Label("Amount")] public float op1Amount1;
-    [BoxGroup("Op 1"), Range(0, .5f), Label("Amount2")] public float op1Amount2;
-    
-    [BoxGroup("Op 2"), Label("")] public Ops op2;
-    [BoxGroup("Op 2"), Label("Faces")] public FaceSelections op2Facesel;
-    [BoxGroup("Op 2"), Range(0, .5f), Label("Amount")] public float op2Amount1;
-    [BoxGroup("Op 2"), Range(0, .5f), Label("Amount2")] public float op2Amount2;
+    // [BoxGroup("Op 1"), Label("")] public Ops op1;
+    // [BoxGroup("Op 1"), Label("Faces")] public FaceSelections op1Facesel;
+    // [BoxGroup("Op 1"), Range(0, 3f), Label("Amount")] public float op1Amount1;
+    // [BoxGroup("Op 1"), Range(0, .5f), Label("Amount2")] public float op1Amount2;
+    //
+    // [BoxGroup("Op 2"), Label("")] public Ops op2;
+    // [BoxGroup("Op 2"), Label("Faces")] public FaceSelections op2Facesel;
+    // [BoxGroup("Op 2"), Range(0, .5f), Label("Amount")] public float op2Amount1;
+    // [BoxGroup("Op 2"), Range(0, .5f), Label("Amount2")] public float op2Amount2;
     
     [Space]
     public PolyHydraEnums.ColorMethods ColorMethod;
-
-    [Space]
-    public float morphAmount = 0.5f;
-    public bool reverseVertexOrder;
     
-    private ConwayPoly poly1;
-    private ConwayPoly poly2;
-
-
     void Start()
     {
-        Generate();
+        GenerateAll();
     }
 
-    private void OnValidate()
+    public void GenerateAll()
     {
-        Generate();
-    }
+        var polyTypeList = Uniform.Platonic
+            .Concat(Uniform.Archimedean)
+            .Concat(Uniform.KeplerPoinsot);
 
-    [ContextMenu("Generate")]
-    public void Generate()
-    {
-        switch (ShapeType)
+        foreach (var targetItem in polyTypeList.Distinct())
         {
-            case ShapeTypes.Wythoff:
-                var wythoff1 = new WythoffPoly(PolyType1, P1, Q1);
-                wythoff1.BuildFaces();
-                poly1 = new ConwayPoly(wythoff1);
-                var wythoff2 = new WythoffPoly(PolyType2, P2, Q2);
-                wythoff2.BuildFaces();
-                poly2 = new ConwayPoly(wythoff2);
-                break;
-            case ShapeTypes.Johnson:
-                poly1 = JohnsonPoly.Build(JohnsonPolyType1, P1);
-                poly2 = JohnsonPoly.Build(JohnsonPolyType2, P2);
-                break;
-            case ShapeTypes.Grid:
-                poly1 = Grids.Grids.MakeGrid(GridType, GridShape1, P1, Q1, false);
-                poly2 = Grids.Grids.MakeGrid(GridType, GridShape2, P2, Q2, false);
-                break;
+            var targetPolyType = targetItem;
+            var targetPoly = GenerateWythoff(targetPolyType);
+            foreach (var sourceItem in polyTypeList)
+            {
+                var sourcePolyType = sourceItem;
+                var sourcePoly = GenerateWythoff(sourcePolyType);
+                FindOpMatches(sourcePoly, sourcePolyType.Name, targetPoly, targetPolyType.Name);
+            }
         }
-
-        var vef1 = PolyHydraEnums.CalcVef(poly1, op1);  // Predicted vertex, edge and face counts
-        
-        var o1 = new OpParams {valueA = op1Amount1, valueB = op1Amount2, facesel = op1Facesel};
-        poly1 = poly1.ApplyOp(op1, o1);
-
-        var vef2 = PolyHydraEnums.CalcVef(poly2, op2);  // Predicted vertex, edge and face counts
-        
-        var o2 = new OpParams {valueA = op2Amount1, valueB = op2Amount2, facesel = op2Facesel};
-        poly2 = poly2.ApplyOp(op2, o2);
-        
-        
-        int v1 = poly1.Vertices.Count;
-        int e1 = poly1.EdgeCount;
-        int f1 = poly1.Faces.Count;
-        // Compare predicted and actual v,e,f
-        Debug.Log($"{v1} {e1} {f1} = {vef1}");
-
-        int v2 = poly2.Vertices.Count;
-        int e2 = poly2.EdgeCount;
-        int f2 = poly2.Faces.Count;
-        // Compare predicted and actual v,e,f
-        Debug.Log($"{v2} {e2} {f2} = {vef2}");
-
-        // Display both side by side
-        poly2 = poly2.Transform(Vector3.left * 2);
-        poly1.Append(poly2);
-        poly1.Recenter();
-        
-        // Final Mesh
-        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly1, false, null, ColorMethod);
-        GetComponent<MeshFilter>().mesh = mesh;
     }
 
-    public void FindOpMatches()
+    public ConwayPoly GenerateWythoff(Uniform polyType)
     {
+        var wythoff = new WythoffPoly(polyType.Wythoff);
+        wythoff.BuildFaces();
+        var poly = new ConwayPoly(wythoff);
+        // var o = new OpParams {valueA = .2f, valueB = .2f, facesel = FaceSelections.All};
+        // poly = poly.ApplyOp(op, o);
+        // var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
+        // GetComponent<MeshFilter>().mesh = mesh;
+        return poly;
+    }
 
-        var poly = new ConwayPoly();
-        
+    [ContextMenu("FindOpMatches")]
+    public void FindOpMatches(ConwayPoly sourcePoly, string sourcePolyName, ConwayPoly targetPoly, string targetPolyName)
+    {
+        // int v = poly.Vertices.Count;
+        // int e = poly.EdgeCount;
+        // int f = poly.Faces.Count;
+        //
+        // // Compare predicted and actual v,e,f
+        // Debug.Log($"{v} {e} {f} = {PolyHydraEnums.CalcVef(poly, op2)}");
+
         // Loops through all Conway ops and records which ones
         // Result in matching Vertex, Edge and Face counts
         
-        var matches = new Dictionary<(int v, int e, int f), List<Ops>>();
+        var matches = new Dictionary<int[], List<Ops>>();
         
         // For all ops use:
         // var opCount = ((Ops[]) Enum.GetValues(typeof(Ops))).Length;
-        
         // Just the conway ops
         var opCount = 34;
         
-        for (var i = 0; i < 34; i++)
+        var targetFaceTypes = targetPoly.GetFaceCountsByType();
+        
+        for (var i = 1; i < 34; i++)
         {
-            Ops o = (Ops)i;
-            var vef = PolyHydraEnums.CalcVef(poly, o);
-            if (!matches.ContainsKey(vef))
+            var o = new OpParams {valueA = 0.2f, valueB = 0.2f, facesel = FaceSelections.All};
+            var newPoly = sourcePoly.ApplyOp((Ops)i, o);
+
+            var sourceFaceTypes = newPoly.GetFaceCountsByType();
+            if (!sourceFaceTypes.SequenceEqual(targetFaceTypes)) continue; 
+            if (!matches.ContainsKey(sourceFaceTypes))
             {
-                matches[vef] = new List<Ops>();
+                matches[sourceFaceTypes] = new List<Ops>();
             }
-        
-            matches[vef].Add(o);
+            matches[sourceFaceTypes].Add((Ops)i);
         }
-        
+
+        if (matches.Count < 1) return;
+        Debug.Log($"Matching {sourcePolyName} and {targetPolyName}: {matches.Count} matches");
         foreach (var match in matches)
         {
-            if (match.Value.Count < 2) continue;
+            // if (match.Value.Count < 2) continue;
             var lst = string.Join(",", match.Value);
-            Debug.Log($"{match.Key}: {lst}");
+            Debug.Log($"{lst}");
         }
     }
 }

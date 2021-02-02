@@ -81,7 +81,7 @@ namespace Grids
 
                     var normal = Vector3.Cross(shape[1] - shape[0], shape[2] - shape[0]);
 
-                    if (normal.z > 0)
+                    if (normal.z < 0)
                     {
                         faceIndices.Add(new List<int>{face[0], face[1], face[2], face[3]});
                     }
