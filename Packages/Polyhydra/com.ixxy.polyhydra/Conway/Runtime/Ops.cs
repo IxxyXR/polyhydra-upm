@@ -94,6 +94,7 @@ namespace Conway
 
         ConvexHull,
         Spherize,
+        Cylinderize,
         Canonicalize,
 
         Stack,

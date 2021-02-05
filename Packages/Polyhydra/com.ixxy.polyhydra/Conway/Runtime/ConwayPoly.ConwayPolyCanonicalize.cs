@@ -328,6 +328,33 @@ namespace Conway
             return conway;
         }
 
+        public ConwayPoly Cylinderize(OpParams o)
+        {
+	        var vertexPoints = new List<Vector3>();
+	        var faceIndices = ListFacesByVertexIndices();
+
+	        for (var vertexIndex = 0; vertexIndex < Vertices.Count; vertexIndex++)
+	        {
+		        float amount = o.GetValueA(this, vertexIndex);
+		        var vertex = Vertices[vertexIndex];
+		        if (IncludeVertex(vertexIndex, o.facesel, o.TagListFromString(), o.filterFunc))
+		        {
+			        var normalized = new Vector2(vertex.Position.x, vertex.Position.z).normalized;
+			        var result = new Vector3(normalized.x, vertex.Position.y, normalized.y);
+			        vertexPoints.Add(Vector3.LerpUnclamped(vertex.Position, result, amount));
+			        VertexRoles[vertexIndex] = Roles.Existing;
+		        }
+		        else
+		        {
+			        vertexPoints.Add(vertex.Position);
+			        VertexRoles[vertexIndex] = Roles.Ignored;
+		        }
+	        }
+
+	        var conway = new ConwayPoly(vertexPoints, faceIndices, FaceRoles, VertexRoles, FaceTags);
+	        return conway;
+        }
+        
         #endregion Canonicalize
     }
 }

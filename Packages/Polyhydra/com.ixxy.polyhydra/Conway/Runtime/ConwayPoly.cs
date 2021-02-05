@@ -906,6 +906,9 @@ namespace Conway
 				case Ops.Spherize:
 					polyResult = Spherize(opParams);
 					break;
+				case Ops.Cylinderize:
+					polyResult = Cylinderize(opParams);
+					break;
 				case Ops.Recenter:
 					polyResult = Duplicate();
 					polyResult.Recenter();
