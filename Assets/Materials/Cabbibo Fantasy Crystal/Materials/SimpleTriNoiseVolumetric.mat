@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SimpleTriNoiseVolumetric
+  m_Shader: {fileID: 4800000, guid: 2e52284780a9b174f842835c01f86f73, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _BumpScale: 1
+    - _CenterOrbFalloff: 10
+    - _CenterOrbFalloffSharpness: 2.5
+    - _CenterOrbImportance: 2.96
+    - _CenterOrbRadius: 1
+    - _ColorMultiplier: 1
+    - _Cutoff: 0.5
+    - _DeltaSize: 0.01
+    - _DeltaStepSize: 0.1
+    - _DensityFalloff: 0.4
+    - _DensityImportance: 5.85
+    - _DensityRadius: 0.4
+    - _DensityRefractionMultiplier: 0.02
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _IndexOfRefraction: 0.8
+    - _Metallic: 0
+    - _Mode: 0
+    - _NoiseImportance: 200
+    - _NoiseSharpness: 4
+    - _NoiseSize: 6.59
+    - _NoiseSubtractor: 0
+    - _NumSteps: 10
+    - _OcclusionStrength: 1
+    - _OffsetMultiplier: 0
+    - _Opaqueness: 0.1
+    - _Parallax: 0.02
+    - _ReflectionMultiplier: 1
+    - _ReflectionSharpness: 2.29
+    - _RefractionBackgroundSampleExtraStep: 0.16
+    - _Size: 0.1
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _StepRefractionMultiplier: 0.016
+    - _UVSec: 0
+    - _WhichFace: 0
+    - _ZWrite: 1
+    m_Colors:
+    - _BaseColor: {r: 0, g: 0.2264151, b: 0.073695906, a: 1}
+    - _CenterOrbColor: {r: 0, g: 0.5660378, b: 0.25810868, a: 1}
+    - _CenterOrbOffset: {r: 0, g: 0, b: 0, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color1: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 1}
+    - _Color2: {r: 0, g: 1, b: 0.47451687, a: 1}
+    - _Color3: {r: 1, g: 0, b: 0.15377235, a: 1}
+    - _DensityColor: {r: 0, g: 0.18867922, b: 0.07856449, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _NoiseColor: {r: 0.5235849, g: 1, b: 0.912783, a: 1}
+    - _NoiseOffset: {r: 0, g: 3.4, b: 0, a: 1}
+    - _ReflectionColor: {r: 0.5613208, g: 0.7776953, b: 1, a: 1}
+  m_BuildTextureStacks: []
