@@ -608,6 +608,26 @@ public static class PolyHydraEnums
 				usesRandomize = true
 			}
 		},
+		{
+			Ops.FaceRotateX,
+			new OpConfig
+			{
+				usesFaces = true,
+				amountDefault = 45f,
+				amountMin = -3, amountMax = 3, amountSafeMin = -1, amountSafeMax = 1,
+				usesRandomize = true
+			}
+		},
+		{
+			Ops.FaceRotateY,
+			new OpConfig
+			{
+				usesFaces = true,
+				amountDefault = 45f,
+				amountMin = -3, amountMax = 3, amountSafeMin = -1, amountSafeMax = 1,
+				usesRandomize = true
+			}
+		},
 		// {
 		// 	Ops.PolarOffset,
 		// 	new OpConfig
@@ -802,6 +822,15 @@ public static class PolyHydraEnums
 		},
 		{
 			Ops.Spherize,
+			new OpConfig
+			{
+				usesFaces = true,
+				amountDefault = 1.0f, amountMin = -2, amountMax = 2, amountSafeMin = -2,
+				amountSafeMax = 2f
+			}
+		},
+		{
+			Ops.Cylinderize,
 			new OpConfig
 			{
 				usesFaces = true,
