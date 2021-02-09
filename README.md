@@ -4,7 +4,7 @@
 
 A toolkit for the procedural generation of geometric forms in Unity. The above image is from a VR piece I made using it called "Gossamer" that is currently exhibited in the Museum of Other Realities: https://www.museumor.com/artwork/gossamer
 
-YouTube playlist: https://www.youtube.com/watch?v=FPsXWHQO03Y&list=PL94EgLgEIJyJQh_nB-CvSKbXjNU0ojNqC
+YouTube playlist: https://youtube.com/playlist?list=PL94EgLgEIJyJQh_nB-CvSKbXjNU0ojNqC
 
 # Try it on the web
 
