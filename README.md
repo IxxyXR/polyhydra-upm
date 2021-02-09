@@ -24,9 +24,9 @@ Basic workflow is:
 * All (but one) Uniform Polyhedra using the Wythoff construction
 * Johnson(-esque) polyhedra - Prisms, pyramids, cupolae, rotundae 
 * Most Conway operations are implemented and are parameterized and chainable. Can be applied to a subset of faces based on simple filters or complex rules
-* Regular tilings of the plane with various deformations
+* Regular tilings of the plane with various deformations 
 * De Bruijn multigrids
-* A port of the Isohedral tilings from lucid.js
+* A port of the Isohedral tilings from tactile.js
 
 
 # Credits
@@ -43,8 +43,11 @@ Conway operator code was based on work by Will Pearson @mcneel which can be foun
 
 Again - I tried to get in touch and didn't get a response. I'm not sure what the intended licence of that code is. It seems to be a standard copyright attribution but I wonder if this is an oversight more than the real intention of the author.
 
-Multigrids is ported from https://github.com/kde/krita and is under the same licence (GPLv3)
+Multigrids is ported from work by Wolthera van Hövell tot Westerflier for https://github.com/kde/krita - they generously agreed that my version could be MIT licenced.
+
 Portions of grids.cs is from Antiprism and is MIT but should be attributed to Adrian Rossiter and Roger Kaufman: https://github.com/antiprism/antiprism/blob/master/COPYING
+
+Isohedral tilings are from tactile.js https://github.com/isohedral/tactile-js Thanks to Craig Kaplan @TriggerLoop
 
 My original inspiration was 3DS Max's Hedra plugin which kept me entertained for quite a while nearly 2 decades ago. I think credit for that is due to Tom Hudson :-)
 
