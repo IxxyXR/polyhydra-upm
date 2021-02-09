@@ -4,7 +4,7 @@
 
 Procedural generation of geometric forms in Unity.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/FPsXWHQO03Y" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+YouTube playlist: https://www.youtube.com/watch?v=FPsXWHQO03Y&list=PL94EgLgEIJyJQh_nB-CvSKbXjNU0ojNqC
 
 # Try it on the web
 
