@@ -4,15 +4,13 @@
 
 Procedural generation of geometric forms in Unity.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/FPsXWHQO03Y" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 # Try it on the web
 
-http://www.polyhydra.org.uk/media/fastui/
+This is one possible UI that I started working on: http://www.polyhydra.org.uk/media/fastui/ Only a prototype but a quick way to get an intro into one possibly application of this toolkit. Keyboard controls listed onscreen Experimental and a bit buggy. Save often...
 
-NOTE! - keyboard controls only in this particular web version.
-
-Keyboard controls listed onscreen
-
-Experimental and a bit buggy. Save often...
+NOTE! - keyboard controls only in this particular web version. (It's keyboard only because it was a variation on a UI I created originally using MIDI devices which was a really nice tactile way to create - but difficult to share with people who didn't own the same MIDI controller as you - hence this version. There is a more conventional mouse+keyboard UI here: https://andybak.itch.io/polyhydra - but it's more clunky and less immediate )
 
 # Overview
 
