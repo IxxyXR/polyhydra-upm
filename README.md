@@ -12,15 +12,22 @@ This is one possible UI that I started working on: http://www.polyhydra.org.uk/m
 
 NOTE! - keyboard controls only in this particular web version. (It's keyboard only because it was a variation on a UI I created originally using MIDI devices which was a really nice tactile way to create - but difficult to share with people who didn't own the same MIDI controller as you - hence this version. There is a more conventional mouse+keyboard UI here: https://andybak.itch.io/polyhydra - but it's more clunky and less immediate )
 
-# Overview
+# Features
 
-You start by choosing a uniform polyhedron: https://en.wikipedia.org/wiki/Uniform_polyhedron - these are generated using the Wythoff construction.
+Basic workflow is:
 
-You can then stack up Conway Operators on top to create much more complex shapes: https://en.wikipedia.org/wiki/Conway_polyhedron_notation
+1. Start by generating a base 3d shape
+2. Apply a Conway operator or similar modifier to some or all of the faces based on some rules
+3. Repeat
+4. Gasp in wonder at the beauty of your creation.
 
-# Documentation
+* All (but one) Uniform Polyhedra using the Wythoff construction
+* Johnson(-esque) polyhedra - Prisms, pyramids, cupolae, rotundae 
+* Most Conway operations are implemented and are parameterized and chainable. Can be applied to a subset of faces based on simple filters or complex rules
+* Regular tilings of the plane with various deformations
+* De Bruijn multigrids
+* A port of the Isohedral tilings from lucid.js
 
-See the [Wiki](https://github.com/IxxyXR/Polyhydra/wiki)
 
 # Credits
 
