@@ -2551,22 +2551,24 @@ public class IsohedralTiling {
             var fl = ttd.edge_orientations[2 * idx];
             var ro = ttd.edge_orientations[2 * idx + 1];
             reversals.Add(fl != ro);
-            float[] orientation;
-            switch ((ro, fl))
+            float[] orientation = new float[] { };
+            if (ro==false && fl==false)
             {
-                case (false, false):
-                    orientation = M_orients[0];
-                    break;
-                case (true, false):
-                    orientation = M_orients[1];
-                    break;
-                case (false, true):
-                    orientation = M_orients[2];
-                    break;
-                case (true, true):
-                    orientation = M_orients[3];
-                    break;
+                orientation = M_orients[0];
             }
+            else if (ro==true && fl==false)
+            {
+                orientation = M_orients[1];
+            }
+            else if (ro==false && fl==true)
+            {
+                orientation = M_orients[2];
+            }
+            else if (ro==true && fl==true)
+            {
+                orientation = M_orients[3];
+            }
+            
             edges.Add(
                 Multiply(
                     matchSeg(verts[idx], verts[(idx + 1) % ntv]),
@@ -2746,6 +2748,7 @@ public class IsohedralTiling {
 
     public IEnumerable<IEnumerable<IEnumerable<Thing>>> fillRegionQuad(Vector2 A, Vector2 B, Vector2 C, Vector2 D)
     {
+        
         Vector2 bc(double[] M, Vector2 p)
         {
             return new Vector2(
@@ -2760,14 +2763,14 @@ public class IsohedralTiling {
             return new Vector2((1.0f - t) * P.x + t * Q.x, y);
         }
 
-        IEnumerable<Thing> doFill(Vector2 A, Vector2 B, Vector2 C, Vector2 D, bool do_top)
+        IEnumerable<Thing> doFill(Vector2 AA, Vector2 BB, Vector2 CC, Vector2 DD, bool do_top)
         {
-            float x1 = A.x;
-            float dx1 = (D.x - A.x) / (D.y - A.y);
-            float x2 = B.x;
-            float dx2 = (C.x - B.x) / (C.y - B.y);
-            float ymin = A.y;
-            float ymax = C.y;
+            float x1 = AA.x;
+            float dx1 = (DD.x - AA.x) / (DD.y - AA.y);
+            float x2 = BB.x;
+            float dx2 = (CC.x - BB.x) / (CC.y - BB.y);
+            float ymin = AA.y;
+            float ymax = CC.y;
 
             if (do_top)
             {
@@ -2778,11 +2781,11 @@ public class IsohedralTiling {
             while (y < ymax)
             {
                 float yi = Mathf.Floor((float)y);
-                var x = Math.Floor(x1);
-                while (x < x2 + 1e-7)
+                var xx = Math.Floor(x1);
+                while (xx < x2 + 1e-7)
                 {
                     
-                    float xi = Mathf.Floor((float)x);
+                    float xi = Mathf.Floor((float)xx);
 
                     for (int asp = 0; asp < ttd.num_aspects; ++asp)
                     {
@@ -2799,7 +2802,7 @@ public class IsohedralTiling {
                         );
                     }
 
-                    x += 1.0;
+                    xx += 1.0;
                 }
                 x1 += dx1;
                 x2 += dx2;
@@ -2807,27 +2810,27 @@ public class IsohedralTiling {
             }
         }
 
-        IEnumerable<IEnumerable<Thing>> fillFixX(Vector2 A, Vector2 B, Vector2 C, Vector2 D, bool do_top)
+        IEnumerable<IEnumerable<Thing>> fillFixX(Vector2 AA, Vector2 BB, Vector2 CC, Vector2 DD, bool do_top)
         {
-            if (A.x > B.x)
+            if (AA.x > BB.x)
             {
-                yield return doFill(B, A, D, C, do_top);
+                yield return doFill(BB, AA, DD, CC, do_top);
             }
             else
             {
-                yield return doFill(A, B, C, D, do_top);
+                yield return doFill(AA, BB, CC, DD, do_top);
             }
         }
 
-        IEnumerable<IEnumerable<Thing>> fillFixY(Vector2 A, Vector2 B, Vector2 C, Vector2 D, bool do_top)
+        IEnumerable<IEnumerable<Thing>> fillFixY(Vector2 AA, Vector2 BB, Vector2 CC, Vector2 DD, bool do_top)
         {
-            if (A.y > C.y)
+            if (AA.y > CC.y)
             {
-                yield return doFill(C, D, A, B, do_top);
+                yield return doFill(CC, DD, AA, BB, do_top);
             }
             else
             {
-                yield return doFill(A, B, C, D, do_top);
+                yield return doFill(AA, BB, CC, DD, do_top);
             }
         }
 
