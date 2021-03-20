@@ -4,8 +4,9 @@ using UnityEngine;
 
 public static class GizmoHelper
 {
-    public static void DrawGizmos(ConwayPoly poly, Transform transform, 
-	    bool vertexGizmos=false, bool faceGizmos=false, bool edgeGizmos=false, bool faceCenterGizmos=false, float scale=1.0f)
+    public static void DrawGizmos(ConwayPoly poly, Transform transform,
+	    bool vertexGizmos = false, bool faceGizmos = false, bool edgeGizmos = false, bool faceCenterGizmos = false,
+	    bool faceOrientationGizmos = false, float scale = 1.0f)
     {
 		float GizmoRadius = .03f * scale;
 
@@ -73,6 +74,22 @@ public static class GizmoHelper
 				// string label = $"{i}";
 				// Handles.Label(transform.TransformPoint(edge.PointAlongEdge(0.9f)), label);
 				Gizmos.DrawWireCube(transform.TransformPoint(edge.PointAlongEdge(0.9f)), Vector3.one * 0.02f * scale);
+			}
+		}
+
+		if (faceOrientationGizmos)
+		{
+			Gizmos.color = Color.yellow;
+			for (var i = 0; i < poly.Faces.Count; i++)
+			{
+				var face = poly.Faces[i];
+				var target = face.GetBestEdge().Midpoint;
+				Gizmos.DrawLine(
+					transform.TransformPoint(face.Centroid),
+					transform.TransformPoint(target)
+				);
+				Gizmos.DrawSphere(transform.TransformPoint(target), 0.07f);
+				Gizmos.DrawWireSphere(transform.TransformPoint(face.Centroid), 0.025f);
 			}
 		}
     }

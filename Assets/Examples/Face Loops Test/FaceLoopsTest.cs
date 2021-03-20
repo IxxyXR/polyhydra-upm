@@ -140,7 +140,7 @@ public class FaceLoopsTest : MonoBehaviour
         //     Gizmos.DrawWireSphere(pos, .03f);
         //     Handles.Label(pos + new Vector3(0, .15f, 0), i.ToString());
         // }
-        GizmoHelper.DrawGizmos(poly, transform, edgeGizmos: false, vertexGizmos: false);
+        GizmoHelper.DrawGizmos(poly, transform, vertexGizmos: false, edgeGizmos: false);
         #endif
     }
 }

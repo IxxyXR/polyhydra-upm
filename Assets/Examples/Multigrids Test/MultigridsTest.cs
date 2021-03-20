@@ -129,7 +129,7 @@ public class MultigridsTest : MonoBehaviour
     }
 
     void OnDrawGizmos () {
-        GizmoHelper.DrawGizmos(poly, transform, vertexGizmos, faceGizmos, edgeGizmos, faceCenterGizmos, 0.3f);
+        GizmoHelper.DrawGizmos(poly, transform, vertexGizmos, faceGizmos, edgeGizmos, faceCenterGizmos, false, 0.3f);
         if (shapeGizmos)
         {
             for (int i = 0; i < shapes.Count; i++)

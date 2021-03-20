@@ -1,63 +1,18 @@
-﻿using System.Diagnostics;
-using Conway;
-using Johnson;
+﻿using Johnson;
 using UnityEngine;
 
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-public class JohnsonTest : MonoBehaviour
+public class JohnsonTest : ExampleBase
 {
     public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
     [Range(3,40)] public int sides = 4;
-
-    public bool ApplyOp;
-    public Ops op1;
-    public FaceSelections op1Facesel;
-    public float op1Amount1 = 0;
-    public float op1Amount2 = 0;
-    public Ops op2;
-    public FaceSelections op2Facesel;
-    public float op2Amount1 = 0;
-    public float op2Amount2 = 0;
-    public bool Canonicalize;    
-    public Vector3 Position = Vector3.zero;
-    public Vector3 Rotation = Vector3.zero;
-    public Vector3 Scale = Vector3.one;
-
-    public PolyHydraEnums.ColorMethods ColorMethod;
-
-    void Start()
+    
+    public override void Generate()
     {
-        Generate();
-    }
-
-    private void OnValidate()
-    {
-        Generate();
-    }
-
-    [ContextMenu("Generate")]
-    public void Generate()
-    {
-        var poly = JohnsonPoly.Build(JohnsonPolyType, sides);
-        
-         if (ApplyOp)
-         {
-             var o1 = new OpParams {valueA = op1Amount1, valueB = op1Amount2, facesel = op1Facesel};
-             poly = poly.ApplyOp(op1, o1);
-             var o2 = new OpParams {valueA = op2Amount1, valueB = op2Amount2, facesel = op2Facesel};
-             poly = poly.ApplyOp(op2, o2);
-         }
-         if (Canonicalize)
-         {
-             poly = poly.Canonicalize(0.1, 0.1);
-         }
-
-         poly = poly.Transform(Position, Rotation, Scale);
-
-        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
-        GetComponent<MeshFilter>().mesh = mesh;
+        poly = JohnsonPoly.Build(JohnsonPolyType, sides);
+        base.Generate();
     }
 
 }
