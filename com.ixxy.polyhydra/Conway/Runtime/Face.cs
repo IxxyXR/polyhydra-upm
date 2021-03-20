@@ -241,5 +241,38 @@ namespace Conway
             return new ConwayPoly(verts, faces, faceRoles, vertexRoles);
         }
 
+        public Halfedge GetBestEdge()
+        {
+            // Useful for deciding on an orientation for the face
+            // i.e. UV mapping etc.
+            // Fairly arbitrary choice of "best"
+            // I've gone with "So the edge that is at the top - of forwards if the face is flat"
+            // The vector from the center to this edge midpoint 
+            // will at least always point in a consistent direction.
+            // TODO "highest midpoint by y coord" is a fairly poor interpretation of edge direction
+            // Should probably calculate a Vector2 angle based on one pair of possible coords 
+            var faceNormal = Normal;
+            Halfedge bestEdge = null;
+            float bestScore = -9999999;
+            var list = GetHalfedges();
+            // How nearly facing up or down are we?
+            var upness = Mathf.Abs((new Vector3(Mathf.Abs(faceNormal.x), Mathf.Abs(faceNormal.y), Mathf.Abs(faceNormal.z)) - Vector3.up).magnitude);
+            for (var j = 0; j < list.Count; j++)
+            {
+                var edge = list[j];
+                var mid = edge.Midpoint;
+                // Pick a desired direction. Up for most faces but "forwards" for nearly up or down faces
+                var edgeCoord = (upness<.01f) ? mid.z : mid.y;
+                // Add a bit of another vector as a "tie-break". Favour "left"
+                edgeCoord += (-mid.x * .001f);
+                if (edgeCoord > bestScore)
+                {
+                    bestScore = edgeCoord;
+                    bestEdge = edge;
+                }
+            }
+
+            return bestEdge;
+        }
     }
 }
