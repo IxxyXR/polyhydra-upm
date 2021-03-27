@@ -33,6 +33,7 @@ public class ExampleBase : MonoBehaviour
     [BoxGroup("Tweaks")] public bool Canonicalize;
     [BoxGroup("Tweaks")] public bool Rescale;
     [BoxGroup("Tweaks")] public PolyHydraEnums.ColorMethods ColorMethod;
+    [BoxGroup("Tweaks")] public PolyHydraEnums.UVMethods UVMethod;
 
     [BoxGroup("Gizmos")] public bool vertexGizmos;
     [BoxGroup("Gizmos")] public bool faceGizmos;
@@ -82,7 +83,7 @@ public class ExampleBase : MonoBehaviour
         }
         poly = poly.Transform(Position, Rotation, Scale);
 
-        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
+        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod, UVMethod);
         if (Rescale)
         {
             var size = mesh.bounds.size;

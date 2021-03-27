@@ -15,6 +15,15 @@ public static class PolyHydraEnums
         ByTags,
     }
 
+	public enum UVMethods
+	{
+		FirstEdge,
+		BestEdge,
+		FirstVertex,
+		BestVertex,
+		ObjectAligned
+	}
+
 	public enum PolyTypeCategories
 	{
 		All,

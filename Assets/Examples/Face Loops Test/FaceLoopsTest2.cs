@@ -122,7 +122,7 @@ public class FaceLoopsTest2 : MonoBehaviour
 
         poly = poly.Transform(Position, Rotation, Scale);
 
-        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod, true);
+        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;
     }
 
