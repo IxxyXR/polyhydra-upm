@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Conway;
+using MoreLinq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Wythoff;
@@ -47,6 +48,7 @@ public static class PolyMeshBuilder
 		bool generateSubmeshes = false,
 		Color[] colors = null,
 		PolyHydraEnums.ColorMethods colorMethod = PolyHydraEnums.ColorMethods.ByRole,
+		PolyHydraEnums.UVMethods uvMethod = PolyHydraEnums.UVMethods.FirstEdge,
 		bool largeMeshFormat = true
     )
     {
@@ -126,9 +128,42 @@ public static class PolyMeshBuilder
 			ConwayPoly.Roles faceRole = conway.FaceRoles[i];
 
 			// Axes for UV mapping
-			var xAxis = face.Halfedge.Vector;
-			var yAxis = Vector3.Cross(xAxis, faceNormal);
 
+			Vector3 xAxis = Vector3.right;
+			Vector3 yAxis = Vector3.up;
+			switch (uvMethod)
+			{
+				case PolyHydraEnums.UVMethods.FirstEdge:
+					xAxis = face.Halfedge.Vector;
+					yAxis = Vector3.Cross(xAxis, faceNormal);
+					break;
+				case PolyHydraEnums.UVMethods.BestEdge:
+					xAxis = face.GetBestEdge().Vector;
+					yAxis = Vector3.Cross(xAxis, faceNormal);
+					break;
+				case PolyHydraEnums.UVMethods.FirstVertex:
+					yAxis = face.Centroid - face.GetVertices()[0].Position;
+					xAxis = Vector3.Cross(yAxis, faceNormal);
+					break;
+				case PolyHydraEnums.UVMethods.BestVertex:
+					yAxis = face.Centroid - face.GetBestEdge().Vertex.Position;
+					xAxis = Vector3.Cross(yAxis, faceNormal);
+					break;
+				case PolyHydraEnums.UVMethods.ObjectAligned:
+					// Align towards the highest vertex or edge midpoint (measured in the y direction)
+					Vertex chosenVert = face.GetVertices().MaxBy(vert => vert.Position.y).First();
+					Halfedge chosenEdge = face.GetHalfedges().MaxBy(edge => edge.Midpoint.y).First();
+					Vector3 chosenPoint;
+					if (chosenVert.Position.y > chosenEdge.Midpoint.y + 0.01f)  // favour edges slightly
+						chosenPoint = chosenVert.Position;
+					else
+						chosenPoint = chosenEdge.Midpoint;
+					
+					yAxis = face.Centroid - chosenPoint;
+					xAxis = Vector3.Cross(yAxis, faceNormal);
+					break;
+			}
+			
 			Color32 color;
 
 			switch (colorMethod)
