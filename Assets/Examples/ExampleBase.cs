@@ -26,14 +26,26 @@ public class ExampleBase : MonoBehaviour
     [BoxGroup("Op 2")] public bool op2Animate;
     [BoxGroup("Op 2")] [Range(1, 5)] public int op2iterations = 1;
     
+    [BoxGroup("Op 2")] public Ops op3;
+    [BoxGroup("Op 2")] public FaceSelections op3Facesel;
+    [BoxGroup("Op 2")] public float op3Amount1 = 0;
+    [BoxGroup("Op 2")] public float op3Amount2 = 0;
+    [BoxGroup("Op 2")] public bool op3Animate;
+    [BoxGroup("Op 2")] [Range(1, 5)] public int op3iterations = 1;
+    
     [BoxGroup("Transform")] public Vector3 Position = Vector3.zero;
     [BoxGroup("Transform")] public Vector3 Rotation = Vector3.zero;
     [BoxGroup("Transform")] public Vector3 Scale = Vector3.one;
    
     [BoxGroup("Tweaks")] public bool Canonicalize;
     [BoxGroup("Tweaks")] public bool Rescale;
-    [BoxGroup("Tweaks")] public PolyHydraEnums.ColorMethods ColorMethod;
     [BoxGroup("Tweaks")] public PolyHydraEnums.UVMethods UVMethod;
+    
+    [BoxGroup("Coloring")] public PolyHydraEnums.ColorMethods ColorMethod;
+    [BoxGroup("Coloring")] public bool UseCustomColors;
+    [BoxGroup("Coloring")] public Gradient Colors;
+    [BoxGroup("Coloring")] public float ColorRange;
+    [BoxGroup("Coloring")] public float ColorOffset;
 
     [BoxGroup("Gizmos")] public bool vertexGizmos;
     [BoxGroup("Gizmos")] public bool faceGizmos;
@@ -43,7 +55,7 @@ public class ExampleBase : MonoBehaviour
 
     protected ConwayPoly poly;
 
-    void Start()
+    protected void Start()
     {
         Generate();
     }
@@ -76,6 +88,11 @@ public class ExampleBase : MonoBehaviour
                 var o2 = new OpParams {valueA = op2Amount1 * Mathf.Abs(op2Animate ? Mathf.Cos(Time.time * .6f) : 1), valueB = op2Amount2, facesel = op2Facesel};
                 poly = poly.ApplyOp(op2, o2);
             }
+            for (var i = 0; i < op3iterations; i++)
+            {
+                var o3 = new OpParams {valueA = op3Amount1 * Mathf.Abs(op3Animate ? Mathf.Cos(Time.time * .6f) : 1), valueB = op3Amount2, facesel = op3Facesel};
+                poly = poly.ApplyOp(op3, o3);
+            }
         }
         if (Canonicalize)
         {
@@ -83,7 +100,13 @@ public class ExampleBase : MonoBehaviour
         }
         poly = poly.Transform(Position, Rotation, Scale);
 
-        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod, UVMethod);
+        Color[] colors = null;
+        if (UseCustomColors)
+        {
+            colors = Enumerable.Range(0,8).Select(x => Colors.Evaluate(((x / 8f) * ColorRange + ColorOffset) % 1)).ToArray();
+        }
+        
+        var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, colors, ColorMethod, UVMethod);
         if (Rescale)
         {
             var size = mesh.bounds.size;
