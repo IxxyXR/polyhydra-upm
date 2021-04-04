@@ -8,6 +8,7 @@ namespace Conway
 {
     public partial class ConwayPoly
     {
+        
         public ConwayPoly AddMirrored(OpParams o, Vector3 axis)
         {
             float amount = o.GetValueA(this, 0);
@@ -2365,5 +2366,20 @@ namespace Conway
 		//
 		// 	return ribbon;
 		// }
+        
+        public ConwayPoly WallpaperClone(WallpaperSymmetry sym)
+        {
+            var result = new ConwayPoly();
+            foreach (var m in sym.matrices)
+            {
+                var copy = Duplicate();
+                foreach (var v in copy.Vertices)
+                {
+                    v.Position = m.MultiplyPoint3x4(v.Position);
+                }
+                result.Append(copy);
+            }
+            return result;
+        }
     }
 }
