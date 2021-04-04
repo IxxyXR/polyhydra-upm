@@ -94,12 +94,9 @@ public class ExampleBase : MonoBehaviour
                 poly = poly.ApplyOp(op3, o3);
             }
         }
-        if (Canonicalize)
-        {
-            poly = poly.Canonicalize(0.01, 0.01);
-        }
-        poly = poly.Transform(Position, Rotation, Scale);
 
+        AfterAllOps();
+        
         Color[] colors = null;
         if (UseCustomColors)
         {
@@ -125,14 +122,30 @@ public class ExampleBase : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
     }
 
-    private void OnDrawGizmos()
+    public virtual void AfterAllOps()
+    {
+        if (Canonicalize)
+        {
+            poly = poly.Canonicalize(0.01, 0.01);
+        }
+
+        if (Position != Vector3.zero || Rotation != Vector3.zero || Scale != Vector3.one)
+        {
+            poly = poly.Transform(Position, Rotation, Scale);
+        }
+    }
+
+    public virtual void DoDrawGizmos()
     {
         if (poly == null) return;
+        #if UNITY_EDITOR
+            GizmoHelper.DrawGizmos(poly, transform, vertexGizmos, faceGizmos, edgeGizmos, faceCenterGizmos, FaceOrientationGizmos, 0.3f);
+        #endif
+    }
 
-    #if UNITY_EDITOR
-        GizmoHelper.DrawGizmos(poly, transform, vertexGizmos, faceGizmos, edgeGizmos, faceCenterGizmos, FaceOrientationGizmos, 0.3f);
-    #endif
-    
+    private void OnDrawGizmos()
+    {
+        DoDrawGizmos();
     }
 }
     
