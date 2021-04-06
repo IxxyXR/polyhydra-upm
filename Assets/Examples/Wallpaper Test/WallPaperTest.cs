@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
+using UnityEngine.Rendering;
 
 
 public class WallPaperTest : ExampleBase
@@ -15,7 +16,7 @@ public class WallPaperTest : ExampleBase
     private bool ShapeIsWythoff() => ShapeType==PolyHydraEnums.ShapeTypes.Uniform;
     private bool ShapeIsJohnson() => ShapeType==PolyHydraEnums.ShapeTypes.Johnson;
     private bool ShapeIsGrid() => ShapeType==PolyHydraEnums.ShapeTypes.Grid;
-    private bool ShapeIsOther() => ShapeType==PolyHydraEnums.ShapeTypes.Grid;
+    private bool ShapeIsOther() => ShapeType==PolyHydraEnums.ShapeTypes.Other;
     private bool UsesPrismP()
     {
         var polybuilder = new PolyBuilder(ShapeType, PolyType, JohnsonPolyType, GridType, GridShape, OtherPolyType);
@@ -43,13 +44,22 @@ public class WallPaperTest : ExampleBase
     
     [Header("Symmetry")]
     public SymmetryGroup.R group;
-    public int RepeatX = 1;
-    public int RepeatY = 1;
-    public Vector2 Center = Vector2.zero;
+    public Vector2 TileSize = Vector2.one;
     public float UnitScale = 1f;
     public Vector2 UnitOffset = Vector2.zero;
     public Vector2 Spacing = Vector2.one;
 
+    [Header("Iteration")]
+    public int RepeatX = 1;
+    public int RepeatY = 1;
+    public bool SlowMerge = false;
+    
+    [Header("Transform Each")]
+    public Vector3 PositionEach = Vector3.zero;
+    public Vector3 RotationEach = Vector3.zero;
+    public Vector3 ScaleEach = Vector3.one;
+    public bool ApplyAfter = true;
+        
     [BoxGroup("Gizmos")] public bool symmetryGizmos;
     [BoxGroup("Gizmos")] public bool domainGizmos;
     
@@ -61,14 +71,77 @@ public class WallPaperTest : ExampleBase
         var polybuilder = new PolyBuilder(ShapeType, PolyType, JohnsonPolyType, GridType, GridShape, OtherPolyType);
         polybuilder.Build(PrismP, PrismQ);
         poly = polybuilder.poly;
+        sym = new WallpaperSymmetry(group, RepeatX, RepeatY, TileSize, UnitScale, UnitOffset, Spacing);
+
         base.Generate();
+    }
+    void Update()
+    {
+        if (!SlowMerge)
+        {
+            GetComponent<MeshRenderer>().enabled = false;
+            Mesh mesh;
+            if (Application.isPlaying)
+            {
+                mesh = GetComponent<MeshFilter>().mesh;
+            }
+            else
+            {
+                mesh = GetComponent<MeshFilter>().sharedMesh;
+            }
+            
+            if (mesh == null) return;
+            
+            var matrices = new List<Matrix4x4>();
+            var cumulativeTransform = Matrix4x4.TRS(PositionEach, Quaternion.Euler(RotationEach), ScaleEach);
+            var currentCumulativeTransform = cumulativeTransform;
+
+            foreach (var m in sym.matrices)
+            {
+                matrices.Add(
+                    ApplyAfter ? currentCumulativeTransform * m : m * currentCumulativeTransform
+                );
+                currentCumulativeTransform *= cumulativeTransform;
+            }
+            DrawInstances(mesh, GetComponent<MeshRenderer>().material, matrices);
+        }
+    }
+    
+    private List<List<T>> Split<T> (List<T> source, int size)
+    {
+        return source
+            .Select ((x, i) => new { Index = i, Value = x })
+            .GroupBy (x => x.Index / size)
+            .Select (x => x.Select (v => v.Value).ToList ())
+            .ToList ();
+    }
+    
+    public void DrawInstances(Mesh mesh, Material material, List<Matrix4x4> matrices)
+    {
+        
+        ShadowCastingMode castShadows = ShadowCastingMode.On;
+        bool receiveShadows = true;
+
+        List<List<Matrix4x4>> batches;
+        batches = Split (matrices, 1023);
+
+        for (int batchIndex = 0; batchIndex < batches.Count; batchIndex++)
+        {
+            for (int subMeshIndex = 0; subMeshIndex < mesh.subMeshCount; subMeshIndex++)
+            {
+                Graphics.DrawMeshInstanced (mesh, subMeshIndex, material, batches[batchIndex], null, castShadows, receiveShadows);
+            }
+        }
     }
 
     public override void AfterAllOps()
     {
         base.AfterAllOps();
-        sym = new WallpaperSymmetry(group, RepeatX, RepeatY, Center, UnitScale, UnitOffset, Spacing);
-        poly = poly.WallpaperClone(sym);
+        if (SlowMerge)
+        {
+            GetComponent<MeshRenderer>().enabled = true;
+            poly = poly.Cloner(sym.matrices, Matrix4x4.TRS(PositionEach, Quaternion.Euler(RotationEach), ScaleEach), ApplyAfter);
+        }
     }
 
     public override void DoDrawGizmos()

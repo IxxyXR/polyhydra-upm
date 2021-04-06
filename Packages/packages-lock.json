@@ -13,6 +13,12 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.ixxy.unitysymmetry": {
+      "version": "file:../../unity-symmetry/Packages/UnitySymmetry",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.pixelplacement.itween": {
       "version": "https://github.com/itsjavi/iTween-Unity.git#1.0.0",
       "depth": 0,

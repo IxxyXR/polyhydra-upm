@@ -2367,15 +2367,32 @@ namespace Conway
 		// 	return ribbon;
 		// }
         
-        public ConwayPoly WallpaperClone(WallpaperSymmetry sym)
+        public ConwayPoly Cloner(List<Matrix4x4> matrices, Matrix4x4 cumulativeTransform=default, bool ApplyAfter=false)
         {
             var result = new ConwayPoly();
-            foreach (var m in sym.matrices)
+            var currentCumulativeTransform = cumulativeTransform;
+            foreach (var m in matrices)
             {
                 var copy = Duplicate();
                 foreach (var v in copy.Vertices)
                 {
-                    v.Position = m.MultiplyPoint3x4(v.Position);
+                    if (ApplyAfter)
+                    {
+                        v.Position = m.MultiplyPoint3x4(v.Position);
+                        v.Position = currentCumulativeTransform.MultiplyPoint3x4(v.Position);
+                    }
+                    else
+                    {
+                        v.Position = currentCumulativeTransform.MultiplyPoint3x4(v.Position);
+                        v.Position = m.MultiplyPoint3x4(v.Position);
+                    }
+                }
+                currentCumulativeTransform *= cumulativeTransform;
+
+                if (m.lossyScale.x < 0 || m.lossyScale.y < 0)
+                {
+                    // Reflection so flip faces to fix normals
+                    copy.Halfedges.Flip();
                 }
                 result.Append(copy);
             }
