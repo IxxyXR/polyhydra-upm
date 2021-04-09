@@ -47,6 +47,10 @@ public class ExampleBase : MonoBehaviour
     [BoxGroup("Coloring")] public float ColorRange;
     [BoxGroup("Coloring")] public float ColorOffset;
 
+    [BoxGroup("Animation")] public bool EnableAnimation;
+    [BoxGroup("Animation")] public float AnimationAmount = 1.0f;
+    [BoxGroup("Animation")] public float AnimationSpeed = 1.0f;
+
     [BoxGroup("Gizmos")] public bool vertexGizmos;
     [BoxGroup("Gizmos")] public bool faceGizmos;
     [BoxGroup("Gizmos")] public bool edgeGizmos;
@@ -60,12 +64,17 @@ public class ExampleBase : MonoBehaviour
         Generate();
     }
 
-    void Update()
+    public virtual void DoUpdate()
     {
-        if (op1Animate || op2Animate)
+        if (IsAnimated())
         {
             Generate();
         }
+    }
+
+    void Update()
+    {
+        DoUpdate();
     }
 
     private void OnValidate()
@@ -76,22 +85,33 @@ public class ExampleBase : MonoBehaviour
     [ContextMenu("Generate")]
     public virtual void Generate()
     {
+        float animMultiplier = Mathf.Abs(Mathf.Sin(Time.time * AnimationSpeed) * AnimationAmount);
+
         if (ApplyOp)
         {
             for (var i = 0; i < op1iterations; i++)
             {
-                var o1 = new OpParams {valueA = op1Amount1 * Mathf.Abs(op1Animate ? Mathf.Sin(Time.time) : 1), valueB = op1Amount2, facesel = op1Facesel};
-                poly = poly.ApplyOp(op1, o1);
+                poly = poly.ApplyOp(op1, new OpParams {
+                    valueA = op1Amount1 * (op1Animate ? animMultiplier : 1),
+                    valueB = op1Amount2,
+                    facesel = op1Facesel
+                });
             }
             for (var i = 0; i < op2iterations; i++)
             {
-                var o2 = new OpParams {valueA = op2Amount1 * Mathf.Abs(op2Animate ? Mathf.Cos(Time.time * .6f) : 1), valueB = op2Amount2, facesel = op2Facesel};
-                poly = poly.ApplyOp(op2, o2);
+                poly = poly.ApplyOp(op2, new OpParams {
+                    valueA = op2Amount1 * (op2Animate ? animMultiplier : 1),
+                    valueB = op2Amount2,
+                    facesel = op2Facesel
+                });
             }
             for (var i = 0; i < op3iterations; i++)
             {
-                var o3 = new OpParams {valueA = op3Amount1 * Mathf.Abs(op3Animate ? Mathf.Cos(Time.time * .6f) : 1), valueB = op3Amount2, facesel = op3Facesel};
-                poly = poly.ApplyOp(op3, o3);
+                poly = poly.ApplyOp(op3, new OpParams {
+                    valueA = op3Amount1 * (op3Animate ? animMultiplier : 1),
+                    valueB = op3Amount2,
+                    facesel = op3Facesel
+                });
             }
         }
 
@@ -120,6 +140,11 @@ public class ExampleBase : MonoBehaviour
         }
 
         GetComponent<MeshFilter>().mesh = mesh;
+    }
+
+    public virtual bool IsAnimated()
+    {
+        return EnableAnimation && (op1Animate || op2Animate || op3Animate);
     }
 
     public virtual void AfterAllOps()

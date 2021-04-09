@@ -59,6 +59,9 @@ public class WallPaperTest : ExampleBase
     public Vector3 RotationEach = Vector3.zero;
     public Vector3 ScaleEach = Vector3.one;
     public bool ApplyAfter = true;
+
+    [Header("Rendering")]
+    public bool EnableShadows;
         
     [BoxGroup("Gizmos")] public bool symmetryGizmos;
     [BoxGroup("Gizmos")] public bool domainGizmos;
@@ -75,7 +78,7 @@ public class WallPaperTest : ExampleBase
 
         base.Generate();
     }
-    void Update()
+    public override void DoUpdate()
     {
         if (!SlowMerge)
         {
@@ -96,15 +99,18 @@ public class WallPaperTest : ExampleBase
             var cumulativeTransform = Matrix4x4.TRS(PositionEach, Quaternion.Euler(RotationEach), ScaleEach);
             var currentCumulativeTransform = cumulativeTransform;
 
+            var baseMatrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.localScale);
             foreach (var m in sym.matrices)
             {
                 matrices.Add(
-                    ApplyAfter ? currentCumulativeTransform * m : m * currentCumulativeTransform
+                    baseMatrix * (ApplyAfter ? currentCumulativeTransform * m : m * currentCumulativeTransform)
                 );
                 currentCumulativeTransform *= cumulativeTransform;
             }
             DrawInstances(mesh, GetComponent<MeshRenderer>().material, matrices);
         }
+
+        base.DoUpdate();
     }
     
     private List<List<T>> Split<T> (List<T> source, int size)
@@ -119,8 +125,8 @@ public class WallPaperTest : ExampleBase
     public void DrawInstances(Mesh mesh, Material material, List<Matrix4x4> matrices)
     {
         
-        ShadowCastingMode castShadows = ShadowCastingMode.On;
-        bool receiveShadows = true;
+        ShadowCastingMode castShadows = EnableShadows ? ShadowCastingMode.On : ShadowCastingMode.Off;
+        bool receiveShadows = EnableShadows;
 
         List<List<Matrix4x4>> batches;
         batches = Split (matrices, 1023);
