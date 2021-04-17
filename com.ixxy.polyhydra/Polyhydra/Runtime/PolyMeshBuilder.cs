@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Conway;
-using MoreLinq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Wythoff;
@@ -151,8 +150,8 @@ public static class PolyMeshBuilder
 					break;
 				case PolyHydraEnums.UVMethods.ObjectAligned:
 					// Align towards the highest vertex or edge midpoint (measured in the y direction)
-					Vertex chosenVert = face.GetVertices().MaxBy(vert => vert.Position.y).First();
-					Halfedge chosenEdge = face.GetHalfedges().MaxBy(edge => edge.Midpoint.y).First();
+					Vertex chosenVert = face.GetVertices().OrderBy(vert => vert.Position.y).First();
+					Halfedge chosenEdge = face.GetHalfedges().OrderBy(edge => edge.Midpoint.y).First();
 					Vector3 chosenPoint;
 					if (chosenVert.Position.y > chosenEdge.Midpoint.y + 0.01f)  // favour edges slightly
 						chosenPoint = chosenVert.Position;
