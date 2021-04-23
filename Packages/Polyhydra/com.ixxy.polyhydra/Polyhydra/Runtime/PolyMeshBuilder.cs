@@ -163,42 +163,7 @@ public static class PolyMeshBuilder
 					break;
 			}
 			
-			Color32 color;
-
-			switch (colorMethod)
-			{
-				case PolyHydraEnums.ColorMethods.ByRole:
-					color = colors[(int)faceRole];
-					break;
-				case PolyHydraEnums.ColorMethods.BySides:
-					color = colors[face.Sides % colors.Length];
-					break;
-				case PolyHydraEnums.ColorMethods.ByFaceDirection:
-					color = colors[CalcDirectionIndex(face, colors.Length - 1)];
-					break;
-				case PolyHydraEnums.ColorMethods.ByTags:
-					var c = new Color();
-					if (conway.FaceTags[i].Count > 0)
-					{
-						string htmlColor = conway.FaceTags[i].First(t => t.Item1.StartsWith("#")).Item1;
-						if (!(ColorUtility.TryParseHtmlString(htmlColor, out c)))
-						{
-							if (!ColorUtility.TryParseHtmlString(htmlColor.Replace("#", ""), out c))
-							{
-								c = Color.white;
-							}
-						}
-						color = c;
-					}
-					else
-					{
-						color = Color.white;
-					}
-					break;
-				default:
-					color = Color.white;
-					break;
-			}
+			Color32 color = CalcFaceColor(conway, colors, colorMethod, i);
 
 			float faceScale = 0;
 			foreach (var v in face.GetVertices())
@@ -327,6 +292,55 @@ public static class PolyMeshBuilder
 		target.RecalculateTangents();
 		return target;
 	}
+
+    public static Color32 CalcFaceColor(
+	    ConwayPoly conway,
+	    Color[] colors,
+	    PolyHydraEnums.ColorMethods colorMethod,
+	    int i)
+    {
+	    Color32 color;
+	    var face = conway.Faces[i];
+	    var faceRole = conway.FaceRoles[i];
+	    switch (colorMethod)
+	    {
+		    case PolyHydraEnums.ColorMethods.ByRole:
+			    color = colors[(int) faceRole];
+			    break;
+		    case PolyHydraEnums.ColorMethods.BySides:
+			    color = colors[face.Sides % colors.Length];
+			    break;
+		    case PolyHydraEnums.ColorMethods.ByFaceDirection:
+			    color = colors[CalcDirectionIndex(face, colors.Length - 1)];
+			    break;
+		    case PolyHydraEnums.ColorMethods.ByTags:
+			    var c = new Color();
+			    if (conway.FaceTags[i].Count > 0)
+			    {
+				    string htmlColor = conway.FaceTags[i].First(t => t.Item1.StartsWith("#")).Item1;
+				    if (!(ColorUtility.TryParseHtmlString(htmlColor, out c)))
+				    {
+					    if (!ColorUtility.TryParseHtmlString(htmlColor.Replace("#", ""), out c))
+					    {
+						    c = Color.white;
+					    }
+				    }
+
+				    color = c;
+			    }
+			    else
+			    {
+				    color = Color.white;
+			    }
+
+			    break;
+		    default:
+			    color = Color.white;
+			    break;
+	    }
+
+	    return color;
+    }
 
     private static int CalcDirectionIndex(Face face, int range)
     {
