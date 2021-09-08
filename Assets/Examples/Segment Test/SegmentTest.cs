@@ -40,8 +40,8 @@ public class SegmentTest : MonoBehaviour
     [BoxGroup("Op 1")] public bool PreCanonicalize;
     [BoxGroup("Op 1"), Label("")] public Ops op1;
     [BoxGroup("Op 1"), Label("Faces")] public FaceSelections op1Facesel;
-    [BoxGroup("Op 1"), Range(-1f, 1f), Label("Amount")] public float op1Amount1;
-    [BoxGroup("Op 1"), Range(-1f, 1f), Label("Amount2")] public float op1Amount2;
+    [BoxGroup("Op 1"), Label("Amount")] public float op1Amount1;
+    [BoxGroup("Op 1"), Label("Amount2")] public float op1Amount2;
 
     [Space]
     
@@ -54,8 +54,8 @@ public class SegmentTest : MonoBehaviour
     [BoxGroup("Op 2")] public bool Canonicalize;
     [BoxGroup("Op 2"), Label("")] public Ops op2;
     [BoxGroup("Op 2"), Label("Faces")] public FaceSelections op2Facesel;
-    [BoxGroup("Op 2"), Range(-1f, 1f), Label("Amount")] public float op2Amount1;
-    [BoxGroup("Op 2"), Range(-1f, 1f), Label("Amount2")] public float op2Amount2;
+    [BoxGroup("Op 2"), Label("Amount")] public float op2Amount1;
+    [BoxGroup("Op 2"), Label("Amount2")] public float op2Amount2;
     
     [Space]
     public Vector3 Position = Vector3.zero;

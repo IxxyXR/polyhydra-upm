@@ -568,6 +568,18 @@ public static class PolyHydraEnums
 			}
 		},
 		{
+			Ops.Segment,
+			new OpConfig
+			{
+				usesFaces = true,
+				amountDefault = 0.5f,
+				amountMin = -3, amountSafeMin = 0, amountSafeMax = 1, amountMax = 3,
+				usesAmount2 = true,
+				amount2Min = -3, amount2Max = 0, amount2SafeMin = 1f, amount2SafeMax = 3,
+
+			}
+		},
+		{
 			Ops.VertexScale,
 			new OpConfig
 			{

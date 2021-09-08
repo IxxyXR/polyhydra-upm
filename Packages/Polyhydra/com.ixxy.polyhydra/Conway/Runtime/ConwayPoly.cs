@@ -799,6 +799,9 @@ namespace Conway
 					// }
 					// polyResult = Shell(opParams.valueA, false, randomize);
 					break;
+				case Ops.Segment:
+					polyResult = Segment(opParams);
+					break;
 				case Ops.Extrude:
 					opParams.funcB = opParams.funcA;
 					opParams.funcA = null;
