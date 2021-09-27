@@ -51,7 +51,7 @@ namespace Conway
 
         Extrude = 36,
         Shell = 37,
-        Segment = 100,
+        Segment = 79,
         Skeleton = 38,
 
         FaceOffset = 39,
