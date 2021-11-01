@@ -729,17 +729,17 @@ namespace Johnson
 
 		public static ConwayPoly GriddedCube(int PrismP)
 		{
-			var conway = Grids.Grids.MakeUnitileGrid(1, 0, PrismP, PrismP);
-			var copy = conway.Duplicate();
-			copy.Mirror(Vector3.up, PrismP);
-			conway.Append(copy);
-			conway.Recenter();
-			ConwayPoly xPair = conway.Rotate(Vector3.forward, 90);
-			ConwayPoly zPair = conway.Rotate(Vector3.left, 90);
-			conway.Append(xPair);
-			conway.Append(zPair);
-			conway = conway.Weld(0.001f);
-			return conway;
+			var cap = Grids.Grids.MakeUnitileGrid(1, 0, PrismP, PrismP);
+			var box = cap.Duplicate();
+			for (var i = 0; i < PrismP; i++)
+			{
+				box = box.ExtendBoundaries(new OpParams(i==0 ? -1 : 1, i==0 ? 90f : 0f));
+			}
+			cap = cap.Transform(new Vector3(0, -PrismP, 0));
+			box.Append(cap);
+			box = box.Weld(0.001f);
+			box.Recenter();
+			return box;
 		}
 
 		public static ConwayPoly Polygon(int sides)
