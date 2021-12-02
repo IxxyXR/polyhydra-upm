@@ -26,12 +26,12 @@ public class ExampleBase : MonoBehaviour
     [BoxGroup("Op 2")] public bool op2Animate;
     [BoxGroup("Op 2")] [Range(1, 5)] public int op2iterations = 1;
     
-    [BoxGroup("Op 2")] public Ops op3;
-    [BoxGroup("Op 2")] public FaceSelections op3Facesel;
-    [BoxGroup("Op 2")] public float op3Amount1 = 0;
-    [BoxGroup("Op 2")] public float op3Amount2 = 0;
-    [BoxGroup("Op 2")] public bool op3Animate;
-    [BoxGroup("Op 2")] [Range(1, 5)] public int op3iterations = 1;
+    [BoxGroup("Op 3")] public Ops op3;
+    [BoxGroup("Op 3")] public FaceSelections op3Facesel;
+    [BoxGroup("Op 3")] public float op3Amount1 = 0;
+    [BoxGroup("Op 3")] public float op3Amount2 = 0;
+    [BoxGroup("Op 3")] public bool op3Animate;
+    [BoxGroup("Op 3")] [Range(1, 5)] public int op3iterations = 1;
     
     [BoxGroup("Transform")] public Vector3 Position = Vector3.zero;
     [BoxGroup("Transform")] public Vector3 Rotation = Vector3.zero;
