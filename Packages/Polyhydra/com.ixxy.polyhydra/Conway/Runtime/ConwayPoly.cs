@@ -867,6 +867,9 @@ namespace Conway
 				case Ops.ExtendBoundaries:
 					polyResult = ExtendBoundaries(opParams);
 					break;
+				case Ops.ConnectFaces:
+					polyResult = ConnectFaces(opParams);
+					break;
 				case Ops.Hinge:
 					polyResult = Hinge(opParams.valueA);
 					break;

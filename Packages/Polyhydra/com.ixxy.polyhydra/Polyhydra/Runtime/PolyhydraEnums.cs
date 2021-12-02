@@ -684,6 +684,16 @@ public static class PolyHydraEnums
 				amount2Min = -180, amount2Max = 180, amount2SafeMin = -100f, amount2SafeMax = 100,
 			}
 		},
+		{
+			Ops.ConnectFaces,
+			new OpConfig
+			{
+				amountDefault = 0f,
+				amountMin = 0, amountMax = 1, amountSafeMin = 0, amountSafeMax = 1,
+				usesAmount2 = true,
+				amount2Min = 0, amount2Max = 1, amount2SafeMin = 0, amount2SafeMax = 1,
+			}
+		},
 		{Ops.FaceMerge, new OpConfig {usesFaces = true, usesAmount = false}},
 		{Ops.FaceKeep, new OpConfig {usesFaces = true, usesAmount = false}},
 		{Ops.VertexRemove, new OpConfig {usesFaces = true, usesAmount = false}},

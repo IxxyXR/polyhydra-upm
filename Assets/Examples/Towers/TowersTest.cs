@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Conway;
@@ -10,14 +11,16 @@ using UnityEngine;
 public class TowersTest : MonoBehaviour
 {
     public float height = 5;
+    public float ratio = 0.5f;
     public int divisions = 1;
+    public int edgeIndex = 0;
     public bool Animate;
     public PolyHydraEnums.ColorMethods ColorMethod;
-    public Vector3 Position = Vector3.zero;
-    public Vector3 Rotation = Vector3.zero;
-    public Vector3 Scale = Vector3.one;
+    // public Vector3 Position = Vector3.zero;
+    // public Vector3 Rotation = Vector3.zero;
+    // public Vector3 Scale = Vector3.one;
 
-    private ConwayPoly poly;
+    private ConwayPoly initialPoly;
     
     void Start()
     {
@@ -40,20 +43,24 @@ public class TowersTest : MonoBehaviour
     [ContextMenu("Generate")]
     public void Generate()
     {
-        poly = JohnsonPoly.Polygon(4);
-        poly = poly.Loft(new OpParams(0, height));
-        var loop = poly.GetFaceLoop(poly.Halfedges.First());
-        poly = poly.MultiSplitLoop(loop, divisions);
-
-
+        // WIP Can't remember what the aim was here!
         
-        // poly = poly.Transform(Position, Rotation, Scale);
+        initialPoly = JohnsonPoly.BuildOther(PolyHydraEnums.OtherPolyTypes.GriddedCube, divisions, divisions);
+        initialPoly = initialPoly.Stretch(height);
+        
+        var poly = initialPoly.SliceFaceLoop(edgeIndex);
+
+        // poly = poly.Loft(new OpParams(0, 2f, FaceSelections.Existing));
+        // poly.Append(initialPoly);
+        // List<Tuple<int, int>> loop = poly.GetFaceLoop(edgeIndex);
+        // poly = poly.MultiSplitLoop(loop, ratio, divisions);
+        
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;
     }
     
     void OnDrawGizmos () {
-        GizmoHelper.DrawGizmos(poly, transform, true, false, false);
+        GizmoHelper.DrawGizmos(initialPoly, transform, true, false, false);
     }
 
 }
