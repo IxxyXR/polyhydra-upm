@@ -1732,9 +1732,14 @@ namespace Conway
         public ConwayPoly MultiSplitLoop(List<Tuple<int, int>> loop, float ratio = 0.5f, int divisions = 1)
         {
             // WIP
+            // Completely forgotten what this is meant to do!
             
             var poly = Duplicate();
-            if (loop.Count == 0) return poly;
+            if (loop.Count == 0)
+            {
+                Debug.LogWarning("Empty loop");
+                return poly;
+            }
             var vertexRoles = poly.VertexRoles;
             var newFaceTags = poly.FaceTags;
             var faces = poly.Faces;
@@ -1747,8 +1752,9 @@ namespace Conway
                 {
                     var face = faces[loopItem.Item1];
                     var edge = face.GetHalfedges()[loopItem.Item2];
-                    float step = 1f / divisions;
-                    Vector3 pos = edge.PointAlongEdge(step + (step * ratio));
+                    float step = (1f / divisions) * division;
+                    float div = (float)division / divisions;
+                    Vector3 pos = edge.PointAlongEdge(div);
                     var newVert = new Vertex(pos);
                     poly.Vertices.Add(newVert);
                     vertexRoles.Add(Roles.New);
@@ -1869,7 +1875,13 @@ namespace Conway
 
             return new ConwayPoly(allVertices, faceIndices, faceRoles, vertexRoles);
         }
-                
+
+        public List<Tuple<int, int>> GetFaceLoop(int startingEdgeIndex)
+        {
+            var edge = Halfedges[startingEdgeIndex];
+            return GetFaceLoop(edge);
+        }
+
         public List<Tuple<int,int>> GetFaceLoop(Halfedge startingEdge)
         {
             var loop = new List<Tuple<int,int>>();
@@ -2398,5 +2410,119 @@ namespace Conway
             }
             return result;
         }
+
+        public ConwayPoly SliceFaceLoop(int edgeIndex)
+        {
+            var startingEdge = Halfedges[edgeIndex];
+            List<Tuple<int, int>> loop = GetFaceLoop(startingEdge);
+            return SliceFaceLoop(loop);
+        }
+        
+        public ConwayPoly SliceFaceLoop(List<Tuple<int, int>> loop)
+        {
+            var poly = Duplicate();
+            var faceIndices = loop.Select(x=>x.Item1).ToList();
+            poly = poly.FaceRemove(true, faceIndices);
+            poly.FaceRoles = Enumerable.Repeat(Roles.Existing, poly.Faces.Count).ToList();
+            poly = poly.FillHoles();
+            poly.FaceRemove(new OpParams(FaceSelections.Existing));
+            return poly;
+        }
+
+        public ConwayPoly ConnectFaces(OpParams o)
+        {
+            int i1 = (int)(Faces.Count / o.GetValueA(this, 0));
+            var f1 = Faces[i1];
+            var validFaceIndices = Faces
+                .Where(f => f.Sides==f1.Sides && f.Name!=f1.Name)
+                .Select(f => f.Sides)
+                .ToList();
+            int i2 = validFaceIndices[
+                (int)(validFaceIndices.Count / o.GetValueB(this, 0))
+            ];
+            return ConnectFaces(i1, i2, .5f);
+        }
+
+        public ConwayPoly ConnectFaces(int f1, int f2, float insetAmount)
+        {
+            int faceOneIndex = ActualMod(f1, Faces.Count);
+            int faceTwoIndex = ActualMod(f2, Faces.Count);
+
+            // Only works if both faces are distinct but have same number of edges 
+            if (faceOneIndex == faceTwoIndex || Faces[faceOneIndex].Sides != Faces[faceTwoIndex].Sides)
+            {
+                Debug.LogError("Failed to connect faces");
+                return null;
+            }
+
+            var newFaceTagSet = FaceTags[faceOneIndex];
+            newFaceTagSet.UnionWith(FaceTags[faceTwoIndex]);
+
+            Func<FilterParams, bool> pickFace = x => x.index == faceOneIndex || x.index == faceTwoIndex;
+            var o = new OpParams(insetAmount, pickFace);
+            var poly = Duplicate().Loft(o);
+            o = new OpParams(FaceSelections.Existing);
+            poly = poly.FaceRemove(o);
+            var boundaries = poly.FindBoundaries();
+            int numEdges = boundaries[0].Count;
+
+            // Reset Roles
+            poly.FaceRoles = new List<ConwayPoly.Roles>(Enumerable.Repeat(ConwayPoly.Roles.Ignored, poly.Faces.Count));
+            poly.VertexRoles = new List<ConwayPoly.Roles>(Enumerable.Repeat(ConwayPoly.Roles.Ignored, poly.Vertices.Count));
+
+            bool flipDirection = true;
+            int bestF1Edge = 0;
+            int bestF2Edge = 0;
+            float shortestEdgeDistance = Single.MaxValue;
+
+            // Find nearest pair of edges
+            for (int i = 0; i < numEdges; i++)
+            {
+                for (int j = 0; j < numEdges; j++)
+                {
+                    var edge1 = boundaries[0][i];
+                    var edge2 = boundaries[1][j];
+
+                    float currentEdgeDistance = (edge1.Midpoint - edge2.Midpoint).sqrMagnitude;
+                    if (currentEdgeDistance <= shortestEdgeDistance)
+                    {
+                        shortestEdgeDistance = currentEdgeDistance;
+                        bestF1Edge = i;
+                        bestF2Edge = j;
+                    }
+                }
+            }
+
+            int edge1Index = bestF1Edge;
+            int edge2Index = bestF2Edge;
+            for (int i = 0; i < numEdges; i++)
+            {
+                var edge1 = boundaries[0][edge1Index];
+                var edge2 = boundaries[1][edge2Index];
+                
+                bool success = poly.Faces.Add(new[]
+                {
+                    edge1.Vertex,
+                    edge1.Prev.Vertex,
+                    edge2.Vertex,
+                    edge2.Prev.Vertex,
+                });
+                
+                if (success)
+                {
+                    poly.FaceRoles.Add(i % 2 == 0 ? ConwayPoly.Roles.New : ConwayPoly.Roles.NewAlt);
+                    poly.VertexRoles.AddRange(Enumerable.Repeat(ConwayPoly.Roles.New, 4));
+                    poly.FaceTags.Add(new HashSet<Tuple<string, ConwayPoly.TagType>>(newFaceTagSet));
+                }
+                
+                edge1Index++;
+                edge1Index = ActualMod(edge1Index, numEdges);
+
+                edge2Index += flipDirection ? -1 : 1;
+                edge2Index = ActualMod(edge2Index, numEdges);
+            }
+            return poly;
+        }
     }
+    
 }

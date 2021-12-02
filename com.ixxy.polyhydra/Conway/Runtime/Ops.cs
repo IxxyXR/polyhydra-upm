@@ -85,6 +85,7 @@ namespace Conway
         VertexKeep = 59,
         FillHoles = 60,
         ExtendBoundaries = 61,
+        ConnectFaces = 80,
         FaceMerge = 62,
         Weld = 63,
 
