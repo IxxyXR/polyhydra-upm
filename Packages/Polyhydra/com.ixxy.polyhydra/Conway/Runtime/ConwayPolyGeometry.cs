@@ -2523,6 +2523,72 @@ namespace Conway
             }
             return poly;
         }
+
+        public void CollapseEdge(int faceIndex, int edgeIndex)
+        {
+            var face1 = Faces[faceIndex];
+            var face1edges = face1.GetHalfedges();
+            var face1firstEdge = face1edges[edgeIndex];
+            var face2firstEdge = face1firstEdge.Pair;
+            var face2 = face2firstEdge.Face;
+
+            var newFaceVerts = new List<Vertex>();
+
+
+            bool finishedFace1 = false;
+            int failsafe1 = 0;
+            var currentEdge = face1firstEdge.Next;
+            do
+            {
+                Debug.Log($"Face 1 edge {failsafe1}");
+                newFaceVerts.Add(currentEdge.Vertex);
+                currentEdge = currentEdge.Next;
+                if (currentEdge.Pair == face2firstEdge)
+                {
+                    finishedFace1 = true;
+                    break;
+                }
+                failsafe1++;
+            } while (failsafe1 < 1000);
+
+            bool finishedFace2 = false;
+            if (finishedFace1)
+            {
+                int failsafe2 = 0;
+                currentEdge = face2firstEdge.Next;
+                do
+                {
+                    Debug.Log($"Face 2 edge {failsafe2}");
+                    newFaceVerts.Add(currentEdge.Vertex);
+                    currentEdge = currentEdge.Next;
+                    if (currentEdge.Pair == face1firstEdge)
+                    {
+                        finishedFace2 = true;
+                        break;
+                    }
+                    failsafe2++;
+                } while (failsafe2 < 1000);
+            }
+
+            if (finishedFace2)
+            {
+                int face2Index = Faces.IndexOf(face2);
+                
+                Faces.Remove(face1);
+                Faces.Remove(face2);
+                
+                FaceRoles.RemoveAt(faceIndex);
+                FaceRoles.RemoveAt(face2Index - 1);
+                
+                Faces.Add(newFaceVerts);
+                FaceRoles.Add(Roles.ExistingAlt);  // Not really the right role but works visually.
+                Halfedges.MatchPairs();
+            }
+            else
+            {
+                Debug.LogError("Failed to connect faces");
+            }
+        }
     }
     
 }
