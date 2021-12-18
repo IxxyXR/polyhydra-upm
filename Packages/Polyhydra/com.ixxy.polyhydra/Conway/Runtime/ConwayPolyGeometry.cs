@@ -2524,6 +2524,44 @@ namespace Conway
             return poly;
         }
 
+        // Attempt to collapse all edges that are between faces with s1 sides and faces with s2 sides
+        public void CollapseEdges(int s1, int s2)
+        {
+            var edgesToCollapse = new List<Halfedge>();
+            foreach (var edge in Halfedges)
+            {
+                if (edge.Face == null || edge.Pair == null || edge.Pair.Face == null) continue;
+                if (
+                    (edge.Face.Sides == s1 && edge.Pair.Face.Sides == s2) ||
+                    (edge.Face.Sides == s2 && edge.Pair.Face.Sides == s1)
+                )
+                {
+                    edgesToCollapse.Add(edge);
+                };
+            }
+
+            CollapseEdges(edgesToCollapse);
+
+        }
+
+        private void CollapseEdges(List<Halfedge> edgesToCollapse)
+        {
+            foreach (var edge in edgesToCollapse)
+            {
+                CollapseEdge(edge);
+            }
+        }
+
+        public void CollapseEdge(Halfedge edge)
+        {
+            int faceIndex = Faces.IndexOf(edge.Face);
+            if (faceIndex == -1) return;
+            int edgeIndex = Faces[faceIndex].GetHalfedges().IndexOf(edge);
+            if (edgeIndex == -1) return;
+            CollapseEdge(faceIndex, edgeIndex);
+        }
+        
+
         public void CollapseEdge(int faceIndex, int edgeIndex)
         {
             var face1 = Faces[faceIndex];
@@ -2540,7 +2578,6 @@ namespace Conway
             var currentEdge = face1firstEdge.Next;
             do
             {
-                Debug.Log($"Face 1 edge {failsafe1}");
                 newFaceVerts.Add(currentEdge.Vertex);
                 currentEdge = currentEdge.Next;
                 if (currentEdge.Pair == face2firstEdge)
@@ -2549,7 +2586,7 @@ namespace Conway
                     break;
                 }
                 failsafe1++;
-            } while (failsafe1 < 1000);
+            } while (failsafe1 < 10000);
 
             bool finishedFace2 = false;
             if (finishedFace1)
@@ -2558,7 +2595,6 @@ namespace Conway
                 currentEdge = face2firstEdge.Next;
                 do
                 {
-                    Debug.Log($"Face 2 edge {failsafe2}");
                     newFaceVerts.Add(currentEdge.Vertex);
                     currentEdge = currentEdge.Next;
                     if (currentEdge.Pair == face1firstEdge)
@@ -2567,7 +2603,7 @@ namespace Conway
                         break;
                     }
                     failsafe2++;
-                } while (failsafe2 < 1000);
+                } while (failsafe2 < 10000);
             }
 
             if (finishedFace2)
