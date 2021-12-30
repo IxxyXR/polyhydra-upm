@@ -1,4 +1,6 @@
-﻿using Conway;
+﻿using System;
+using System.Collections.Generic;
+using Conway;
 using Johnson;
 using NaughtyAttributes;
 using UnityEngine;
@@ -12,10 +14,10 @@ public class CollapseMultipleEdges : ExampleBase
     
     public enum ShapeTypes
     {
-        Johnson,
-        Grid,
-        Wythoff,
-        Other
+        Johnson = 0,
+        Grid = 1,
+        Wythoff = 2,
+        Other = 3
     }
     
     // Only used to hide inspector fields with "ShowIf"
@@ -47,9 +49,19 @@ public class CollapseMultipleEdges : ExampleBase
     [BoxGroup("Pre Op")] public FaceSelections preopFacesel;
     [BoxGroup("Pre Op")] public float preopAmount1 = 0;
     [BoxGroup("Pre Op")] public float preopAmount2 = 0;
+    [BoxGroup("Pre Op 2")] public Ops preop2;
+    [BoxGroup("Pre Op 2")] public FaceSelections preop2Facesel;
+    [BoxGroup("Pre Op 2")] public float preop2Amount1 = 0;
+    [BoxGroup("Pre Op 2")] public float preop2Amount2 = 0;
     
-    [BoxGroup("Collapse")] public int sides1 = 6;
-    [BoxGroup("Collapse")] public int sides2 = 4;
+    [Serializable]
+    public class CollapseSetting
+    {
+        public int numSidesA = 1;
+        public int numSidesB = 1;
+        public bool either = true;
+    }
+    [BoxGroup("Collapse")] public List<CollapseSetting> collapseSides;
     
     public override void Generate()
     {
@@ -77,8 +89,19 @@ public class CollapseMultipleEdges : ExampleBase
             facesel = preopFacesel
         });
 
-        
-        poly.CollapseEdges(sides1, sides2);
+        poly = poly.ApplyOp(preop2, new OpParams {
+            valueA = preop2Amount1,
+            valueB = preop2Amount2,
+            facesel = preop2Facesel
+        });
+
+        foreach (var collapse in collapseSides)
+        {
+            if (collapse.numSidesA > 2 && collapse.numSidesB > 2)
+            {
+                poly.CollapseEdges(collapse.numSidesA, collapse.numSidesB, collapse.either);
+            }
+        }
 
         base.Generate();
     }

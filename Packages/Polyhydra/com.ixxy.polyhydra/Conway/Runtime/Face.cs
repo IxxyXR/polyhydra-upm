@@ -274,5 +274,17 @@ namespace Conway
 
             return bestEdge;
         }
+
+        public Halfedge GetHalfEdge(int index)
+        {
+            Halfedge edge = Halfedge;
+
+            for (int i = 0; i < index % Sides; i++)
+            {
+                edge = edge.Next;
+            }
+
+            return edge;
+        }
     }
 }

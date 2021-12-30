@@ -11,50 +11,14 @@ namespace Johnson
 {
     public static class JohnsonPoly
     {
-        private static ConwayPoly _MakePolygon(int sides, bool flip=false, float angleOffset = 0, float heightOffset = 0, float radius=1)
-        {
-            var faceIndices = new List<int[]>();
-            var vertexPoints = new List<Vector3>();
-            var faceRoles = Enumerable.Repeat(ConwayPoly.Roles.Existing, 1);
-            var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.Existing, sides);
-            
-            faceIndices.Add(new int[sides]);
-            
-            float theta = Mathf.PI * 2 / sides;
-            
-            int start, end, inc;
-            
-            if (flip)
-            {
-                start = sides - 1;
-                end = -1;
-                inc = -1;
-            }
-            else
-            {
-                start = 0;
-                end = sides;
-                inc = 1;
-            }
-            
-            for (int i = start; i != end; i += inc)
-            {
-                float angle = theta * i + (theta * angleOffset);
-                vertexPoints.Add(new Vector3(Mathf.Cos(angle) * radius, heightOffset, Mathf.Sin(angle) * radius));
-                faceIndices[0][i] = i;
-            }
-
-            return new ConwayPoly(vertexPoints, faceIndices, faceRoles, vertexRoles);
-        }
-
-        private static ConwayPoly _MakeCupola(int sides, float height, bool bi=false, bool gyro=true)
+	    private static ConwayPoly _MakeCupola(int sides, float height, bool bi=false, bool gyro=true)
         {
 
 	        sides = Mathf.Clamp(sides, 3, 64);
 
-            ConwayPoly poly = _MakePolygon(sides * 2);
+            ConwayPoly poly = ConwayPoly._MakePolygon(sides * 2);
             Face bottom = poly.Faces[0];
-            ConwayPoly cap1 = _MakePolygon(sides, true, 0.25f, height, _CalcCupolaCapRadius(sides));
+            ConwayPoly cap1 = ConwayPoly._MakePolygon(sides, true, 0.25f, height, _CalcCupolaCapRadius(sides));
             poly.Append(cap1);
 
             int i = 0;
@@ -94,7 +58,7 @@ namespace Johnson
             if (bi)
             {
 	            float angleOffset = gyro ? 0.75f : 0.25f;
-                ConwayPoly cap2 = _MakePolygon(sides, false, angleOffset, -height, _CalcCupolaCapRadius(sides));
+                ConwayPoly cap2 = ConwayPoly._MakePolygon(sides, false, angleOffset, -height, _CalcCupolaCapRadius(sides));
                 poly.Append(cap2);
 
                 i = 0;
@@ -146,9 +110,9 @@ namespace Johnson
 
 	        sides = Mathf.Clamp(sides, 3, 64);
 
-            ConwayPoly poly = _MakePolygon(sides);
+            ConwayPoly poly = ConwayPoly._MakePolygon(sides);
             Face bottom = poly.Faces[0];
-            ConwayPoly cap1 = _MakePolygon(sides, true, 0.25f, height, _CalcCupolaCapRadius(sides));
+            ConwayPoly cap1 = ConwayPoly._MakePolygon(sides, true, 0.25f, height, _CalcCupolaCapRadius(sides));
             poly.Append(cap1);
 
             int i = 0;
@@ -269,8 +233,8 @@ namespace Johnson
 
         private static ConwayPoly _MakePrism(int sides, float height, bool anti=false)
         {
-            ConwayPoly poly = _MakePolygon(sides);
-            ConwayPoly cap = _MakePolygon(sides, true, anti?0.5f:0, height);
+            ConwayPoly poly = ConwayPoly._MakePolygon(sides);
+            ConwayPoly cap = ConwayPoly._MakePolygon(sides, true, anti?0.5f:0, height);
             poly.Append(cap);
             
             int i = 0;
@@ -357,7 +321,7 @@ namespace Johnson
         
         private static ConwayPoly _MakePyramid(int sides, float height)
         {
-            ConwayPoly polygon = _MakePolygon(sides, true);
+            ConwayPoly polygon = ConwayPoly._MakePolygon(sides, true);
             var poly = polygon.Kis(new OpParams{valueA = height});
             var baseVerts = poly.Vertices.GetRange(0, sides);
             baseVerts.Reverse();
@@ -434,7 +398,7 @@ namespace Johnson
 
 			float baseOffset = -(_CalcSideLength(sides * 2) + _CalcCupolaHeight(sides));
 			float angleOffset = gyro ? 0.75f : 0.25f;
-			ConwayPoly cap2 = _MakePolygon(sides, false, angleOffset, baseOffset, _CalcCupolaCapRadius(sides));
+			ConwayPoly cap2 = ConwayPoly._MakePolygon(sides, false, angleOffset, baseOffset, _CalcCupolaCapRadius(sides));
 			poly.Append(cap2);
 			var edge2 = poly.Faces.Last().Halfedge.Prev;
 
@@ -476,7 +440,7 @@ namespace Johnson
 	    {
 			ConwayPoly poly = Antiprism(sides * 2);
 			Face topFace = poly.Faces[1];
-			ConwayPoly cap1 = _MakePolygon(sides, true, 0f, _CalcCupolaHeight(sides) + _CalcAntiprismHeight(sides * 2), _CalcCupolaCapRadius(sides));
+			ConwayPoly cap1 = ConwayPoly._MakePolygon(sides, true, 0f, _CalcCupolaHeight(sides) + _CalcAntiprismHeight(sides * 2), _CalcCupolaCapRadius(sides));
 			poly.Append(cap1);
 
 			int i = 0;
@@ -525,7 +489,7 @@ namespace Johnson
 			ConwayPoly poly = GyroelongatedCupola(sides);
 			Face bottomFace = poly.Faces[0];
 			float angleOffset = gyro ? 0.75f : 0.25f;
-			ConwayPoly cap2 = _MakePolygon(sides, false, angleOffset, -_CalcCupolaHeight(sides), _CalcCupolaCapRadius(sides));
+			ConwayPoly cap2 = ConwayPoly._MakePolygon(sides, false, angleOffset, -_CalcCupolaHeight(sides), _CalcCupolaCapRadius(sides));
 			poly.Append(cap2);
 
 			int i = 0;
@@ -744,7 +708,7 @@ namespace Johnson
 
 		public static ConwayPoly Polygon(int sides)
 		{
-			return _MakePolygon(sides, true);
+			return ConwayPoly._MakePolygon(sides, true);
 		}
 
 		public static ConwayPoly Test3Triangle()

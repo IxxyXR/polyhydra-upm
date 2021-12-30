@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Conway;
 using UnityEngine;
 
@@ -472,6 +473,65 @@ namespace Grids
 
 		}
 
+		public enum KeplerTypes
+		{
+			K_3_3_4_12__3_3_3_3_3_3,
+		}
+		
+		public static ConwayPoly MakeKepler(KeplerTypes type, int xRepeats, int yRepeats)
+		{
 
+			Vector3 xOffset, yOffset;
+			ConwayPoly tile, poly;
+			
+			switch (type)
+			{
+				case KeplerTypes.K_3_3_4_12__3_3_3_3_3_3:
+					tile = ConwayPoly._MakePolygon(12, true);
+					tile.AugmentFace(0, 0, 3);
+					tile.AugmentFace(0, 1, 4);
+					tile.AugmentFace(0, 2, 3);
+					tile.AugmentFace(0, 3, 4);
+					tile.AugmentFace(0, 4, 3);
+					tile.AugmentFace(0, 5, 4);
+					tile.AugmentFace(0, 6, 3);
+					tile.AugmentFace(0, 8, 3);
+					tile.AugmentFace(0, 10, 3);
+
+					tile.AugmentFace(2, 0, 3);
+					tile.AugmentFace(2, 2, 3);
+
+					tile.AugmentFace(4, 0, 3);
+					tile.AugmentFace(4, 2, 3);
+
+					tile.AugmentFace(6, 0, 3);
+					tile.AugmentFace(6, 2, 3);
+
+					xOffset = tile.Vertices[20].Position - tile.Vertices[10].Position;
+					yOffset = tile.Vertices[17].Position - tile.Vertices[8].Position;
+					break;
+				default:
+					xOffset = yOffset = Vector3.zero;
+					tile = new ConwayPoly();
+					break;
+			}
+
+			poly = new ConwayPoly();
+			var xCentering = (xOffset * (xRepeats - 1)) / 2f;
+			var yCentering = (yOffset * (yRepeats - 1)) / 2f;
+			
+			for (int y=0; y<yRepeats; y++)
+			{
+				for (int x=0; x<xRepeats; x++)
+				{
+					poly.Append(tile, (xOffset * x - xCentering) + (yOffset * y - yCentering));
+				}
+			}
+
+			poly = poly.Weld(0.1f);
+			
+			return poly;
+
+		}
     }
 }
