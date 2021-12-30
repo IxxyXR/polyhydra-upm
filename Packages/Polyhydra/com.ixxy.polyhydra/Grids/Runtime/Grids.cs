@@ -475,7 +475,18 @@ namespace Grids
 
 		public enum KeplerTypes
 		{
+			K_3_3_3_3_6,
+			K_3_3_3_4_4,
+			K_3_3_4_3_4,
+			K_3_4_6_4,
+			K_3_6_3_6,
+			K_3_12_12,
+			K_4_6_12,
+			K_4_8_8,
 			K_3_3_4_12__3_3_3_3_3_3,
+			K_3_3_6_6__3_6_3_6,
+			K_3_4_3_12__3_12_12,
+			K_3_4_4_6__3_6_3_6,
 		}
 		
 		public static ConwayPoly MakeKepler(KeplerTypes type, int xRepeats, int yRepeats)
@@ -483,9 +494,78 @@ namespace Grids
 
 			Vector3 xOffset, yOffset;
 			ConwayPoly tile, poly;
-			
 			switch (type)
 			{
+				case KeplerTypes.K_3_3_3_3_6:
+					tile = ConwayPoly._MakePolygon(6, true);
+					tile.AugmentFace(0, 0, 3);
+					tile.AugmentFace(0, 1, 3);
+					tile.AugmentFace(0, 2, 3);
+					tile.AugmentFace(1, 2, 3);
+					tile.AugmentFace(1, 3, 3);
+					tile.AugmentFace(2, 2, 3);
+					tile.AugmentFace(2, 3, 3);
+					tile.AugmentFace(3, 2, 3);
+					xOffset = tile.Vertices[8].Position - tile.Vertices[10].Position;
+					yOffset = tile.Vertices[10].Position - tile.Vertices[4].Position;	
+					break;
+				case KeplerTypes.K_3_3_3_4_4:
+					tile = ConwayPoly._MakePolygon(4, true);
+					tile.AugmentFace(0, 1, 3);
+					tile.AugmentFace(0, 3, 3);
+					xOffset = tile.Vertices[2].Position - tile.Vertices[3].Position;
+					yOffset = tile.Vertices[4].Position - tile.Vertices[2].Position;	
+					break;
+				case KeplerTypes.K_3_3_4_3_4:
+					tile = ConwayPoly._MakePolygon(3, true);
+					tile.AugmentFace(0, 2, 4);
+					tile.AugmentFace(0, 1, 4);
+					tile.AugmentFace(1, 2, 3);
+					tile.AugmentFace(2, 0, 3);
+					tile.AugmentFace(2, 3, 3);
+					xOffset = tile.Vertices[5].Position - tile.Vertices[4].Position;
+					yOffset = tile.Vertices[5].Position - tile.Vertices[7].Position;	
+					break;
+				case KeplerTypes.K_3_4_6_4:
+					tile = ConwayPoly._MakePolygon(6, true);
+					tile.AugmentFace(0, 0, 4);
+					tile.AugmentFace(0, 1, 4);
+					tile.AugmentFace(0, 2, 4);
+					tile.AugmentFace(1, 0, 3);
+					tile.AugmentFace(2, 0, 3);
+					xOffset = tile.Vertices[11].Position - tile.Vertices[4].Position;
+					yOffset = tile.Vertices[9].Position - tile.Vertices[3].Position;	
+					break;
+				case KeplerTypes.K_3_6_3_6:
+					tile = ConwayPoly._MakePolygon(6, true);
+					tile.AugmentFace(0, 0, 3);
+					tile.AugmentFace(0, 1, 3);
+					xOffset = tile.Vertices[1].Position - tile.Vertices[5].Position;
+					yOffset = tile.Vertices[7].Position - tile.Vertices[2].Position;	
+					break;
+				case KeplerTypes.K_3_12_12:
+					tile = ConwayPoly._MakePolygon(12, true);
+					tile.AugmentFace(0, 7, 3);
+					tile.AugmentFace(0, 9, 3);
+					xOffset = tile.Vertices[4].Position - tile.Vertices[9].Position;
+					yOffset = tile.Vertices[2].Position - tile.Vertices[7].Position;	
+					break;
+				case KeplerTypes.K_4_6_12:
+					tile = ConwayPoly._MakePolygon(12, true);
+					tile.AugmentFace(0, 0, 4);
+					tile.AugmentFace(0, 2, 4);
+					tile.AugmentFace(0, 4, 4);
+					tile.AugmentFace(1, 4, 6);
+					tile.AugmentFace(2, 4, 6);
+					xOffset = tile.Vertices[16].Position - tile.Vertices[10].Position;
+					yOffset = tile.Vertices[15].Position - tile.Vertices[7].Position;	
+					break;
+				case KeplerTypes.K_4_8_8:
+					tile = ConwayPoly._MakePolygon(8, true);
+					tile.AugmentFace(0, 1, 4);
+					xOffset = tile.Vertices[2].Position - tile.Vertices[8].Position;
+					yOffset = tile.Vertices[9].Position - tile.Vertices[4].Position;
+					break;
 				case KeplerTypes.K_3_3_4_12__3_3_3_3_3_3:
 					tile = ConwayPoly._MakePolygon(12, true);
 					tile.AugmentFace(0, 0, 3);
@@ -509,6 +589,32 @@ namespace Grids
 
 					xOffset = tile.Vertices[20].Position - tile.Vertices[10].Position;
 					yOffset = tile.Vertices[17].Position - tile.Vertices[8].Position;
+					break;
+				case KeplerTypes.K_3_3_6_6__3_6_3_6:
+					tile = ConwayPoly._MakePolygon(6, true);
+					tile.AugmentFace(0, 5, 3);
+					tile.AugmentFace(0, 0, 3);
+					xOffset = tile.Vertices[2].Position - tile.Vertices[5].Position;
+					yOffset = tile.Vertices[1].Position - tile.Vertices[3].Position;
+					break;
+				case KeplerTypes.K_3_4_3_12__3_12_12:
+					tile = ConwayPoly._MakePolygon(12, true);
+					tile.AugmentFace(0, 1, 3);
+					tile.AugmentFace(0, 0, 3);
+					tile.AugmentFace(1, 2, 4);
+					tile.AugmentFace(3, 0, 3);
+					tile.AugmentFace(3, 3, 3);
+					xOffset = tile.Vertices[5].Position - tile.Vertices[10].Position;
+					yOffset = tile.Vertices[2].Position - tile.Vertices[7].Position;
+					break;
+				case KeplerTypes.K_3_4_4_6__3_6_3_6:
+					tile = ConwayPoly._MakePolygon(6, true);
+					tile.AugmentFace(0, 5, 3);
+					tile.AugmentFace(0, 0, 3);
+					tile.AugmentFace(0, 1, 4);
+					tile.AugmentFace(2, 0, 4);
+					xOffset = tile.Vertices[2].Position - tile.Vertices[5].Position;
+					yOffset = tile.Vertices[9].Position - tile.Vertices[3].Position;
 					break;
 				default:
 					xOffset = yOffset = Vector3.zero;
