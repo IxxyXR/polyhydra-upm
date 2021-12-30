@@ -70,7 +70,7 @@ namespace Conway
 
             return original;
         }
-
+        
         public ConwayPoly Transform(Vector3 pos, Vector3? rot=null, Vector3? scale=null)
         {
             var matrix = Matrix4x4.TRS(
@@ -957,7 +957,7 @@ namespace Conway
                 {
                     
                     capVerts = new List<List<Vector3>>();
-                    var capEdgeSegmentsSeen = new HashSet <(Vector3 start, Vector3? end)>();
+                    var capEdgeSegmentsSeen = new HashSet<(Vector3 start, Vector3? end)>();
                     int failsafe1 = 0;
                     int seen = 0;
                     
@@ -1072,7 +1072,7 @@ namespace Conway
                     capPoly = new ConwayPoly(
                         cap,
                         new List<List<int>> {Enumerable.Range(0, cap.Count).ToList()},
-                        new List<Roles>{Roles.New},
+                        new List<Roles> {Roles.New},
                         Enumerable.Repeat(Roles.New, cap.Count)
                     );
                 }
@@ -1314,6 +1314,21 @@ namespace Conway
         public void Append(ConwayPoly other, Vector3 transform, Quaternion rotation, float scale)
         {
             Append(other, transform, rotation, Vector3.one * scale);
+        }
+
+        public void Append(ConwayPoly other, Vector3 transform)
+        {
+            Append(other, transform, Quaternion.identity, Vector3.one);
+        }
+        
+        public void Append(ConwayPoly other, Vector3 transform, Quaternion rotation)
+        {
+            Append(other, transform, rotation, Vector3.one);
+        }
+        
+        public void Append(ConwayPoly other, Vector3 transform, float scale)
+        {
+            Append(other, transform, Quaternion.identity, Vector3.one * scale);
         }
 
         public void Append(ConwayPoly other, Vector3 transform, Quaternion rotation, Vector3 scale)
@@ -1882,9 +1897,9 @@ namespace Conway
             return GetFaceLoop(edge);
         }
 
-        public List<Tuple<int,int>> GetFaceLoop(Halfedge startingEdge)
+        public List<Tuple<int, int>> GetFaceLoop(Halfedge startingEdge)
         {
-            var loop = new List<Tuple<int,int>>();
+            var loop = new List<Tuple<int, int>>();
             if (startingEdge.Face.Sides % 2 != 0) return loop;
             var faceLookup = new  Dictionary<string, int>();
             for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
@@ -2467,8 +2482,8 @@ namespace Conway
             int numEdges = boundaries[0].Count;
 
             // Reset Roles
-            poly.FaceRoles = new List<ConwayPoly.Roles>(Enumerable.Repeat(ConwayPoly.Roles.Ignored, poly.Faces.Count));
-            poly.VertexRoles = new List<ConwayPoly.Roles>(Enumerable.Repeat(ConwayPoly.Roles.Ignored, poly.Vertices.Count));
+            poly.FaceRoles = new List<Roles>(Enumerable.Repeat(ConwayPoly.Roles.Ignored, poly.Faces.Count));
+            poly.VertexRoles = new List<Roles>(Enumerable.Repeat(ConwayPoly.Roles.Ignored, poly.Vertices.Count));
 
             bool flipDirection = true;
             int bestF1Edge = 0;
@@ -2512,7 +2527,7 @@ namespace Conway
                 {
                     poly.FaceRoles.Add(i % 2 == 0 ? ConwayPoly.Roles.New : ConwayPoly.Roles.NewAlt);
                     poly.VertexRoles.AddRange(Enumerable.Repeat(ConwayPoly.Roles.New, 4));
-                    poly.FaceTags.Add(new HashSet<Tuple<string, ConwayPoly.TagType>>(newFaceTagSet));
+                    poly.FaceTags.Add(new HashSet<Tuple<string, TagType>>(newFaceTagSet));
                 }
                 
                 edge1Index++;
@@ -2525,7 +2540,7 @@ namespace Conway
         }
 
         // Attempt to collapse all edges that are between faces with s1 sides and faces with s2 sides
-        public void CollapseEdges(int s1, int s2)
+        public void CollapseEdges(int s1, int s2, bool either=true)
         {
             var edgesToCollapse = new List<Halfedge>();
             foreach (var edge in Halfedges)
@@ -2533,7 +2548,7 @@ namespace Conway
                 if (edge.Face == null || edge.Pair == null || edge.Pair.Face == null) continue;
                 if (
                     (edge.Face.Sides == s1 && edge.Pair.Face.Sides == s2) ||
-                    (edge.Face.Sides == s2 && edge.Pair.Face.Sides == s1)
+                    (either && (edge.Face.Sides == s2 && edge.Pair.Face.Sides == s1))
                 )
                 {
                     edgesToCollapse.Add(edge);
@@ -2625,6 +2640,50 @@ namespace Conway
                 Debug.LogError("Failed to connect faces");
             }
         }
+        
+        public void AugmentFace(Face face, int edgeIndex, int newPolySides)
+        {
+            Halfedge edgeToAugment = face.GetHalfEdge(edgeIndex);
+            
+            if (edgeToAugment.Pair == null)
+            {
+                float sideAngle = (newPolySides - 2f) * 180f / newPolySides;
+                Vector3 midpoint = edgeToAugment.Midpoint;
+                Vector3 edgeVector = (midpoint - face.Centroid).normalized;
+
+                float theta = sideAngle / 2f;
+                float opposite = edgeToAugment.Vector.magnitude / 2f;
+                float adjacent = Mathf.Tan(theta * Mathf.Deg2Rad) * opposite;
+                var radialVector = edgeVector * adjacent;
+                var newCentroid = midpoint + radialVector;
+                var newVerts = new List<Vertex>();
+                var vert = edgeToAugment.Vertex.Position;
+                newVerts.Add(edgeToAugment.Vertex);
+                newVerts.Add(edgeToAugment.Prev.Vertex);
+                for (int i=2; i < newPolySides; i++)
+                {
+                    var spoke = vert - newCentroid;
+                    Vector3 nextSpoke = Quaternion.AngleAxis((360f / newPolySides) * (i + 0f), face.Normal) * spoke;
+                    var newVert = new Vertex(newCentroid + nextSpoke);
+                    Vertices.Add(newVert);
+                    newVerts.Add(newVert);
+                    VertexRoles.Add(Roles.New);
+                }
+                Faces.Add(newVerts);
+                FaceRoles.Add(Roles.New);
+                FaceTags.Add(FaceTags[0]);  // TODO
+            }
+            else
+            {
+                Debug.LogWarning("Edge to augment must be on a boundary");
+            }
+        }
+
+        public void AugmentFace(int faceIndex, int edgeIndex, int sides)
+        {
+            AugmentFace(Faces[faceIndex], edgeIndex, sides);
+        }
     }
+    
     
 }

@@ -52,13 +52,15 @@ public static class GizmoHelper
 						transform.TransformPoint(edgeEnd.Position)
 					);
 				}
+				
+				Gizmos.DrawSphere(transform.TransformPoint(face.Centroid),.015f);
 
 				string label;
 
 				// label = $"{f}:{face.Normal}";
 				// label = poly.FaceRoles[f].ToString();
 				label = $"{f}";
-				Handles.Label(Vector3.Scale(face.Centroid, transform.lossyScale) + new Vector3(0, 0.03f * scale, 0), label);
+				Handles.Label(transform.TransformPoint(face.Centroid), label);
 			}
 		}
 		if (edgeGizmos)

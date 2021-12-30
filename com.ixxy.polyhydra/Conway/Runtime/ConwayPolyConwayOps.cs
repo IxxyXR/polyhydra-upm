@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Conway
 {
@@ -459,8 +460,8 @@ namespace Conway
                     float amountP, amountQ;
                     if (o.randomize)
                     {
-                        amountP = 1 - UnityEngine.Random.value / 2f;
-                        amountQ = useExtraParam ? 1 - UnityEngine.Random.value / 2f : amountP;
+                        amountP = 1 - Random.value / 2f;
+                        amountQ = useExtraParam ? 1 - Random.value / 2f : amountP;
                     }
                     else
                     {
