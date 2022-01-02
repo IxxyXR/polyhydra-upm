@@ -939,9 +939,9 @@ namespace Conway
 
 			if (Application.isEditor)
 			{
-				if(polyResult.Faces.Count != polyResult.FaceRoles.Count) Debug.LogError("Incorrect FaceRoles");
-				if(polyResult.Faces.Count != polyResult.FaceTags.Count) Debug.LogError("Incorrect FaceTags");
-				if(polyResult.Vertices.Count != polyResult.VertexRoles.Count) Debug.LogError("Incorrect VertexRoles");
+				if(polyResult.Faces.Count != polyResult.FaceRoles.Count) Debug.LogWarning($"Incorrect FaceRoles: {polyResult.FaceRoles.Count} should be {polyResult.Faces.Count}");
+				if(polyResult.Faces.Count != polyResult.FaceTags.Count) Debug.LogWarning($"Incorrect FaceTags: {polyResult.FaceTags.Count} should be {polyResult.Faces.Count}");
+				if(polyResult.Vertices.Count != polyResult.VertexRoles.Count) Debug.LogWarning($"Incorrect VertexRoles: {polyResult.VertexRoles.Count} should be {polyResult.Vertices.Count}");
 			}
 			return polyResult;
 

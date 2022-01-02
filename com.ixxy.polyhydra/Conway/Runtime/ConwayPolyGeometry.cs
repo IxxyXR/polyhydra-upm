@@ -1190,7 +1190,6 @@ namespace Conway
                 distance = .00001f; // We always weld by a very small amount. Disable the op if you don't want to weld at all.
             var vertexPoints = new List<Vector3>();
             var faceIndices = new List<IEnumerable<int>>();
-            var faceRoles = FaceRoles;
             var vertexRoles = new List<Roles>();
             var reverseDict = new Dictionary<Vertex, int>();
             var vertexReplacementDict = new Dictionary<int, int>();
@@ -1239,12 +1238,10 @@ namespace Conway
                 faceIndices.Add(newFaceVertIndices);
             }
 
-            // TODO check this makes sense
-            faceRoles = Enumerable.Repeat(Roles.New, faceIndices.Count).ToList();
-            // TODO derive new vertex roles from previous or from face roles?
-            vertexRoles = Enumerable.Repeat(Roles.New, vertexPoints.Count).ToList();
-
-            return new ConwayPoly(vertexPoints, faceIndices, faceRoles, vertexRoles, FaceTags);
+            FaceRoles = FaceRoles.GetRange(0, faceIndices.Count);
+            FaceTags = FaceTags.GetRange(0, faceIndices.Count);
+            vertexRoles = Vertices.Select(x => FaceRoles[Faces.IndexOf(x.Halfedge.Face)]).ToList();
+            return new ConwayPoly(vertexPoints, faceIndices, FaceRoles, vertexRoles, FaceTags);
         }
 
         public ConwayPoly FillHoles()
