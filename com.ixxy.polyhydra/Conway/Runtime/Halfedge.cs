@@ -101,7 +101,12 @@ namespace Conway {
                 get { return Vertex.Position - Prev.Vertex.Position; }
             }
 
-        public Vector3 PointAlongEdge(float n)
+            public float Angle
+            {
+                get { return Vector3.Angle(this.Vector, this.Next.Vector); }
+            }
+
+            public Vector3 PointAlongEdge(float n)
         {
             return Vertex.Position + -n * (Vertex.Position - Prev.Vertex.Position);
         }

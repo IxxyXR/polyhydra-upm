@@ -70,7 +70,24 @@ namespace Conway
 
             return original;
         }
-        
+
+        public void Scale(Vector3 scale)
+        {
+            if (Vertices.Count > 0)
+            {
+                for (var i = 0; i < Vertices.Count; i++)
+                {
+                    var vert = Vertices[i].Position;
+                    Vertices[i].Position = new Vector3(
+                        vert.x * scale.x,
+                        vert.y * scale.y,
+                        vert.z * scale.z
+                    );
+                }
+            }
+        }
+
+
         public ConwayPoly Transform(Vector3 pos, Vector3? rot=null, Vector3? scale=null)
         {
             var matrix = Matrix4x4.TRS(
@@ -789,6 +806,8 @@ namespace Conway
 
             return result;
         }
+        
+        
 
         public void ScalePolyhedra(float scale = 1)
         {
@@ -1221,7 +1240,7 @@ namespace Conway
             }
 
             // TODO check this makes sense
-            //faceRoles = Enumerable.Repeat(Roles.New, faceIndices.Count).ToList();
+            faceRoles = Enumerable.Repeat(Roles.New, faceIndices.Count).ToList();
             // TODO derive new vertex roles from previous or from face roles?
             vertexRoles = Enumerable.Repeat(Roles.New, vertexPoints.Count).ToList();
 
@@ -2683,6 +2702,95 @@ namespace Conway
         {
             AugmentFace(Faces[faceIndex], edgeIndex, sides);
         }
+
+        public void AddKite(int faceIndexA, int edgeIndexA, int faceIndexB, int edgeIndexB)
+        {
+            AddKite(Faces[faceIndexA], edgeIndexA, Faces[faceIndexB], edgeIndexB);
+        }
+
+        // Given two edges which are assumed to form an angle
+        // Attempt to add a rhombic or kite face by reflecting them to a quadrilateral
+        public void AddKite(Face faceA, int edgeIndexA, Face faceB, int edgeIndexB)
+        {
+            var edgeA = faceA.GetHalfedges()[edgeIndexA];
+            var edgeB = faceB.GetHalfedges()[edgeIndexB];
+
+            var pivot = edgeA.Vertex.Position;
+
+            var angle = Vector3.Angle(
+                edgeB.Next.Vertex.Position - pivot,
+                edgeB.Vertex.Position - pivot
+            );
+            
+            var newVert = new Vertex(
+                Quaternion.AngleAxis(
+                    -angle * 2,
+                    faceA.Normal
+                ) * (edgeB.Vertex.Position - pivot) + pivot
+            );
+            Vertices.Add(newVert);
+            VertexRoles.Add(Roles.New);
+            var verts = new List<Vertex>()
+            {
+                edgeB.Next.Vertex,
+                edgeB.Vertex,
+                edgeA.Vertex,
+                newVert,
+            };
+            var result = Faces.Add(verts);
+            if (result)
+            {
+                FaceRoles.Add(Roles.New);
+                FaceTags.Add(FaceTags[0]);  // TODO
+            }
+        }
+
+        public void AddRhombus(int faceIndex, int edgeIndex, float angle)
+        {
+            AddRhombus(Faces[faceIndex], edgeIndex, angle);
+        }
+
+        public void AddRhombus(Face face, int edgeIndex, float angle)
+        {
+            var edge = face.GetHalfedges()[edgeIndex];
+            var pivot = edge.Vertex.Position;
+            
+            var newVert1 = new Vertex(
+                Quaternion.AngleAxis(
+                    -angle,
+                    face.Normal
+                ) * (edge.Next.Vertex.Position - pivot) + pivot
+            );
+            Vertices.Add(newVert1);
+            VertexRoles.Add(Roles.New);
+
+            float angle2 = (360f - (angle * 2)) / 2f;
+            var pivot2 = newVert1.Position;
+            var newVert2 = new Vertex(
+                Quaternion.AngleAxis(
+                    -angle2,
+                    face.Normal
+                ) * (edge.Vertex.Position - pivot2) + pivot2
+            );
+            Vertices.Add(newVert2);
+            VertexRoles.Add(Roles.New);
+            
+            var verts = new List<Vertex>()
+            {
+                edge.Next.Vertex,
+                edge.Vertex,
+                newVert1,
+                newVert2,
+            };
+            var result = Faces.Add(verts);
+            if (result)
+            {
+                FaceRoles.Add(Roles.New);
+                FaceTags.Add(FaceTags[0]);  // TODO
+            }
+            
+        }
+
     }
     
     

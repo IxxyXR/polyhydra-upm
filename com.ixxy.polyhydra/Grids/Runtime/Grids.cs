@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Conway;
 using UnityEngine;
 
@@ -487,9 +486,12 @@ namespace Grids
 			K_3_3_6_6__3_6_3_6,
 			K_3_4_3_12__3_12_12,
 			K_3_4_4_6__3_6_3_6,
+			Durer1,
+			Durer2,
+			// Deca1
 		}
 		
-		public static ConwayPoly MakeKepler(KeplerTypes type, int xRepeats, int yRepeats)
+		public static ConwayPoly MakeKepler(KeplerTypes type, int xRepeats, int yRepeats, PolyHydraEnums.GridShapes gridShape)
 		{
 
 			Vector3 xOffset, yOffset;
@@ -498,6 +500,7 @@ namespace Grids
 			{
 				case KeplerTypes.K_3_3_3_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
+					tile = tile.Rotate(Vector3.up, -19);
 					tile.AugmentFace(0, 0, 3);
 					tile.AugmentFace(0, 1, 3);
 					tile.AugmentFace(0, 2, 3);
@@ -511,6 +514,7 @@ namespace Grids
 					break;
 				case KeplerTypes.K_3_3_3_4_4:
 					tile = ConwayPoly._MakePolygon(4, true);
+					tile = tile.Rotate(Vector3.up, -45);
 					tile.AugmentFace(0, 1, 3);
 					tile.AugmentFace(0, 3, 3);
 					xOffset = tile.Vertices[2].Position - tile.Vertices[3].Position;
@@ -518,6 +522,7 @@ namespace Grids
 					break;
 				case KeplerTypes.K_3_3_4_3_4:
 					tile = ConwayPoly._MakePolygon(3, true);
+					tile = tile.Rotate(Vector3.up, 30);
 					tile.AugmentFace(0, 2, 4);
 					tile.AugmentFace(0, 1, 4);
 					tile.AugmentFace(1, 2, 3);
@@ -528,6 +533,7 @@ namespace Grids
 					break;
 				case KeplerTypes.K_3_4_6_4:
 					tile = ConwayPoly._MakePolygon(6, true);
+					tile = tile.Rotate(Vector3.up, 30);
 					tile.AugmentFace(0, 0, 4);
 					tile.AugmentFace(0, 1, 4);
 					tile.AugmentFace(0, 2, 4);
@@ -538,6 +544,7 @@ namespace Grids
 					break;
 				case KeplerTypes.K_3_6_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
+					tile = tile.Rotate(Vector3.up, 30);
 					tile.AugmentFace(0, 0, 3);
 					tile.AugmentFace(0, 1, 3);
 					xOffset = tile.Vertices[1].Position - tile.Vertices[5].Position;
@@ -545,6 +552,7 @@ namespace Grids
 					break;
 				case KeplerTypes.K_3_12_12:
 					tile = ConwayPoly._MakePolygon(12, true);
+					tile = tile.Rotate(Vector3.up, 45);
 					tile.AugmentFace(0, 7, 3);
 					tile.AugmentFace(0, 9, 3);
 					xOffset = tile.Vertices[4].Position - tile.Vertices[9].Position;
@@ -552,6 +560,7 @@ namespace Grids
 					break;
 				case KeplerTypes.K_4_6_12:
 					tile = ConwayPoly._MakePolygon(12, true);
+					tile = tile.Rotate(Vector3.up, 45);
 					tile.AugmentFace(0, 0, 4);
 					tile.AugmentFace(0, 2, 4);
 					tile.AugmentFace(0, 4, 4);
@@ -562,12 +571,14 @@ namespace Grids
 					break;
 				case KeplerTypes.K_4_8_8:
 					tile = ConwayPoly._MakePolygon(8, true);
+					tile = tile.Rotate(Vector3.up, -22.5f);
 					tile.AugmentFace(0, 1, 4);
 					xOffset = tile.Vertices[2].Position - tile.Vertices[8].Position;
 					yOffset = tile.Vertices[9].Position - tile.Vertices[4].Position;
 					break;
 				case KeplerTypes.K_3_3_4_12__3_3_3_3_3_3:
 					tile = ConwayPoly._MakePolygon(12, true);
+					tile = tile.Rotate(Vector3.up, 15);
 					tile.AugmentFace(0, 0, 3);
 					tile.AugmentFace(0, 1, 4);
 					tile.AugmentFace(0, 2, 3);
@@ -592,6 +603,7 @@ namespace Grids
 					break;
 				case KeplerTypes.K_3_3_6_6__3_6_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
+					tile = tile.Rotate(Vector3.up, 0);
 					tile.AugmentFace(0, 5, 3);
 					tile.AugmentFace(0, 0, 3);
 					xOffset = tile.Vertices[2].Position - tile.Vertices[5].Position;
@@ -599,6 +611,7 @@ namespace Grids
 					break;
 				case KeplerTypes.K_3_4_3_12__3_12_12:
 					tile = ConwayPoly._MakePolygon(12, true);
+					tile = tile.Rotate(Vector3.up, 15);
 					tile.AugmentFace(0, 1, 3);
 					tile.AugmentFace(0, 0, 3);
 					tile.AugmentFace(1, 2, 4);
@@ -609,6 +622,7 @@ namespace Grids
 					break;
 				case KeplerTypes.K_3_4_4_6__3_6_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
+					tile = tile.Rotate(Vector3.up, 0);
 					tile.AugmentFace(0, 5, 3);
 					tile.AugmentFace(0, 0, 3);
 					tile.AugmentFace(0, 1, 4);
@@ -616,12 +630,42 @@ namespace Grids
 					xOffset = tile.Vertices[2].Position - tile.Vertices[5].Position;
 					yOffset = tile.Vertices[9].Position - tile.Vertices[3].Position;
 					break;
+				case KeplerTypes.Durer1:
+					tile = ConwayPoly._MakePolygon(5, true);
+					tile = tile.Rotate(Vector3.up, 54);
+					tile.AugmentFace(0, 5, 5);
+					tile.AddKite(0, 3, 1, 1);
+					xOffset = tile.Vertices[1].Position - tile.Vertices[3].Position;
+					yOffset = tile.Vertices[7].Position - tile.Vertices[2].Position;
+					break;
+				case KeplerTypes.Durer2:
+					tile = ConwayPoly._MakePolygon(5, true);
+					tile = tile.Rotate(Vector3.up, 54);
+					tile.AugmentFace(0, 5, 5);
+					tile.AddKite(0, 3, 1, 1);
+					tile.AddRhombus(0, 2, 72);
+					xOffset = tile.Vertices[1].Position - tile.Vertices[3].Position;
+					yOffset = tile.Vertices[6].Position - tile.Vertices[2].Position;
+					break;
+				// case KeplerTypes.Deca1:
+				// 	tile = ConwayPoly._MakePolygon(10, true);
+				// tile = tile.Rotate(Vector3.up, angle);
+				// 	for (int i = 0; i < 10; i++)
+				// 	{
+				// 		tile.AugmentFace(0, i, 5);
+				// 	}
+				// 	for (int i = 1; i < 11; i+=2)
+				// 	{
+				// 		tile.AugmentFace(i, 3, 10);
+				// 	}
+				// 	xOffset = tile.Vertices[56].Position - tile.Vertices[35].Position;
+				// 	yOffset = tile.Vertices[48].Position - tile.Vertices[64].Position;
+				// 	break;
 				default:
 					xOffset = yOffset = Vector3.zero;
 					tile = new ConwayPoly();
 					break;
 			}
-
 			poly = new ConwayPoly();
 			var xCentering = (xOffset * (xRepeats - 1)) / 2f;
 			var yCentering = (yOffset * (yRepeats - 1)) / 2f;
@@ -634,10 +678,61 @@ namespace Grids
 				}
 			}
 
-			poly = poly.Weld(0.1f);
+			float width = xRepeats * xOffset.x;
+			float heightScale = (1f/width) * Mathf.PI;
+			float maxHeight = poly.Vertices.Max(x => x.Position.z) * 2f * heightScale;
 			
+			switch (gridShape)
+			{
+				case PolyHydraEnums.GridShapes.Cylinder:
+				case PolyHydraEnums.GridShapes.Cone:
+				case PolyHydraEnums.GridShapes.Sphere:
+					poly.Scale(new Vector3(1f/width, 1, 1));
+					poly = ShapeWrap(poly, gridShape, heightScale, maxHeight);
+					break;
+			}
+
+			poly = poly.Weld(0.01f);
 			return poly;
 
 		}
+		
+		public static ConwayPoly ShapeWrap(ConwayPoly grid, PolyHydraEnums.GridShapes gridShape, float heightScale, float maxHeight)
+		{
+			var heightRange = (maxHeight / 2f) * 1.02f;  // Add a tiny amount of padding
+			for (var i = 0; i < grid.Vertices.Count; i++)
+			{
+				var vert = grid.Vertices[i];
+				var newPos = vert.Position;
+				newPos = new Vector3(
+					Mathf.Sin(newPos.x * Mathf.PI * 2) / 2f,
+					newPos.z * heightScale,
+					Mathf.Cos(newPos.x * Mathf.PI * 2) / 2f
+				);
+
+				if (gridShape != PolyHydraEnums.GridShapes.Cylinder)
+				{
+					float pinch = 1f;
+					switch (gridShape)
+					{
+						case PolyHydraEnums.GridShapes.Cone:
+							pinch = Mathf.InverseLerp(0, heightRange, newPos.y) + .125f;
+							break;
+					}
+					newPos = new Vector3(
+						newPos.x * pinch,
+						1f - pinch,
+						newPos.z * pinch
+					);
+
+				}
+				vert.Position = newPos;
+			}
+
+			return grid;
+		}
     }
+    
+
+    
 }
