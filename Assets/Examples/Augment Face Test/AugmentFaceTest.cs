@@ -18,6 +18,7 @@ public class AugmentFaceTest : ExampleBase
         [Range(1,24)] public int faceSkip = 2;
         [Range(1,24)] public int edgeSkip = 2;
         [Range(3,24)] public int augmentSides = 4;
+        public bool weld = false;
     }
 
     public List<AugmentSetting> AugmentSettings;
@@ -103,22 +104,28 @@ public class AugmentFaceTest : ExampleBase
             facesel = preop2Facesel
         });
         
-        var faces = new List<Face>();
         
         foreach (var setting in AugmentSettings)
         {
+            var facesToAugment = new List<Face>();
+            
             for (var i = 0; i < poly.Faces.Count; i += Mathf.Max(setting.faceSkip, 1))
             {
-                faces.Add(poly.Faces[i]);
+                facesToAugment.Add(poly.Faces[i]);
             }
             
-            foreach (var face in faces)
+            foreach (var face in facesToAugment)
             {
                 int numSides = face.Sides;
                 for (int j = setting.startingEdge % numSides; j < numSides; j += Mathf.Max(setting.edgeSkip, 1))
                 {
                     poly.AugmentFace(face, j, setting.augmentSides);
                 }
+            }
+            
+            if (setting.weld)
+            {
+                poly = poly.Weld(0.01f);
             }
         }
 

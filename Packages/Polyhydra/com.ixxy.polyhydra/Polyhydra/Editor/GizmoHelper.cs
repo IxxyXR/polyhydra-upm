@@ -19,7 +19,7 @@ public static class GizmoHelper
 				{
 					Vector3 vert = poly.Vertices[i].Position;
 					Vector3 pos = transform.TransformPoint(vert);
-					// Gizmos.DrawWireSphere(pos, GizmoRadius);
+					Gizmos.DrawWireSphere(pos, GizmoRadius);
 					Handles.Label(pos + new Vector3(0, 0, 0), i.ToString());
 				}
 			}
@@ -73,8 +73,8 @@ public static class GizmoHelper
 					transform.TransformPoint(edge.Vertex.Position),
 					transform.TransformPoint(edge.Next.Vertex.Position)
 				);
-				// string label = $"{i}";
-				// Handles.Label(transform.TransformPoint(edge.PointAlongEdge(0.9f)), label);
+				// string label = $"{edge.Face.GetHalfedges().IndexOf(edge)}";
+				// Handles.Label(transform.TransformPoint(edge.PointAlongEdge(0.5f)), label);
 				Gizmos.DrawWireCube(transform.TransformPoint(edge.PointAlongEdge(0.9f)), Vector3.one * 0.02f * scale);
 			}
 		}
