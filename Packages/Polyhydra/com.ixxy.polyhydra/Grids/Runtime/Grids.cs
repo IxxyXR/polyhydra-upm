@@ -684,51 +684,81 @@ namespace Grids
 			
 			switch (gridShape)
 			{
+				case PolyHydraEnums.GridShapes.Polar:
 				case PolyHydraEnums.GridShapes.Cylinder:
 				case PolyHydraEnums.GridShapes.Cone:
 				case PolyHydraEnums.GridShapes.Sphere:
 					poly.Scale(new Vector3(1f/width, 1, 1));
 					poly = ShapeWrap(poly, gridShape, heightScale, maxHeight);
 					break;
+				case PolyHydraEnums.GridShapes.Plane:
+					poly = poly.Weld(0.01f);
+					break;
 			}
 
-			poly = poly.Weld(0.01f);
 			return poly;
 
 		}
 		
 		public static ConwayPoly ShapeWrap(ConwayPoly grid, PolyHydraEnums.GridShapes gridShape, float heightScale, float maxHeight)
 		{
-			var heightRange = (maxHeight / 2f) * 1.02f;  // Add a tiny amount of padding
+		
+			// Cylinder
 			for (var i = 0; i < grid.Vertices.Count; i++)
 			{
 				var vert = grid.Vertices[i];
 				var newPos = vert.Position;
 				newPos = new Vector3(
-					Mathf.Sin(newPos.x * Mathf.PI * 2) / 2f,
+					Mathf.Cos(newPos.x * Mathf.PI * 2) / 2f,
 					newPos.z * heightScale,
-					Mathf.Cos(newPos.x * Mathf.PI * 2) / 2f
+					Mathf.Sin(newPos.x * Mathf.PI * 2) / 2f
 				);
-
-				if (gridShape != PolyHydraEnums.GridShapes.Cylinder)
-				{
-					float pinch = 1f;
-					switch (gridShape)
-					{
-						case PolyHydraEnums.GridShapes.Cone:
-							pinch = Mathf.InverseLerp(0, heightRange, newPos.y) + .125f;
-							break;
-					}
-					newPos = new Vector3(
-						newPos.x * pinch,
-						1f - pinch,
-						newPos.z * pinch
-					);
-
-				}
 				vert.Position = newPos;
 			}
+			// Weld cylinder edges.
+			// Other shapes might not work with welding tips etc
+			grid = grid.Weld(0.01f);  
 
+			// Change cylinder profile for cone etc
+			if (gridShape != PolyHydraEnums.GridShapes.Plane)
+			{
+				var heightRange = (maxHeight / 2f);
+
+				for (var i = 0; i < grid.Vertices.Count; i++)
+				{
+					var vert = grid.Vertices[i];
+					var newPos = vert.Position;
+					if (gridShape != PolyHydraEnums.GridShapes.Cylinder)
+					{
+						float pinch = 1f;
+						var y = 1 - Mathf.InverseLerp(0, heightRange, newPos.y);
+						switch (gridShape)
+						{
+							case PolyHydraEnums.GridShapes.Polar:
+							case PolyHydraEnums.GridShapes.Cone:
+								pinch = 1 - y;
+								break;
+							case PolyHydraEnums.GridShapes.Sphere:
+								pinch = Mathf.Sqrt(1f - Mathf.Pow(-1 + 2 * y, 2));
+								y -= 0.5f;
+								break;
+						}
+
+						newPos = new Vector3(
+							newPos.x * pinch,
+							y,
+							newPos.z * pinch
+						);
+					}
+
+					if (gridShape == PolyHydraEnums.GridShapes.Polar)
+					{
+						newPos.y = 0;
+					}
+					vert.Position = newPos;
+				}
+			}
+			
 			return grid;
 		}
     }
