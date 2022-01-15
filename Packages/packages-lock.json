@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.autodesk.fbx": {
+      "version": "4.1.1",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
     "com.dbrizov.naughtyattributes": {
       "version": "https://github.com/dbrizov/NaughtyAttributes.git#upm",
       "depth": 0,
@@ -14,10 +21,11 @@
       "dependencies": {}
     },
     "com.ixxy.unitysymmetry": {
-      "version": "file:../../unity-symmetry/Packages/UnitySymmetry",
+      "version": "https://github.com/IxxyXR/unity-symmetry.git#upm",
       "depth": 0,
-      "source": "local",
-      "dependencies": {}
+      "source": "git",
+      "dependencies": {},
+      "hash": "8fb807afed8b2624fab29c4b6608fdf6007953fd"
     },
     "com.pixelplacement.itween": {
       "version": "https://github.com/itsjavi/iTween-Unity.git#1.0.0",
@@ -46,6 +54,16 @@
       "depth": 1,
       "source": "registry",
       "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.formats.fbx": {
+      "version": "4.1.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.timeline": "1.5.2",
+        "com.autodesk.fbx": "4.1.1"
+      },
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
