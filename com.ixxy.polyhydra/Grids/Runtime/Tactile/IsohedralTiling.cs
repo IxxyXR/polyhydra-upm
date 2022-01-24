@@ -248,7 +248,7 @@ public class IsohedralTiling {
         return ttd.edge_shapes[idx];
     }
 
-    public struct Thing
+    public struct Tile
     {
         public float[] T;
         public int id;
@@ -259,7 +259,7 @@ public class IsohedralTiling {
         public float t2;
         public int aspect;
 
-        public Thing(
+        public Tile(
             float[] T,
             int id=0,
             EdgeShape shape=EdgeShape.J,
@@ -280,14 +280,14 @@ public class IsohedralTiling {
         }
     }
 
-    public IEnumerable<Thing> shape()
+    public IEnumerable<Tile> shape()
     {
         
         for (int idx = 0; idx < numVertices(); ++idx)
         {
             var an_id = ttd.edge_shape_ids[idx];
 
-            yield return new Thing(
+            yield return new Tile(
                 T: edges[idx],
                 id: an_id,
                 shape: ttd.edge_shapes[an_id],
@@ -296,7 +296,7 @@ public class IsohedralTiling {
         }
     }
 
-    public IEnumerable<Thing> parts()
+    public IEnumerable<Tile> parts()
     {
         for (int idx = 0; idx < numVertices(); ++idx)
         {
@@ -305,7 +305,7 @@ public class IsohedralTiling {
 
             if (shp == EdgeShape.J || shp == EdgeShape.I)
             {
-                yield return new Thing(
+                yield return new Tile(
                     T: edges[idx],
                     id: an_id,
                     shape: shp,
@@ -316,7 +316,7 @@ public class IsohedralTiling {
                 (int, int) indices = reversals[idx] ? (1, 0) : (0, 1);
                 var Ms = (shp == EdgeShape.U) ? TSPI_U : TSPI_S;
 
-                yield return new Thing(
+                yield return new Tile(
                     T: Multiply(edges[idx], Ms[indices.Item1]),
                     id: an_id,
                     shape: shp,
@@ -324,7 +324,7 @@ public class IsohedralTiling {
                     second: false
                 );
 
-                yield return new Thing(
+                yield return new Tile(
                     T: Multiply(edges[idx], Ms[indices.Item2]),
                     id: an_id,
                     shape: shp,
@@ -357,7 +357,7 @@ public class IsohedralTiling {
     //     return [...aspects[idx]];
     // }
 
-    public IEnumerable<IEnumerable<IEnumerable<Thing>>> fillRegionBounds(float xmin, float ymin, float xmax, float ymax)
+    public IEnumerable<IEnumerable<IEnumerable<Tile>>> fillRegionBounds(float xmin, float ymin, float xmax, float ymax)
     {
         return fillRegionQuad(
             new Vector2(xmin, ymin),
@@ -367,7 +367,7 @@ public class IsohedralTiling {
         );
     }
 
-    public IEnumerable<IEnumerable<IEnumerable<Thing>>> fillRegionQuad(Vector2 A, Vector2 B, Vector2 C, Vector2 D)
+    public IEnumerable<IEnumerable<IEnumerable<Tile>>> fillRegionQuad(Vector2 A, Vector2 B, Vector2 C, Vector2 D)
     {
         
         Vector2 bc(double[] M, Vector2 p)
@@ -384,7 +384,7 @@ public class IsohedralTiling {
             return new Vector2((1.0f - t) * P.x + t * Q.x, y);
         }
 
-        IEnumerable<Thing> doFill(Vector2 AA, Vector2 BB, Vector2 CC, Vector2 DD, bool do_top)
+        IEnumerable<Tile> doFill(Vector2 AA, Vector2 BB, Vector2 CC, Vector2 DD, bool do_top)
         {
             float x1 = AA.x;
             float dx1 = (DD.x - AA.x) / (DD.y - AA.y);
@@ -395,7 +395,7 @@ public class IsohedralTiling {
 
             if (do_top)
             {
-                ymax = ymax + 1.0f;
+                ymax += 1.0f;
             }
 
             double y = Math.Floor(ymin);
@@ -415,7 +415,7 @@ public class IsohedralTiling {
                         M[2] += xi * t1.x + yi * t2.x;
                         M[5] += xi * t1.y + yi * t2.y;
 
-                        yield return new Thing(
+                        yield return new Tile(
                             T: M.Select(x=>(float)x).ToArray(),
                             t1: xi,
                             t2: yi,
@@ -431,7 +431,7 @@ public class IsohedralTiling {
             }
         }
 
-        IEnumerable<IEnumerable<Thing>> fillFixX(Vector2 AA, Vector2 BB, Vector2 CC, Vector2 DD, bool do_top)
+        IEnumerable<IEnumerable<Tile>> fillFixX(Vector2 AA, Vector2 BB, Vector2 CC, Vector2 DD, bool do_top)
         {
             if (AA.x > BB.x)
             {
@@ -443,7 +443,7 @@ public class IsohedralTiling {
             }
         }
 
-        IEnumerable<IEnumerable<Thing>> fillFixY(Vector2 AA, Vector2 BB, Vector2 CC, Vector2 DD, bool do_top)
+        IEnumerable<IEnumerable<Tile>> fillFixY(Vector2 AA, Vector2 BB, Vector2 CC, Vector2 DD, bool do_top)
         {
             if (AA.y > CC.y)
             {
@@ -461,9 +461,7 @@ public class IsohedralTiling {
 
         if (det < 0.0)
         {
-            var tmp = pts[1];
-            pts[1] = pts[3];
-            pts[3] = tmp;
+            (pts[1], pts[3]) = (pts[3], pts[1]);
         }
 
         if (Math.Abs(pts[0].y - pts[1].y) < 1e-7)
@@ -490,9 +488,7 @@ public class IsohedralTiling {
 
             if (left.x > right.x)
             {
-                var tmp = left;
-                left = right;
-                right = tmp;
+                (left, right) = (right, left);
             }
 
             if (left.y < right.y)
@@ -537,5 +533,4 @@ public class IsohedralTiling {
 
         return col;
     }
-
 }

@@ -114,7 +114,7 @@ namespace Conway
                 avg.x /= vcount;
                 avg.y /= vcount;
                 avg.z /= vcount;
-
+                
                 return avg;
             }
         }

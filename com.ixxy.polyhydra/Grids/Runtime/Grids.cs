@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Conway;
@@ -474,20 +475,24 @@ namespace Grids
 
 		public enum KeplerTypes
 		{
-			K_3_3_3_3_6,
-			K_3_3_3_4_4,
-			K_3_3_4_3_4,
-			K_3_4_6_4,
-			K_3_6_3_6,
-			K_3_12_12,
-			K_4_6_12,
-			K_4_8_8,
-			K_3_3_4_12__3_3_3_3_3_3,
-			K_3_3_6_6__3_6_3_6,
-			K_3_4_3_12__3_12_12,
-			K_3_4_4_6__3_6_3_6,
-			Durer1,
-			Durer2,
+			K_3_3_3_3_3_3 = 100,
+			K_4_4_4_4 = 101,
+			K_6_6_6 = 102,
+			K_3_3_3_3_6 = 0,
+			K_3_3_3_4_4 = 1,
+			K_3_3_4_3_4 = 2,
+			K_3_4_6_4 = 3,
+			K_3_6_3_6 = 4,
+			K_3_12_12 = 5,
+			K_4_6_12 = 6,
+			K_4_8_8 = 7,
+			K_3_3_4_12__3_3_3_3_3_3 = 8,
+			K_3_3_6_6__3_6_3_6 = 9,
+			K_3_4_3_12__3_12_12 = 10,
+			K_3_4_4_6__3_6_3_6 = 11,
+			Durer1 = 12,
+			Durer2 = 13,
+			Foo = 200,
 			// Deca1
 		}
 		
@@ -496,8 +501,47 @@ namespace Grids
 
 			Vector3 xOffset, yOffset;
 			ConwayPoly tile, poly;
+			bool offsetAlternateRows = true;
+			bool alternateRows = false;
+
+			List<List<List<ConwayPoly.Roles>>> roleSet = null;
+			
 			switch (type)
 			{
+				case KeplerTypes.K_3_3_3_3_3_3:
+					tile = ConwayPoly._MakePolygon(3, true);
+					tile = tile.Rotate(Vector3.up, 30);
+					tile.AugmentFace(0, 0, 3);
+					xOffset = tile.Vertices[0].Position - tile.Vertices[2].Position;
+					yOffset = tile.Vertices[3].Position - tile.Vertices[0].Position;
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() { ConwayPoly.Roles.Existing, ConwayPoly.Roles.New},
+					}};
+					break;
+				case KeplerTypes.K_4_4_4_4:
+					tile = ConwayPoly._MakePolygon(4, true);
+					tile = tile.Rotate(Vector3.up, 45);
+					xOffset = tile.Vertices[0].Position - tile.Vertices[3].Position;
+					yOffset = tile.Vertices[0].Position - tile.Vertices[1].Position;
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() { ConwayPoly.Roles.Existing, ConwayPoly.Roles.New},
+						new() { ConwayPoly.Roles.New, ConwayPoly.Roles.Existing},
+					}};
+					break;
+				case KeplerTypes.K_6_6_6:
+					tile = ConwayPoly._MakePolygon(6, true);
+					tile = tile.Rotate(Vector3.up, 30);
+					xOffset = tile.Vertices[1].Position - tile.Vertices[5].Position;
+					yOffset = tile.Vertices[1].Position - tile.Vertices[3].Position;	
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() { ConwayPoly.Roles.Existing, ConwayPoly.Roles.NewAlt, ConwayPoly.Roles.New},
+						new() { ConwayPoly.Roles.New, ConwayPoly.Roles.Existing, ConwayPoly.Roles.NewAlt},
+						new() { ConwayPoly.Roles.NewAlt, ConwayPoly.Roles.New, ConwayPoly.Roles.Existing},
+					}};
+					break;
 				case KeplerTypes.K_3_3_3_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
 					tile = tile.Rotate(Vector3.up, -19);
@@ -510,7 +554,22 @@ namespace Grids
 					tile.AugmentFace(2, 3, 3);
 					tile.AugmentFace(3, 2, 3);
 					xOffset = tile.Vertices[8].Position - tile.Vertices[10].Position;
-					yOffset = tile.Vertices[10].Position - tile.Vertices[4].Position;	
+					yOffset = tile.Vertices[10].Position - tile.Vertices[4].Position;
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.ExistingAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt
+						}}};
 					break;
 				case KeplerTypes.K_3_3_3_4_4:
 					tile = ConwayPoly._MakePolygon(4, true);
@@ -518,7 +577,25 @@ namespace Grids
 					tile.AugmentFace(0, 1, 3);
 					tile.AugmentFace(0, 3, 3);
 					xOffset = tile.Vertices[2].Position - tile.Vertices[3].Position;
-					yOffset = tile.Vertices[4].Position - tile.Vertices[2].Position;	
+					yOffset = tile.Vertices[4].Position - tile.Vertices[2].Position;
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.Ignored,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+						},
+						new() {
+							ConwayPoly.Roles.Existing,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+						},
+					}};
+					offsetAlternateRows = false;
 					break;
 				case KeplerTypes.K_3_3_4_3_4:
 					tile = ConwayPoly._MakePolygon(3, true);
@@ -530,6 +607,16 @@ namespace Grids
 					tile.AugmentFace(2, 3, 3);
 					xOffset = tile.Vertices[5].Position - tile.Vertices[4].Position;
 					yOffset = tile.Vertices[5].Position - tile.Vertices[7].Position;	
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.ExistingAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.Ignored,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.Existing,
+						}}};
 					break;
 				case KeplerTypes.K_3_4_6_4:
 					tile = ConwayPoly._MakePolygon(6, true);
@@ -540,15 +627,39 @@ namespace Grids
 					tile.AugmentFace(1, 0, 3);
 					tile.AugmentFace(2, 0, 3);
 					xOffset = tile.Vertices[11].Position - tile.Vertices[4].Position;
-					yOffset = tile.Vertices[9].Position - tile.Vertices[3].Position;	
+					yOffset = tile.Vertices[9].Position - tile.Vertices[3].Position;
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.ExistingAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.Ignored,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.Existing,
+						}}};
 					break;
 				case KeplerTypes.K_3_6_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
 					tile = tile.Rotate(Vector3.up, 30);
 					tile.AugmentFace(0, 0, 3);
 					tile.AugmentFace(0, 1, 3);
-					xOffset = tile.Vertices[1].Position - tile.Vertices[5].Position;
+					xOffset = tile.Vertices[1].Position - tile.Vertices[4].Position;
 					yOffset = tile.Vertices[7].Position - tile.Vertices[2].Position;	
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.ExistingAlt,
+							ConwayPoly.Roles.Existing,
+							ConwayPoly.Roles.New,
+						},
+						new() {
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.Existing,
+							ConwayPoly.Roles.New,
+						},
+					}};
+					offsetAlternateRows = false;
 					break;
 				case KeplerTypes.K_3_12_12:
 					tile = ConwayPoly._MakePolygon(12, true);
@@ -556,7 +667,14 @@ namespace Grids
 					tile.AugmentFace(0, 7, 3);
 					tile.AugmentFace(0, 9, 3);
 					xOffset = tile.Vertices[4].Position - tile.Vertices[9].Position;
-					yOffset = tile.Vertices[2].Position - tile.Vertices[7].Position;	
+					yOffset = tile.Vertices[2].Position - tile.Vertices[7].Position;
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.ExistingAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+						}}};
 					break;
 				case KeplerTypes.K_4_6_12:
 					tile = ConwayPoly._MakePolygon(12, true);
@@ -568,6 +686,16 @@ namespace Grids
 					tile.AugmentFace(2, 4, 6);
 					xOffset = tile.Vertices[16].Position - tile.Vertices[10].Position;
 					yOffset = tile.Vertices[15].Position - tile.Vertices[7].Position;	
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.ExistingAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+						}}};
 					break;
 				case KeplerTypes.K_4_8_8:
 					tile = ConwayPoly._MakePolygon(8, true);
@@ -575,6 +703,20 @@ namespace Grids
 					tile.AugmentFace(0, 1, 4);
 					xOffset = tile.Vertices[2].Position - tile.Vertices[8].Position;
 					yOffset = tile.Vertices[9].Position - tile.Vertices[4].Position;
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.ExistingAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+						},
+						new() {
+							ConwayPoly.Roles.Existing,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+						},
+					}};
+					offsetAlternateRows = false;
 					break;
 				case KeplerTypes.K_3_3_4_12__3_3_3_3_3_3:
 					tile = ConwayPoly._MakePolygon(12, true);
@@ -600,6 +742,27 @@ namespace Grids
 
 					xOffset = tile.Vertices[20].Position - tile.Vertices[10].Position;
 					yOffset = tile.Vertices[17].Position - tile.Vertices[8].Position;
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.ExistingAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.Ignored,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.Ignored,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.Ignored,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+						}}};
 					break;
 				case KeplerTypes.K_3_3_6_6__3_6_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
@@ -608,6 +771,21 @@ namespace Grids
 					tile.AugmentFace(0, 0, 3);
 					xOffset = tile.Vertices[2].Position - tile.Vertices[5].Position;
 					yOffset = tile.Vertices[1].Position - tile.Vertices[3].Position;
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.Existing,
+							ConwayPoly.Roles.Ignored,
+						},
+						new() {
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.Existing,
+							ConwayPoly.Roles.Ignored,
+						},
+					}};
+					offsetAlternateRows = false;
+					alternateRows = true;
 					break;
 				case KeplerTypes.K_3_4_3_12__3_12_12:
 					tile = ConwayPoly._MakePolygon(12, true);
@@ -619,6 +797,27 @@ namespace Grids
 					tile.AugmentFace(3, 3, 3);
 					xOffset = tile.Vertices[5].Position - tile.Vertices[10].Position;
 					yOffset = tile.Vertices[2].Position - tile.Vertices[7].Position;
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.Existing,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.Ignored,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+						},
+						new() {
+							ConwayPoly.Roles.ExistingAlt,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.Ignored,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+						},
+					}};
+					offsetAlternateRows = false;
+					alternateRows = true;
 					break;
 				case KeplerTypes.K_3_4_4_6__3_6_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
@@ -629,6 +828,15 @@ namespace Grids
 					tile.AugmentFace(2, 0, 4);
 					xOffset = tile.Vertices[2].Position - tile.Vertices[5].Position;
 					yOffset = tile.Vertices[9].Position - tile.Vertices[3].Position;
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.ExistingAlt,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.Existing,
+							ConwayPoly.Roles.ExistingAlt,
+						}}};
 					break;
 				case KeplerTypes.Durer1:
 					tile = ConwayPoly._MakePolygon(5, true);
@@ -637,6 +845,13 @@ namespace Grids
 					tile.AddKite(0, 3, 1, 1);
 					xOffset = tile.Vertices[1].Position - tile.Vertices[3].Position;
 					yOffset = tile.Vertices[7].Position - tile.Vertices[2].Position;
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.ExistingAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+						}}};
 					break;
 				case KeplerTypes.Durer2:
 					tile = ConwayPoly._MakePolygon(5, true);
@@ -646,6 +861,14 @@ namespace Grids
 					tile.AddRhombus(0, 2, 72);
 					xOffset = tile.Vertices[1].Position - tile.Vertices[3].Position;
 					yOffset = tile.Vertices[6].Position - tile.Vertices[2].Position;
+					roleSet = new List<List<List<ConwayPoly.Roles>>>
+					{new() {
+						new() {
+							ConwayPoly.Roles.ExistingAlt,
+							ConwayPoly.Roles.New,
+							ConwayPoly.Roles.NewAlt,
+							ConwayPoly.Roles.NewAlt,
+						}}};
 					break;
 				// case KeplerTypes.Deca1:
 				// 	tile = ConwayPoly._MakePolygon(10, true);
@@ -666,17 +889,27 @@ namespace Grids
 					tile = new ConwayPoly();
 					break;
 			}
+			
 			poly = new ConwayPoly();
+			var newFaceRoles = new List<ConwayPoly.Roles>();
 			var xCentering = (xOffset * (xRepeats - 1)) / 2f;
 			var yCentering = (yOffset * (yRepeats - 1)) / 2f;
-			
+
+			int roleCountY = roleSet.Count;
+			int roleCountX = roleSet[0].Count;
+			int tileCount = tile.Faces.Count;
 			for (int y=0; y<yRepeats; y++)
 			{
+				var rowOffset = offsetAlternateRows ? y % roleCountX : 0;
 				for (int x=0; x<xRepeats; x++)
 				{
+					var colOffset = alternateRows && y%2==0 ? 1 : 0;
 					poly.Append(tile, (xOffset * x - xCentering) + (yOffset * y - yCentering));
+					newFaceRoles.AddRange(roleSet[y%roleCountY][(x+colOffset)%roleCountX].GetRange(rowOffset, tileCount));
 				}
 			}
+
+			poly.FaceRoles = newFaceRoles;
 
 			float width = xRepeats * xOffset.x;
 			float heightScale = (1f/width) * Mathf.PI;
@@ -695,7 +928,7 @@ namespace Grids
 					poly = poly.Weld(0.01f);
 					break;
 			}
-
+			
 			return poly;
 
 		}

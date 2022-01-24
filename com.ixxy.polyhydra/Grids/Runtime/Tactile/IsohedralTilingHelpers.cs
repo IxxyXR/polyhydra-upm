@@ -1,155 +1,155 @@
 public class IsohedralTilingHelpers
 {
 
-    static EdgeShape[] es_00 = {EdgeShape.J, EdgeShape.J, EdgeShape.J};
-    static EdgeShape[] es_01 = {EdgeShape.S, EdgeShape.J, EdgeShape.S, EdgeShape.S, EdgeShape.S};
-    static EdgeShape[] es_02 = {EdgeShape.S, EdgeShape.J, EdgeShape.J, EdgeShape.S};
-    static EdgeShape[] es_03 = {EdgeShape.S, EdgeShape.J, EdgeShape.S, EdgeShape.J};
-    static EdgeShape[] es_04 = {EdgeShape.S, EdgeShape.S, EdgeShape.S};
-    static EdgeShape[] es_05 = {EdgeShape.S, EdgeShape.J};
-    static EdgeShape[] es_06 = {EdgeShape.J};
-    static EdgeShape[] es_07 = {EdgeShape.S};
-    static EdgeShape[] es_08 = {EdgeShape.U, EdgeShape.J};
-    static EdgeShape[] es_09 = {EdgeShape.U, EdgeShape.S, EdgeShape.S};
-    static EdgeShape[] es_10 = {EdgeShape.J, EdgeShape.I};
-    static EdgeShape[] es_11 = {EdgeShape.S, EdgeShape.I, EdgeShape.S};
-    static EdgeShape[] es_12 = {EdgeShape.I, EdgeShape.J};
-    static EdgeShape[] es_13 = {EdgeShape.I, EdgeShape.S};
-    static EdgeShape[] es_14 = {EdgeShape.U};
-    static EdgeShape[] es_15 = {EdgeShape.I};
-    static EdgeShape[] es_16 = {EdgeShape.S, EdgeShape.J, EdgeShape.J};
-    static EdgeShape[] es_17 = {EdgeShape.J, EdgeShape.J, EdgeShape.I};
-    static EdgeShape[] es_18 = {EdgeShape.S, EdgeShape.S, EdgeShape.J, EdgeShape.S};
-    static EdgeShape[] es_19 = {EdgeShape.S, EdgeShape.S, EdgeShape.J, EdgeShape.I};
-    static EdgeShape[] es_20 = {EdgeShape.J, EdgeShape.J, EdgeShape.S};
-    static EdgeShape[] es_21 = {EdgeShape.S, EdgeShape.I, EdgeShape.I};
-    static EdgeShape[] es_22 = {EdgeShape.J, EdgeShape.I, EdgeShape.I};
-    static EdgeShape[] es_23 = {EdgeShape.J, EdgeShape.J};
-    static EdgeShape[] es_24 = {EdgeShape.I, EdgeShape.I};
-    static EdgeShape[] es_25 = {EdgeShape.J, EdgeShape.S};
-    static EdgeShape[] es_26 = {EdgeShape.S, EdgeShape.S, EdgeShape.S, EdgeShape.S};
-    static EdgeShape[] es_27 = {EdgeShape.J, EdgeShape.S, EdgeShape.S};
-    static EdgeShape[] es_28 = {EdgeShape.I, EdgeShape.S, EdgeShape.I, EdgeShape.S};
-    static EdgeShape[] es_29 = {EdgeShape.J, EdgeShape.I, EdgeShape.S};
-    static EdgeShape[] es_30 = {EdgeShape.I, EdgeShape.I, EdgeShape.I, EdgeShape.S};
-    static EdgeShape[] es_31 = {EdgeShape.S, EdgeShape.S};
-    static EdgeShape[] es_32 = {EdgeShape.S, EdgeShape.I};
-    static EdgeShape[] es_33 = {EdgeShape.U, EdgeShape.I};
-    static EdgeShape[] es_34 = {EdgeShape.U, EdgeShape.S};
-    static EdgeShape[] es_35 = {EdgeShape.I, EdgeShape.I, EdgeShape.I};
-    static EdgeShape[] es_36 = {EdgeShape.I, EdgeShape.S, EdgeShape.I};
-    static EdgeShape[] es_37 = {EdgeShape.I, EdgeShape.S, EdgeShape.S};
+    static EdgeShape[] es_00 = { EdgeShape.J, EdgeShape.J, EdgeShape.J };
+    static EdgeShape[] es_01 = { EdgeShape.S, EdgeShape.J, EdgeShape.S, EdgeShape.S, EdgeShape.S };
+    static EdgeShape[] es_02 = { EdgeShape.S, EdgeShape.J, EdgeShape.J, EdgeShape.S };
+    static EdgeShape[] es_03 = { EdgeShape.S, EdgeShape.J, EdgeShape.S, EdgeShape.J };
+    static EdgeShape[] es_04 = { EdgeShape.S, EdgeShape.S, EdgeShape.S };
+    static EdgeShape[] es_05 = { EdgeShape.S, EdgeShape.J };
+    static EdgeShape[] es_06 = { EdgeShape.J };
+    static EdgeShape[] es_07 = { EdgeShape.S };
+    static EdgeShape[] es_08 = { EdgeShape.U, EdgeShape.J };
+    static EdgeShape[] es_09 = { EdgeShape.U, EdgeShape.S, EdgeShape.S };
+    static EdgeShape[] es_10 = { EdgeShape.J, EdgeShape.I };
+    static EdgeShape[] es_11 = { EdgeShape.S, EdgeShape.I, EdgeShape.S };
+    static EdgeShape[] es_12 = { EdgeShape.I, EdgeShape.J };
+    static EdgeShape[] es_13 = { EdgeShape.I, EdgeShape.S };
+    static EdgeShape[] es_14 = { EdgeShape.U };
+    static EdgeShape[] es_15 = { EdgeShape.I };
+    static EdgeShape[] es_16 = { EdgeShape.S, EdgeShape.J, EdgeShape.J };
+    static EdgeShape[] es_17 = { EdgeShape.J, EdgeShape.J, EdgeShape.I };
+    static EdgeShape[] es_18 = { EdgeShape.S, EdgeShape.S, EdgeShape.J, EdgeShape.S };
+    static EdgeShape[] es_19 = { EdgeShape.S, EdgeShape.S, EdgeShape.J, EdgeShape.I };
+    static EdgeShape[] es_20 = { EdgeShape.J, EdgeShape.J, EdgeShape.S };
+    static EdgeShape[] es_21 = { EdgeShape.S, EdgeShape.I, EdgeShape.I };
+    static EdgeShape[] es_22 = { EdgeShape.J, EdgeShape.I, EdgeShape.I };
+    static EdgeShape[] es_23 = { EdgeShape.J, EdgeShape.J };
+    static EdgeShape[] es_24 = { EdgeShape.I, EdgeShape.I };
+    static EdgeShape[] es_25 = { EdgeShape.J, EdgeShape.S };
+    static EdgeShape[] es_26 = { EdgeShape.S, EdgeShape.S, EdgeShape.S, EdgeShape.S };
+    static EdgeShape[] es_27 = { EdgeShape.J, EdgeShape.S, EdgeShape.S };
+    static EdgeShape[] es_28 = { EdgeShape.I, EdgeShape.S, EdgeShape.I, EdgeShape.S };
+    static EdgeShape[] es_29 = { EdgeShape.J, EdgeShape.I, EdgeShape.S };
+    static EdgeShape[] es_30 = { EdgeShape.I, EdgeShape.I, EdgeShape.I, EdgeShape.S };
+    static EdgeShape[] es_31 = { EdgeShape.S, EdgeShape.S };
+    static EdgeShape[] es_32 = { EdgeShape.S, EdgeShape.I };
+    static EdgeShape[] es_33 = { EdgeShape.U, EdgeShape.I };
+    static EdgeShape[] es_34 = { EdgeShape.U, EdgeShape.S };
+    static EdgeShape[] es_35 = { EdgeShape.I, EdgeShape.I, EdgeShape.I };
+    static EdgeShape[] es_36 = { EdgeShape.I, EdgeShape.S, EdgeShape.I };
+    static EdgeShape[] es_37 = { EdgeShape.I, EdgeShape.S, EdgeShape.S };
 
-    static int[] esi_00 = {0, 1, 2, 0, 1, 2};
-    static int[] esi_01 = {0, 0, 1, 2, 2, 1};
-    static int[] esi_02 = {0, 1, 0, 2, 1, 2};
-    static int[] esi_03 = {0, 1, 2, 3, 1, 4};
-    static int[] esi_04 = {0, 1, 2, 2, 1, 3};
-    static int[] esi_05 = {0, 1, 2, 3, 1, 3};
-    static int[] esi_06 = {0, 0, 1, 1, 2, 2};
-    static int[] esi_07 = {0, 1, 1, 0, 1, 1};
-    static int[] esi_08 = {0, 0, 0, 0, 0, 0};
-    static int[] esi_09 = {0, 1, 2, 0, 2, 1};
-    static int[] esi_10 = {0, 1, 0, 0, 1, 0};
-    static int[] esi_11 = {0, 1, 2, 2, 1, 0};
-    static int[] esi_12 = {0, 1, 1, 1, 1, 0};
-    static int[] esi_13 = {0, 1, 1, 2, 2};
-    static int[] esi_14 = {0, 0, 1, 2, 1};
-    static int[] esi_15 = {0, 1, 2, 3, 2};
-    static int[] esi_16 = {0, 1, 2, 1, 2};
-    static int[] esi_17 = {0, 1, 1, 1, 1};
-    static int[] esi_18 = {0, 1, 2, 0};
-    static int[] esi_19 = {0, 1, 1, 0};
-    static int[] esi_20 = {0, 0, 0, 0};
-    static int[] esi_21 = {0, 1, 0};
-    static int[] esi_22 = {0, 1, 0, 1};
-    static int[] esi_23 = {0, 1, 0, 2};
-    static int[] esi_24 = {0, 0, 1, 1};
-    static int[] esi_25 = {0, 1, 2, 3};
-    static int[] esi_26 = {0, 0, 1, 2};
-    static int[] esi_27 = {0, 1, 2};
-    static int[] esi_28 = {0, 0, 1};
-    static int[] esi_29 = {0, 0, 0};
+    static int[] esi_00 = { 0, 1, 2, 0, 1, 2 };
+    static int[] esi_01 = { 0, 0, 1, 2, 2, 1 };
+    static int[] esi_02 = { 0, 1, 0, 2, 1, 2 };
+    static int[] esi_03 = { 0, 1, 2, 3, 1, 4 };
+    static int[] esi_04 = { 0, 1, 2, 2, 1, 3 };
+    static int[] esi_05 = { 0, 1, 2, 3, 1, 3 };
+    static int[] esi_06 = { 0, 0, 1, 1, 2, 2 };
+    static int[] esi_07 = { 0, 1, 1, 0, 1, 1 };
+    static int[] esi_08 = { 0, 0, 0, 0, 0, 0 };
+    static int[] esi_09 = { 0, 1, 2, 0, 2, 1 };
+    static int[] esi_10 = { 0, 1, 0, 0, 1, 0 };
+    static int[] esi_11 = { 0, 1, 2, 2, 1, 0 };
+    static int[] esi_12 = { 0, 1, 1, 1, 1, 0 };
+    static int[] esi_13 = { 0, 1, 1, 2, 2 };
+    static int[] esi_14 = { 0, 0, 1, 2, 1 };
+    static int[] esi_15 = { 0, 1, 2, 3, 2 };
+    static int[] esi_16 = { 0, 1, 2, 1, 2 };
+    static int[] esi_17 = { 0, 1, 1, 1, 1 };
+    static int[] esi_18 = { 0, 1, 2, 0 };
+    static int[] esi_19 = { 0, 1, 1, 0 };
+    static int[] esi_20 = { 0, 0, 0, 0 };
+    static int[] esi_21 = { 0, 1, 0 };
+    static int[] esi_22 = { 0, 1, 0, 1 };
+    static int[] esi_23 = { 0, 1, 0, 2 };
+    static int[] esi_24 = { 0, 0, 1, 1 };
+    static int[] esi_25 = { 0, 1, 2, 3 };
+    static int[] esi_26 = { 0, 0, 1, 2 };
+    static int[] esi_27 = { 0, 1, 2 };
+    static int[] esi_28 = { 0, 0, 1 };
+    static int[] esi_29 = { 0, 0, 0 };
 
-    static bool[] eo_00 = {false, false, false, false, false, false, false, true, false, true, false, true};
-    static bool[] eo_01 = {false, false, true, true, false, false, false, false, true, true, false, true};
-    static bool[] eo_02 = {false, false, false, false, true, true, false, false, false, true, true, true};
-    static bool[] eo_03 = {false, false, false, false, false, false, false, false, false, true, false, false};
-    static bool[] eo_04 = {false, false, false, false, false, false, true, true, false, true, false, false};
-    static bool[] eo_05 = {false, false, false, false, false, false, false, false, true, true, true, true};
-    static bool[] eo_06 = {false, false, false, true, false, false, false, true, false, false, false, true};
-    static bool[] eo_07 = {false, false, false, false, false, false, false, false, false, false, false, false};
-    static bool[] eo_08 = {false, false, false, false, true, true, false, false, false, false, true, true};
-    static bool[] eo_09 = {false, false, false, false, true, true, false, true, false, true, true, false};
-    static bool[] eo_10 = {false, false, false, false, false, false, false, true, true, false, true, false};
-    static bool[] eo_11 = {false, false, false, false, true, true, false, true, true, false, true, false};
-    static bool[] eo_12 = {false, false, false, false, false, false, true, false, true, false, true, false};
-    static bool[] eo_13 = {false, false, false, false, false, true, true, true, true, false, true, false};
-    static bool[] eo_14 = {false, false, false, false, true, false, false, false, false, false, true, false};
-    static bool[] eo_15 = {false, false, false, false, false, true, false, false, false, true};
-    static bool[] eo_16 = {false, false, true, true, false, false, false, false, false, true};
-    static bool[] eo_17 = {false, false, false, false, false, false, false, false, false, true};
-    static bool[] eo_18 = {false, false, true, false, false, false, false, false, true, false};
-    static bool[] eo_19 = {false, false, false, false, false, false, true, true, true, true};
-    static bool[] eo_20 = {false, false, false, false, false, true, true, true, true, false};
-    static bool[] eo_21 = {false, false, false, false, false, false, false, true};
-    static bool[] eo_22 = {false, false, false, false, false, true, false, true};
-    static bool[] eo_23 = {false, false, false, false, true, false, true, false};
-    static bool[] eo_24 = {false, false, false, true, false, false, false, true};
-    static bool[] eo_25 = {false, false, true, false, true, true, false, true};
-    static bool[] eo_26 = {false, false, true, false, false, false, true, false};
-    static bool[] eo_27 = {false, false, false, false, false, true};
-    static bool[] eo_28 = {false, false, false, false, true, false};
-    static bool[] eo_29 = {false, false, false, false, false, true, false, false};
-    static bool[] eo_30 = {false, false, false, false, false, true, true, true};
-    static bool[] eo_31 = {false, false, true, true, false, false, true, true};
-    static bool[] eo_32 = {false, false, false, false, true, true, false, false};
-    static bool[] eo_33 = {false, false, false, false, false, false, false, false};
-    static bool[] eo_34 = {false, false, false, false, true, true, true, true};
-    static bool[] eo_35 = {false, false, true, true, false, false, false, false};
-    static bool[] eo_36 = {false, false, false, true, false, false, false, false};
-    static bool[] eo_37 = {false, false, false, false, false, true, true, false};
-    static bool[] eo_38 = {false, false, false, false, true, false, false, false};
-    static bool[] eo_39 = {false, false, true, true, false, true, true, false};
-    static bool[] eo_40 = {false, false, false, true, true, true, true, false};
-    static bool[] eo_41 = {false, false, false, false, false, false};
-    static bool[] eo_42 = {false, false, true, true, false, false};
-    static bool[] eo_43 = {false, false, false, true, false, false};
-    static bool[] eo_44 = {false, false, true, false, false, false};
+    static bool[] eo_00 = { false, false, false, false, false, false, false, true, false, true, false, true };
+    static bool[] eo_01 = { false, false, true, true, false, false, false, false, true, true, false, true };
+    static bool[] eo_02 = { false, false, false, false, true, true, false, false, false, true, true, true };
+    static bool[] eo_03 = { false, false, false, false, false, false, false, false, false, true, false, false };
+    static bool[] eo_04 = { false, false, false, false, false, false, true, true, false, true, false, false };
+    static bool[] eo_05 = { false, false, false, false, false, false, false, false, true, true, true, true };
+    static bool[] eo_06 = { false, false, false, true, false, false, false, true, false, false, false, true };
+    static bool[] eo_07 = { false, false, false, false, false, false, false, false, false, false, false, false };
+    static bool[] eo_08 = { false, false, false, false, true, true, false, false, false, false, true, true };
+    static bool[] eo_09 = { false, false, false, false, true, true, false, true, false, true, true, false };
+    static bool[] eo_10 = { false, false, false, false, false, false, false, true, true, false, true, false };
+    static bool[] eo_11 = { false, false, false, false, true, true, false, true, true, false, true, false };
+    static bool[] eo_12 = { false, false, false, false, false, false, true, false, true, false, true, false };
+    static bool[] eo_13 = { false, false, false, false, false, true, true, true, true, false, true, false };
+    static bool[] eo_14 = { false, false, false, false, true, false, false, false, false, false, true, false };
+    static bool[] eo_15 = { false, false, false, false, false, true, false, false, false, true };
+    static bool[] eo_16 = { false, false, true, true, false, false, false, false, false, true };
+    static bool[] eo_17 = { false, false, false, false, false, false, false, false, false, true };
+    static bool[] eo_18 = { false, false, true, false, false, false, false, false, true, false };
+    static bool[] eo_19 = { false, false, false, false, false, false, true, true, true, true };
+    static bool[] eo_20 = { false, false, false, false, false, true, true, true, true, false };
+    static bool[] eo_21 = { false, false, false, false, false, false, false, true };
+    static bool[] eo_22 = { false, false, false, false, false, true, false, true };
+    static bool[] eo_23 = { false, false, false, false, true, false, true, false };
+    static bool[] eo_24 = { false, false, false, true, false, false, false, true };
+    static bool[] eo_25 = { false, false, true, false, true, true, false, true };
+    static bool[] eo_26 = { false, false, true, false, false, false, true, false };
+    static bool[] eo_27 = { false, false, false, false, false, true };
+    static bool[] eo_28 = { false, false, false, false, true, false };
+    static bool[] eo_29 = { false, false, false, false, false, true, false, false };
+    static bool[] eo_30 = { false, false, false, false, false, true, true, true };
+    static bool[] eo_31 = { false, false, true, true, false, false, true, true };
+    static bool[] eo_32 = { false, false, false, false, true, true, false, false };
+    static bool[] eo_33 = { false, false, false, false, false, false, false, false };
+    static bool[] eo_34 = { false, false, false, false, true, true, true, true };
+    static bool[] eo_35 = { false, false, true, true, false, false, false, false };
+    static bool[] eo_36 = { false, false, false, true, false, false, false, false };
+    static bool[] eo_37 = { false, false, false, false, false, true, true, false };
+    static bool[] eo_38 = { false, false, false, false, true, false, false, false };
+    static bool[] eo_39 = { false, false, true, true, false, true, true, false };
+    static bool[] eo_40 = { false, false, false, true, true, true, true, false };
+    static bool[] eo_41 = { false, false, false, false, false, false };
+    static bool[] eo_42 = { false, false, true, true, false, false };
+    static bool[] eo_43 = { false, false, false, true, false, false };
+    static bool[] eo_44 = { false, false, true, false, false, false };
 
-    static double[] dp_00 = {0.12239750492, 0.5, 0.143395479017, 0.625};
-    static double[] dp_01 = {0.12239750492, 0.5, 0.225335752741, 0.225335752741};
-    static double[] dp_02 = {0.12239750492, 0.5, 0.225335752741, 0.625};
-    static double[] dp_03 = {0.12239750492, 0.5, 0.315470053838, 0.5, 0.315470053838, 0.5};
-    static double[] dp_04 = {0.12239750492, 0.5, 0.225335752741, 0.225335752741, 0.5};
-    static double[] dp_05 = {0.12239750492, 0.5, 0.225335752741, 0.625, 0.5};
-    static double[] dp_06 = {0.6, 0.196416770201};
-    static double[] dp_07 = {0.12239750492, 0.5, 0.225335752741};
+    static double[] dp_00 = { 0.12239750492, 0.5, 0.143395479017, 0.625 };
+    static double[] dp_01 = { 0.12239750492, 0.5, 0.225335752741, 0.225335752741 };
+    static double[] dp_02 = { 0.12239750492, 0.5, 0.225335752741, 0.625 };
+    static double[] dp_03 = { 0.12239750492, 0.5, 0.315470053838, 0.5, 0.315470053838, 0.5 };
+    static double[] dp_04 = { 0.12239750492, 0.5, 0.225335752741, 0.225335752741, 0.5 };
+    static double[] dp_05 = { 0.12239750492, 0.5, 0.225335752741, 0.625, 0.5 };
+    static double[] dp_06 = { 0.6, 0.196416770201 };
+    static double[] dp_07 = { 0.12239750492, 0.5, 0.225335752741 };
     static double[] dp_08 = { };
-    static double[] dp_09 = {0.12239750492, 0.225335752741};
-    static double[] dp_10 = {0.12239750492, 0.225335752741, 0.5};
-    static double[] dp_11 = {0.12239750492, 0.225335752741, 0.225335752741};
-    static double[] dp_12 = {0.216506350946};
-    static double[] dp_13 = {0.104512294489, 0.65};
-    static double[] dp_14 = {0.230769230769, 0.5, 0.225335752741};
-    static double[] dp_15 = {0.230769230769, 0.5, 0.225335752741, 0.5};
-    static double[] dp_16 = {0.230769230769, 0.225335752741};
-    static double[] dp_17 = {0.141304, 0.465108, 0.534891};
-    static double[] dp_18 = {0.452827026611, 0.5};
-    static double[] dp_19 = {0.366873818946};
-    static double[] dp_20 = {0.230769230769};
-    static double[] dp_21 = {0.230769230769, 0.5};
-    static double[] dp_22 = {0.5, 0.102564102564};
-    static double[] dp_23 = {0.230769230769, 0.869565217391};
-    static double[] dp_24 = {0.5, 0.230769230769, 0.5, 0.5};
-    static double[] dp_25 = {0.230769230769, 0.5, 0.230769230769};
-    static double[] dp_26 = {0.5, 0.5, 0.6};
-    static double[] dp_27 = {0.5, 0.102564102564, 0.102564102564};
-    static double[] dp_28 = {0.230769230769, 0.230769230769};
-    static double[] dp_29 = {0.5};
-    static double[] dp_30 = {0.105263157895};
-    static double[] dp_31 = {0.196416770201};
-    static double[] dp_32 = {0.5, 0.196416770201};
+    static double[] dp_09 = { 0.12239750492, 0.225335752741 };
+    static double[] dp_10 = { 0.12239750492, 0.225335752741, 0.5 };
+    static double[] dp_11 = { 0.12239750492, 0.225335752741, 0.225335752741 };
+    static double[] dp_12 = { 0.216506350946 };
+    static double[] dp_13 = { 0.104512294489, 0.65 };
+    static double[] dp_14 = { 0.230769230769, 0.5, 0.225335752741 };
+    static double[] dp_15 = { 0.230769230769, 0.5, 0.225335752741, 0.5 };
+    static double[] dp_16 = { 0.230769230769, 0.225335752741 };
+    static double[] dp_17 = { 0.141304, 0.465108, 0.534891 };
+    static double[] dp_18 = { 0.452827026611, 0.5 };
+    static double[] dp_19 = { 0.366873818946 };
+    static double[] dp_20 = { 0.230769230769 };
+    static double[] dp_21 = { 0.230769230769, 0.5 };
+    static double[] dp_22 = { 0.5, 0.102564102564 };
+    static double[] dp_23 = { 0.230769230769, 0.869565217391 };
+    static double[] dp_24 = { 0.5, 0.230769230769, 0.5, 0.5 };
+    static double[] dp_25 = { 0.230769230769, 0.5, 0.230769230769 };
+    static double[] dp_26 = { 0.5, 0.5, 0.6 };
+    static double[] dp_27 = { 0.5, 0.102564102564, 0.102564102564 };
+    static double[] dp_28 = { 0.230769230769, 0.230769230769 };
+    static double[] dp_29 = { 0.5 };
+    static double[] dp_30 = { 0.105263157895 };
+    static double[] dp_31 = { 0.196416770201 };
+    static double[] dp_32 = { 0.5, 0.196416770201 };
 
     static double[] tvc_00 =
     {
@@ -390,14 +390,15 @@ public class IsohedralTilingHelpers
         1, 0, -0.5, 0.866025403784, -0.5, -0.866025403784
     };
 
-    static double[] tc_00 = {0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 3.9, 0, 5.5, 0, -0.4, 0, 5, 0, -4, -0.5};
-    static double[] tc_01 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 7.8, 0, 3.5, 3.5, -0.8, 0, 0, 0, 0, 0};
-    static double[] tc_02 = {0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -7.8, 0, -7, 0, 0.8, 0, 0, 0, 0, -1};
+    static double[] tc_00 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 3.9, 0, 5.5, 0, -0.4, 0, 5, 0, -4, -0.5 };
+    static double[] tc_01 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 7.8, 0, 3.5, 3.5, -0.8, 0, 0, 0, 0, 0 };
+    static double[] tc_02 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -7.8, 0, -7, 0, 0.8, 0, 0, 0, 0, -1 };
 
-    static double[] tc_03 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -7.8, 0, -2.5, 0, -2.5, 0, 0.8, 0, -10, 0, 3, 0, -3, 4};
+    static double[] tc_03 =
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -7.8, 0, -2.5, 0, -2.5, 0, 0.8, 0, -10, 0, 3, 0, -3, 4 };
 
-    static double[] tc_04 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -15.6, 0, -7, -7, 0, 1.6, 0, 0, 0, 0, 0, -2};
-    static double[] tc_05 = {0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, -3, 7.8, 0, 7, 0, 0, -0.8, 0, 0, 0, 0, 0, 0};
+    static double[] tc_04 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -15.6, 0, -7, -7, 0, 1.6, 0, 0, 0, 0, 0, -2 };
+    static double[] tc_05 = { 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, -3, 7.8, 0, 7, 0, 0, -0.8, 0, 0, 0, 0, 0, 0 };
 
     static double[] tc_06 =
     {
@@ -405,61 +406,66 @@ public class IsohedralTilingHelpers
         -4.33012701892, -1.95, 2.11506350946
     };
 
-    static double[] tc_07 = {0, 0, 0, 0, 0, 0, 0, -1, 7.8, 0, 7, -0.8, 0, 0, 0, 0};
-    static double[] tc_08 = {1.5, 0.866025403784, 1.5, -0.866025403784};
-    static double[] tc_09 = {1.5, 0.866025403784, 0, 1.73205080757};
-    static double[] tc_10 = {0, 0, 0, 0, 0, -1, 3.9, 3.5, -0.4, 0, 0, -0.5};
-    static double[] tc_11 = {0, 0, 0, 0, 0, 0, 0, -1, 7.8, 7, 0, -0.8, 0, 0, 0, 0};
-    static double[] tc_12 = {3.9, 3.5, -0.4, 0, 0, 0.5, 3.9, 3.5, -0.4, 0, 0, -0.5};
-    static double[] tc_13 = {0, 0, 0, 0, 0, 0, 0, -1, -7.8, -3.5, -3.5, 0.8, 0, 0, 0, 0};
-    static double[] tc_14 = {0, 0, -4, -0.866025403784, 3.46410161514, 0.75, -2, -0.433012701892};
-    static double[] tc_15 ={4.4167295593, -2.5, 2.66339745962, -2.55, -4.33012701892, 1.34903810568, 0, -5, 2.5, -5.1, 0, -1.63205080757};
-    static double[] tc_16 = {-7.8, 0, -3.5, 0.3, 0, 0, 0, -0.5, -7.8, 0, -3.5, 0.3, 0, 0, 0, 0.5};
-    static double[] tc_17 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 7.8, 0, 3.5, 0, -0.3, 0, 10, 0, 4, -7.5};
-    static double[] tc_18 = {0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 15.6, 0, 7, 0, -0.6, 0, 0, 0, 0, 0};
-    static double[] tc_19 = {0, 0, 0, 0, 0, 0, 0, 1, -15.6, 0, -7, 0.6, 0, 0, 0, 0};
-    static double[] tc_20 = {0, 0, 0, 0, 0, 1, -7.8, -3.5, 0.3, 0, 0, 0.5};
-    static double[] tc_21 = {0, 0, 0, 0, 0, 10, 0, -3, -7.8, 0, -10, 4.8, 0, 0, 0, 0};
-    static double[] tc_22 = {-3.9, 5, -3.1, -3.9, -5, 1.9, -3.9, -5, 1.9, 3.9, -5, 3.1};
-    static double[] tc_23 = {9.9, 1.1, -9.9, -1.1, -9.9, -1.1, -9.9, -1.1};
-    static double[] tc_24 = {0, 0, 0, 1.73205080757, 0, 1.5, 0, -0.866025403784};
-    static double[] tc_25 = {-1.5, 0.866025403784, -1.5, -0.866025403784};
-    static double[] tc_26 = {0, 1.73205080757, 1.5, -0.866025403784};
-    static double[] tc_27 = {-1, 1.73205080757, 1, 1.73205080757};
-    static double[] tc_28 = {1, 1.73205080757, -1, 1.73205080757};
-    static double[] tc_29 = {1, 1.73205080757, 2, 0};
-    static double[] tc_30 = {0, 0, 0, 0, 0, -1, 3.9, 0, 0.1, 0, 5, -2.5};
-    static double[] tc_31 = {0, 0, 0, 0, 0, -1, 7.8, 0, 0.2, 0, 0, 0};
-    static double[] tc_32 = {0, 0, 0, 0, -7.8, -0.2, 0, 0, 1, 0, 0, 0};
-    static double[] tc_33 = {0, -6.9, 8, 0, 0, 0, 0, -3.45, 4, -3.9, 0, -0.1};
-    static double[] tc_34 = {-5, 0, -5, 0, 5, 0, -3.9, 0, -5, 1.4, -5, 0, 0, 0, 1.5, 0, -3.9, 0, 0, -0.1};
-    static double[] tc_35 = {0, 0, 0, 0, 0, -1, 7.8, 0, 0.2, 0, 10, -5};
-    static double[] tc_36 = {0, 0, 0, 0, -7.8, 0, 0, -0.2, 0, 0, 3.9, 1.1, 0, 0, 0, 0};
-    static double[] tc_37 = {-15.6, 0, -0.4, 0, 0, 0, 0, 0, 0, 0, 0, -1};
-    static double[] tc_38 = {0, 0, 0, 0, -20, 0, -20, 20, 0, 0, 0, -2, 0, 0, 0, 0};
-    static double[] tc_39 = {0, 2, 0, 0, 0, 0, -7.8, -0.2};
-    static double[] tc_40 = {0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -7.8, -7.8, -0.4};
-    static double[] tc_41 = {-7.8, 0, -0.2, 0, 0, 0, -3.9, 0, -0.1, 0, 3.9, 1.1};
-    static double[] tc_42 = {0, 2, 2, 0};
-    static double[] tc_43 = {0, 0, 0, 4, 0, -2, 0, 2};
-    static double[] tc_44 = {0, 0, -7.6, 1.8, 7.6, 0.2, -7.6, 1.8};
-    static double[] tc_45 = {1, 1, 1, -1};
-    static double[] tc_46 = {1, 0, 0, 1};
-    static double[] tc_47 = {0, 0, -3.9, -0.1, 0, 1, 0, 0};
-    static double[] tc_48 = {0, 0, -3.9, -0.1, 0, 2, 0, 0};
-    static double[] tc_49 = {0, -3.45, 4, -3.9, 0, -0.1, 0, -3.45, 4, 3.9, 0, 0.1};
-    static double[] tc_50 = {3.8, 0.1, -3.8, 0.9, -3.8, -0.1, -3.8, 0.9};
-    static double[] tc_51 = {0, 2, -1.73205080757, 1};
-    static double[] tc_52 = {0, 2, 0, 0, 0, 1, 3.9, 0.1};
-    static double[] tc_53 = {0, 1, -1, 0};
-    static double[] tc_54 = {-1, 1, -2, 0};
-    static double[] tc_55 = {0, 1, 1, 0};
-    static double[] tc_56 = {0, 0.5, -3.9, -0.1, 0, -0.5, -3.9, -0.1};
-    static double[] tc_57 = {-5, 0, 2, 0, -3.9, -0.1, -5, 0, 3, 0, -3.9, -0.1};
-    static double[] tc_58 = {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 7.8, 0.2};
-    static double[] tc_59 = {0, 1, 0, 0, 0, 0, 7.8, 0.2};
-    static double[] tc_60 = {-1.5, 2.59807621135, -3, 0};
-    static double[] tc_61 = {0, -0.5, -3.9, -0.1, 0, 0.5, -3.9, -0.1};
+    static double[] tc_07 = { 0, 0, 0, 0, 0, 0, 0, -1, 7.8, 0, 7, -0.8, 0, 0, 0, 0 };
+    static double[] tc_08 = { 1.5, 0.866025403784, 1.5, -0.866025403784 };
+    static double[] tc_09 = { 1.5, 0.866025403784, 0, 1.73205080757 };
+    static double[] tc_10 = { 0, 0, 0, 0, 0, -1, 3.9, 3.5, -0.4, 0, 0, -0.5 };
+    static double[] tc_11 = { 0, 0, 0, 0, 0, 0, 0, -1, 7.8, 7, 0, -0.8, 0, 0, 0, 0 };
+    static double[] tc_12 = { 3.9, 3.5, -0.4, 0, 0, 0.5, 3.9, 3.5, -0.4, 0, 0, -0.5 };
+    static double[] tc_13 = { 0, 0, 0, 0, 0, 0, 0, -1, -7.8, -3.5, -3.5, 0.8, 0, 0, 0, 0 };
+    static double[] tc_14 = { 0, 0, -4, -0.866025403784, 3.46410161514, 0.75, -2, -0.433012701892 };
+
+    static double[] tc_15 =
+    {
+        4.4167295593, -2.5, 2.66339745962, -2.55, -4.33012701892, 1.34903810568, 0, -5, 2.5, -5.1, 0, -1.63205080757
+    };
+
+    static double[] tc_16 = { -7.8, 0, -3.5, 0.3, 0, 0, 0, -0.5, -7.8, 0, -3.5, 0.3, 0, 0, 0, 0.5 };
+    static double[] tc_17 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 7.8, 0, 3.5, 0, -0.3, 0, 10, 0, 4, -7.5 };
+    static double[] tc_18 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 15.6, 0, 7, 0, -0.6, 0, 0, 0, 0, 0 };
+    static double[] tc_19 = { 0, 0, 0, 0, 0, 0, 0, 1, -15.6, 0, -7, 0.6, 0, 0, 0, 0 };
+    static double[] tc_20 = { 0, 0, 0, 0, 0, 1, -7.8, -3.5, 0.3, 0, 0, 0.5 };
+    static double[] tc_21 = { 0, 0, 0, 0, 0, 10, 0, -3, -7.8, 0, -10, 4.8, 0, 0, 0, 0 };
+    static double[] tc_22 = { -3.9, 5, -3.1, -3.9, -5, 1.9, -3.9, -5, 1.9, 3.9, -5, 3.1 };
+    static double[] tc_23 = { 9.9, 1.1, -9.9, -1.1, -9.9, -1.1, -9.9, -1.1 };
+    static double[] tc_24 = { 0, 0, 0, 1.73205080757, 0, 1.5, 0, -0.866025403784 };
+    static double[] tc_25 = { -1.5, 0.866025403784, -1.5, -0.866025403784 };
+    static double[] tc_26 = { 0, 1.73205080757, 1.5, -0.866025403784 };
+    static double[] tc_27 = { -1, 1.73205080757, 1, 1.73205080757 };
+    static double[] tc_28 = { 1, 1.73205080757, -1, 1.73205080757 };
+    static double[] tc_29 = { 1, 1.73205080757, 2, 0 };
+    static double[] tc_30 = { 0, 0, 0, 0, 0, -1, 3.9, 0, 0.1, 0, 5, -2.5 };
+    static double[] tc_31 = { 0, 0, 0, 0, 0, -1, 7.8, 0, 0.2, 0, 0, 0 };
+    static double[] tc_32 = { 0, 0, 0, 0, -7.8, -0.2, 0, 0, 1, 0, 0, 0 };
+    static double[] tc_33 = { 0, -6.9, 8, 0, 0, 0, 0, -3.45, 4, -3.9, 0, -0.1 };
+    static double[] tc_34 = { -5, 0, -5, 0, 5, 0, -3.9, 0, -5, 1.4, -5, 0, 0, 0, 1.5, 0, -3.9, 0, 0, -0.1 };
+    static double[] tc_35 = { 0, 0, 0, 0, 0, -1, 7.8, 0, 0.2, 0, 10, -5 };
+    static double[] tc_36 = { 0, 0, 0, 0, -7.8, 0, 0, -0.2, 0, 0, 3.9, 1.1, 0, 0, 0, 0 };
+    static double[] tc_37 = { -15.6, 0, -0.4, 0, 0, 0, 0, 0, 0, 0, 0, -1 };
+    static double[] tc_38 = { 0, 0, 0, 0, -20, 0, -20, 20, 0, 0, 0, -2, 0, 0, 0, 0 };
+    static double[] tc_39 = { 0, 2, 0, 0, 0, 0, -7.8, -0.2 };
+    static double[] tc_40 = { 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -7.8, -7.8, -0.4 };
+    static double[] tc_41 = { -7.8, 0, -0.2, 0, 0, 0, -3.9, 0, -0.1, 0, 3.9, 1.1 };
+    static double[] tc_42 = { 0, 2, 2, 0 };
+    static double[] tc_43 = { 0, 0, 0, 4, 0, -2, 0, 2 };
+    static double[] tc_44 = { 0, 0, -7.6, 1.8, 7.6, 0.2, -7.6, 1.8 };
+    static double[] tc_45 = { 1, 1, 1, -1 };
+    static double[] tc_46 = { 1, 0, 0, 1 };
+    static double[] tc_47 = { 0, 0, -3.9, -0.1, 0, 1, 0, 0 };
+    static double[] tc_48 = { 0, 0, -3.9, -0.1, 0, 2, 0, 0 };
+    static double[] tc_49 = { 0, -3.45, 4, -3.9, 0, -0.1, 0, -3.45, 4, 3.9, 0, 0.1 };
+    static double[] tc_50 = { 3.8, 0.1, -3.8, 0.9, -3.8, -0.1, -3.8, 0.9 };
+    static double[] tc_51 = { 0, 2, -1.73205080757, 1 };
+    static double[] tc_52 = { 0, 2, 0, 0, 0, 1, 3.9, 0.1 };
+    static double[] tc_53 = { 0, 1, -1, 0 };
+    static double[] tc_54 = { -1, 1, -2, 0 };
+    static double[] tc_55 = { 0, 1, 1, 0 };
+    static double[] tc_56 = { 0, 0.5, -3.9, -0.1, 0, -0.5, -3.9, -0.1 };
+    static double[] tc_57 = { -5, 0, 2, 0, -3.9, -0.1, -5, 0, 3, 0, -3.9, -0.1 };
+    static double[] tc_58 = { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 7.8, 0.2 };
+    static double[] tc_59 = { 0, 1, 0, 0, 0, 0, 7.8, 0.2 };
+    static double[] tc_60 = { -1.5, 2.59807621135, -3, 0 };
+    static double[] tc_61 = { 0, -0.5, -3.9, -0.1, 0, 0.5, -3.9, -0.1 };
 
     static double[] ac_00 =
     {
@@ -869,35 +875,35 @@ public class IsohedralTilingHelpers
         0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0
     };
 
-    static int[] c_00 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 0, 1, 3};
-    static int[] c_01 = {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 3};
-    static int[] c_02 = {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 2, 0, 1, 3};
-    static int[] c_03 = {0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 2, 0, 1, 3};
-    static int[] c_04 = {0, 1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 3};
-    static int[] c_05 = {0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 3};
-    static int[] c_06 = {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 1, 2, 3};
-    static int[] c_07 = {0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 0, 1, 3};
-    static int[] c_08 = {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 0, 1, 3};
-    static int[] c_09 = {0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 1, 2, 0, 3};
-    static int[] c_10 = {0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 1, 2, 3};
-    static int[] c_11 = {0, 1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 0, 3};
-    static int[] c_12 = {0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 3};
-    static int[] c_13 = {0, 1, 2, 1, 2, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 0, 1, 3};
-    static int[] c_14 = {0, 1, 2, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 3};
-    static int[] c_15 = {0, 2, 1, 1, 0, 2, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 0, 1, 3};
-    static int[] c_16 = {0, 2, 1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 2, 0, 1, 1, 2, 0, 3};
-    static int[] c_17 = {1, 0, 2, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 0, 1, 3};
-    static int[] c_18 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 0, 2, 2};
-    static int[] c_19 = {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 1, 2, 2};
-    static int[] c_20 = {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 2};
-    static int[] c_21 = {0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 2};
-    static int[] c_22 = {0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 2, 2};
-    static int[] c_23 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 2};
-    static int[] c_24 = {0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 2};
-    static int[] c_25 = {0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 2};
-    static int[] c_26 = {0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 2, 0, 1, 2, 2};
-    static int[] c_27 = {0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 0, 2, 2};
-    static int[] c_28 = {0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 2};
+    static int[] c_00 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 0, 1, 3 };
+    static int[] c_01 = { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 3 };
+    static int[] c_02 = { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 2, 0, 1, 3 };
+    static int[] c_03 = { 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 2, 0, 1, 3 };
+    static int[] c_04 = { 0, 1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 3 };
+    static int[] c_05 = { 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 3 };
+    static int[] c_06 = { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 1, 2, 3 };
+    static int[] c_07 = { 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 0, 1, 3 };
+    static int[] c_08 = { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 0, 1, 3 };
+    static int[] c_09 = { 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 1, 2, 0, 3 };
+    static int[] c_10 = { 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 1, 2, 3 };
+    static int[] c_11 = { 0, 1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 0, 3 };
+    static int[] c_12 = { 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 3 };
+    static int[] c_13 = { 0, 1, 2, 1, 2, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 0, 1, 3 };
+    static int[] c_14 = { 0, 1, 2, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 3 };
+    static int[] c_15 = { 0, 2, 1, 1, 0, 2, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 0, 1, 3 };
+    static int[] c_16 = { 0, 2, 1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 2, 0, 1, 1, 2, 0, 3 };
+    static int[] c_17 = { 1, 0, 2, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 0, 1, 3 };
+    static int[] c_18 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 0, 2, 2 };
+    static int[] c_19 = { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 1, 2, 2 };
+    static int[] c_20 = { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 2 };
+    static int[] c_21 = { 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 2 };
+    static int[] c_22 = { 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 2, 2 };
+    static int[] c_23 = { 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 2 };
+    static int[] c_24 = { 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 2 };
+    static int[] c_25 = { 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 2 };
+    static int[] c_26 = { 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 2, 0, 1, 2, 2 };
+    static int[] c_27 = { 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 0, 2, 2 };
+    static int[] c_28 = { 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 2 };
 
 
     public static TilingTypeConfig[] tiling_types = new[]
@@ -2319,4 +2325,101 @@ public class IsohedralTilingHelpers
             colouring: c_20
         )
     };
+    
+    public static (string, string, string)[] symmetry = {
+        ("IH1", "p1", "Hexagon"),
+        ("IH2", "pg", "Hexagon"),
+        ("IH3", "pg", "Hexagon"),
+        ("IH4", "p2", "Hexagon"),
+        ("IH5", "pgg", "Hexagon"),
+        ("IH6", "pgg", "Hexagon"),
+        ("IH7", "p3", "Hexagon"),
+        ("IH8", "p2", "Hexagon"),
+        ("IH9", "pgg", "Hexagon"),
+        ("IH10", "p3", "Hexagon"),
+        ("IH11", "p6", "Hexagon"),
+        ("IH12", "cm", "Hexagon"),
+        ("IH13", "pmg", "Hexagon"),
+        ("IH14", "cm", "Hexagon"),
+        ("IH15", "pmg", "Hexagon"),
+        ("IH16", "p31m", "Hexagon"),
+        ("IH17", "cmm", "Hexagon"),
+        ("IH18", "p31m", "Hexagon"),
+        ("IH19", "p3m1", "Hexagon"),
+        ("IH20", "p6m", "Hexagon"),
+        ("IH21", "p6", "Pentagon"),
+        ("IH22", "cm", "Pentagon"),
+        ("IH23", "p2", "Pentagon"),
+        ("IH24", "pmg", "Pentagon"),
+        ("IH25", "pgg", "Pentagon"),
+        ("IH26", "cmm", "Pentagon"),
+        ("IH27", "pgg", "Pentagon"),
+        ("IH28", "p4", "Pentagon"),
+        ("IH29", "p4g", "Pentagon"),
+        ("IH30", "p31m", "Quadrilateral"),
+        ("IH31", "p6", "Quadrilateral"),
+        ("IH32", "p6m", "Quadrilateral"),
+        ("IH33", "p3", "Quadrilateral"),
+        ("IH34", "p6", "Quadrilateral"),
+        ("IH35", "p3m1", "Quadrilateral"),
+        ("IH36", "p31m", "Quadrilateral"),
+        ("IH37", "p6m", "Quadrilateral"),
+        ("IH38", "p31m", "Triangle"),
+        ("IH39", "p6", "Triangle"),
+        ("IH40", "p6m", "Triangle"),
+        ("IH41", "p1", "Quadrilateral"),
+        ("IH42", "pm", "Quadrilateral"),
+        ("IH43", "pg", "Quadrilateral"),
+        ("IH44", "pg", "Quadrilateral"),
+        ("IH45", "cm", "Quadrilateral"),
+        ("IH46", "p2", "Quadrilateral"),
+        ("IH47", "p2", "Quadrilateral"),
+        ("IH48", "pmm", "Quadrilateral"),
+        ("IH49", "pmg", "Quadrilateral"),
+        ("IH50", "pmg", "Quadrilateral"),
+        ("IH51", "pgg", "Quadrilateral"),
+        ("IH52", "pgg", "Quadrilateral"),
+        ("IH53", "pgg", "Quadrilateral"),
+        ("IH54", "cmm", "Quadrilateral"),
+        ("IH55", "p4", "Quadrilateral"),
+        ("IH56", "p4g", "Quadrilateral"),
+        ("IH57", "p2", "Quadrilateral"),
+        ("IH58", "pmg", "Quadrilateral"),
+        ("IH59", "pgg", "Quadrilateral"),
+        ("IH60", "cmm", "Quadrilateral"),
+        ("IH61", "p4", "Quadrilateral"),
+        ("IH62", "p4", "Quadrilateral"),
+        ("IH63", "p4g", "Quadrilateral"),
+        ("IH64", "pm", "Quadrilateral"),
+        ("IH65", "pmm", "Quadrilateral"),
+        ("IH66", "pmg", "Quadrilateral"),
+        ("IH67", "cmm", "Quadrilateral"),
+        ("IH68", "cm", "Quadrilateral"),
+        ("IH69", "pmg", "Quadrilateral"),
+        ("IH70", "p4m", "Quadrilateral"),
+        ("IH71", "p4g", "Quadrilateral"),
+        ("IH72", "pmm", "Quadrilateral"),
+        ("IH73", "p4g", "Quadrilateral"),
+        ("IH74", "cmm", "Quadrilateral"),
+        ("IH75", "p4m", "Quadrilateral"),
+        ("IH76", "p4m", "Quadrilateral"),
+        ("IH77", "p6m", "Triangle"),
+        ("IH78", "cmm", "Triangle"),
+        ("IH79", "p4", "Triangle"),
+        ("IH80", "p4m", "Triangle"),
+        ("IH81", "p4g", "Triangle"),
+        ("IH82", "p4m", "Triangle"),
+        ("IH83", "cm", "Triangle"),
+        ("IH84", "p2", "Triangle"),
+        ("IH85", "pmg", "Triangle"),
+        ("IH86", "pgg", "Triangle"),
+        ("IH87", "p3m1", "Triangle"),
+        ("IH88", "p6", "Triangle"),
+        ("IH89", "p31m", "Triangle"),
+        ("IH90", "p6", "Triangle"),
+        ("IH91", "cmm", "Triangle"),
+        ("IH92", "p6m", "Triangle"),
+        ("IH93", "p6m", "Triangle")
+    };
+
 }
