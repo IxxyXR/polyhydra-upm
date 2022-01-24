@@ -894,6 +894,9 @@ namespace Conway
 
             var faceRoles = new List<Roles>();
             var vertexRoles = new List<Roles>();
+            
+            // Hacky. Only for backwards compatibility
+            float offsetifNotPlanar = Faces[0].Normal==Faces[Faces.Count/2].Normal ? 0 :.5f;
 
             for (var i = 0; i < Vertices.Count; i++)
             {
@@ -906,7 +909,7 @@ namespace Conway
 
             for (var faceIndex = 0; faceIndex < Faces.Count; faceIndex++)
             {
-                float offset = o.GetValueA(this, faceIndex) + 0.5f;
+                float offset = o.GetValueA(this, faceIndex) + offsetifNotPlanar;
                 var face = Faces[faceIndex];
                 vertexPoints.Add(face.Centroid + face.Normal * offset);
                 newCentroidVertices[face.Name] = vertexIndex++;

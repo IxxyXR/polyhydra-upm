@@ -824,6 +824,10 @@ namespace Conway
 				case Ops.VertexFlex:
 					polyResult = VertexFlex(opParams);
 					break;
+				case Ops.VertexStellate:
+					polyResult = Duplicate();
+					polyResult.VertexStellate(opParams);
+					break;
 				case Ops.FaceOffset:
 					// TODO Faceroles ignored. Vertex Roles
 					var origRoles = FaceRoles;

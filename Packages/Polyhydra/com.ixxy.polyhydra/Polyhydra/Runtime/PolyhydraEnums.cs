@@ -608,6 +608,16 @@ public static class PolyHydraEnums
 				usesRandomize = true
 			}
 		},
+		{
+			Ops.VertexStellate,
+			new OpConfig
+			{
+				usesFaces = true,
+				amountDefault = -0.5f,
+				amountMin = -6, amountMax = 6, amountSafeMin = -1, amountSafeMax = 0,
+				usesRandomize = true
+			}
+		},
 		//{Ops.FaceTranslate, new OpConfig{usesFaces=true, amountDefault=0.1f, amountMin=-6, amountMax=6}},
 		{
 			Ops.FaceScale,

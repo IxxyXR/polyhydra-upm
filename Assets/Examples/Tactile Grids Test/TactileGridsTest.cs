@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Conway;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -12,10 +10,7 @@ public class TactileGridsTest : ExampleBase
     [Range(1,93)]
     public int TilingType = 1;
     [ReadOnly] public string TilingName;
-    [Range(0,2)]
-    public int ExtraVerts = 0;
-    public Vector2 NewVert1;
-    public Vector2 NewVert2;
+    public List<Vector2> NewVerts;
     [Range(0f, 1f)]
     public List<double> tilingParameters;
     public bool Weld=false;
@@ -38,7 +33,7 @@ public class TactileGridsTest : ExampleBase
             previousTilingType = TilingType;
             tilingParameters = tactilePoly.GetDefaultTilingParameters();
         }
-        poly = tactilePoly.MakePoly(tilingParameters, ExtraVerts, NewVert1, NewVert2, Size);
+        poly = tactilePoly.MakePoly(tilingParameters, NewVerts, Size);
         poly.ClearTags();
         if (Weld)
         {

@@ -17,12 +17,14 @@ public class ExampleBase : MonoBehaviour
     [BoxGroup("Op 1")] public float op1Amount1 = 0;
     [BoxGroup("Op 1")] public float op1Amount2 = 0;
     [BoxGroup("Op 1")] [Range(1, 5)] public int op1iterations = 1;
+    [BoxGroup("Op 1")] public bool op1Randomize = false;
     [BoxGroup("Op 1")] public bool op1Animate;
     
     [BoxGroup("Op 2")] public Ops op2;
     [BoxGroup("Op 2")] public FaceSelections op2Facesel;
     [BoxGroup("Op 2")] public float op2Amount1 = 0;
     [BoxGroup("Op 2")] public float op2Amount2 = 0;
+    [BoxGroup("Op 2")] public bool op2Randomize = false;
     [BoxGroup("Op 2")] public bool op2Animate;
     [BoxGroup("Op 2")] [Range(1, 5)] public int op2iterations = 1;
     
@@ -30,6 +32,7 @@ public class ExampleBase : MonoBehaviour
     [BoxGroup("Op 3")] public FaceSelections op3Facesel;
     [BoxGroup("Op 3")] public float op3Amount1 = 0;
     [BoxGroup("Op 3")] public float op3Amount2 = 0;
+    [BoxGroup("Op 3")] public bool op3Randomize = false;
     [BoxGroup("Op 3")] public bool op3Animate;
     [BoxGroup("Op 3")] [Range(1, 5)] public int op3iterations = 1;
     
@@ -94,7 +97,8 @@ public class ExampleBase : MonoBehaviour
                 poly = poly.ApplyOp(op1, new OpParams {
                     valueA = op1Amount1 * (op1Animate ? animMultiplier : 1),
                     valueB = op1Amount2,
-                    facesel = op1Facesel
+                    facesel = op1Facesel,
+                    randomize = op1Randomize
                 });
             }
             for (var i = 0; i < op2iterations; i++)
@@ -102,7 +106,8 @@ public class ExampleBase : MonoBehaviour
                 poly = poly.ApplyOp(op2, new OpParams {
                     valueA = op2Amount1 * (op2Animate ? animMultiplier : 1),
                     valueB = op2Amount2,
-                    facesel = op2Facesel
+                    facesel = op2Facesel,
+                    randomize = op2Randomize
                 });
             }
             for (var i = 0; i < op3iterations; i++)
@@ -110,7 +115,8 @@ public class ExampleBase : MonoBehaviour
                 poly = poly.ApplyOp(op3, new OpParams {
                     valueA = op3Amount1 * (op3Animate ? animMultiplier : 1),
                     valueB = op3Amount2,
-                    facesel = op3Facesel
+                    facesel = op3Facesel,
+                    randomize = op3Randomize
                 });
             }
         }

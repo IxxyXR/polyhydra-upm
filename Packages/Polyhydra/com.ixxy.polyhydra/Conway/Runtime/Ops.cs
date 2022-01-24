@@ -64,6 +64,7 @@ namespace Conway
         VertexScale = 45,
         VertexRotate = 46,
         VertexFlex = 47,
+        VertexStellate = 81,
 
         // PolarOffset,   TODO
         Hinge = 48,
