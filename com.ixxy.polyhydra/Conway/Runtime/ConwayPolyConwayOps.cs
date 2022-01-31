@@ -70,10 +70,14 @@ namespace Conway
                 var fIndex = new List<int>();
 
                 var vertexFaces = vertex.GetVertexFaces();
+                if (vertexFaces.Count < 3) continue;
                 for (var faceIndex = 0; faceIndex < vertexFaces.Count; faceIndex++)
                 {
                     Face f = vertexFaces[faceIndex];
-                    fIndex.Add(flookup[f.Name]);
+                    if (flookup.ContainsKey(f.Name))
+                    {
+                        fIndex.Add(flookup[f.Name]);
+                    }
                 }
 
                 if (naked.ContainsKey(vertex.Name) && naked[vertex.Name])
@@ -1221,7 +1225,7 @@ namespace Conway
 
                     faceIndices.Add(thisFaceIndices);
                     // Alternate roles but only for faces with an even number of sides
-                    if (j % 2 == 0 || Faces[j].Sides % 2 != 0)
+                    if (j % 2 == 0 || (j < Faces.Count && Faces[j].Sides % 2 != 0))
                     {
                         faceRoles.Add(Roles.New);
                     }
@@ -1296,6 +1300,7 @@ namespace Conway
             {
                 var vertex = Vertices[idx];
                 var adjacentFaces = vertex.GetVertexFaces();
+                if (adjacentFaces.Count < 3) continue;
 
                 for (var faceIndex = 0; faceIndex < adjacentFaces.Count; faceIndex++)
                 {

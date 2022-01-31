@@ -93,7 +93,11 @@ namespace Conway
         Recenter = 64,
         SitLevel = 65,
         Stretch = 66,
-        Slice = 67,
+        FaceRemoveX = 82,
+        FaceRemoveY = 67,
+        FaceRemoveZ = 83,
+        FaceRemoveDistance = 84,
+        FaceRemovePolar = 85,
 
         ConvexHull = 68,
         Spherize = 69,

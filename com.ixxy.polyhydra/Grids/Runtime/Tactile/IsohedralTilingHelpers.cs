@@ -910,11 +910,14 @@ public class IsohedralTilingHelpers
     {
 
         // IH00 is undefined
-        new TilingTypeConfig(),
+        new TilingTypeConfig(
+        ),
 
         // IH01
         new TilingTypeConfig(
             tiling_name: "IH01",
+            symmetry_group: "p1",
+            grid: "Hexagon",
             num_params: 4,
             num_aspects: 1,
             num_vertices: 6,
@@ -932,6 +935,8 @@ public class IsohedralTilingHelpers
         // IH02
         new TilingTypeConfig(
             tiling_name: "IH02",
+            symmetry_group: "pg",
+            grid: "Hexagon",
             num_params: 4,
             num_aspects: 2,
             num_vertices: 6,
@@ -949,6 +954,8 @@ public class IsohedralTilingHelpers
         // IH03
         new TilingTypeConfig(
             tiling_name: "IH03",
+            symmetry_group: "pg",
+            grid: "Hexagon",
             num_params: 4,
             num_aspects: 2,
             num_vertices: 6,
@@ -966,6 +973,8 @@ public class IsohedralTilingHelpers
         // IH04
         new TilingTypeConfig(
             tiling_name: "IH04",
+            symmetry_group: "p2",
+            grid: "Hexagon",
             num_params: 6,
             num_aspects: 2,
             num_vertices: 6,
@@ -983,6 +992,8 @@ public class IsohedralTilingHelpers
         // IH05
         new TilingTypeConfig(
             tiling_name: "IH05",
+            symmetry_group: "pgg",
+            grid: "Hexagon",
             num_params: 5,
             num_aspects: 4,
             num_vertices: 6,
@@ -1000,6 +1011,8 @@ public class IsohedralTilingHelpers
         // IH06
         new TilingTypeConfig(
             tiling_name: "IH06",
+            symmetry_group: "pgg",
+            grid: "Hexagon",
             num_params: 5,
             num_aspects: 4,
             num_vertices: 6,
@@ -1017,6 +1030,8 @@ public class IsohedralTilingHelpers
         // IH07
         new TilingTypeConfig(
             tiling_name: "IH07",
+            symmetry_group: "p3",
+            grid: "Hexagon",
             num_params: 2,
             num_aspects: 3,
             num_vertices: 6,
@@ -1034,6 +1049,8 @@ public class IsohedralTilingHelpers
         // IH08
         new TilingTypeConfig(
             tiling_name: "IH08",
+            symmetry_group: "p2",
+            grid: "Hexagon",
             num_params: 4,
             num_aspects: 1,
             num_vertices: 6,
@@ -1051,6 +1068,8 @@ public class IsohedralTilingHelpers
         // IH09
         new TilingTypeConfig(
             tiling_name: "IH09",
+            symmetry_group: "pgg",
+            grid: "Hexagon",
             num_params: 3,
             num_aspects: 2,
             num_vertices: 6,
@@ -1068,6 +1087,8 @@ public class IsohedralTilingHelpers
         // IH10
         new TilingTypeConfig(
             tiling_name: "IH10",
+            symmetry_group: "p3",
+            grid: "Hexagon",
             num_params: 0,
             num_aspects: 1,
             num_vertices: 6,
@@ -1085,6 +1106,8 @@ public class IsohedralTilingHelpers
         // IH11
         new TilingTypeConfig(
             tiling_name: "IH11",
+            symmetry_group: "p6",
+            grid: "Hexagon",
             num_params: 0,
             num_aspects: 1,
             num_vertices: 6,
@@ -1102,6 +1125,8 @@ public class IsohedralTilingHelpers
         // IH12
         new TilingTypeConfig(
             tiling_name: "IH12",
+            symmetry_group: "cm",
+            grid: "Hexagon",
             num_params: 2,
             num_aspects: 1,
             num_vertices: 6,
@@ -1119,6 +1144,8 @@ public class IsohedralTilingHelpers
         // IH13
         new TilingTypeConfig(
             tiling_name: "IH13",
+            symmetry_group: "pmg",
+            grid: "Hexagon",
             num_params: 3,
             num_aspects: 2,
             num_vertices: 6,
@@ -1136,6 +1163,8 @@ public class IsohedralTilingHelpers
         // IH14
         new TilingTypeConfig(
             tiling_name: "IH14",
+            symmetry_group: "cm",
+            grid: "Hexagon",
             num_params: 2,
             num_aspects: 1,
             num_vertices: 6,
@@ -1153,6 +1182,8 @@ public class IsohedralTilingHelpers
         // IH15
         new TilingTypeConfig(
             tiling_name: "IH15",
+            symmetry_group: "pmg",
+            grid: "Hexagon",
             num_params: 3,
             num_aspects: 2,
             num_vertices: 6,
@@ -1170,6 +1201,8 @@ public class IsohedralTilingHelpers
         // IH16
         new TilingTypeConfig(
             tiling_name: "IH16",
+            symmetry_group: "p31m",
+            grid: "Hexagon",
             num_params: 1,
             num_aspects: 3,
             num_vertices: 6,
@@ -1187,6 +1220,8 @@ public class IsohedralTilingHelpers
         // IH17
         new TilingTypeConfig(
             tiling_name: "IH17",
+            symmetry_group: "cmm",
+            grid: "Hexagon",
             num_params: 2,
             num_aspects: 1,
             num_vertices: 6,
@@ -1204,6 +1239,8 @@ public class IsohedralTilingHelpers
         // IH18
         new TilingTypeConfig(
             tiling_name: "IH18",
+            symmetry_group: "p31m",
+            grid: "Hexagon",
             num_params: 0,
             num_aspects: 1,
             num_vertices: 6,
@@ -1219,11 +1256,18 @@ public class IsohedralTilingHelpers
         ),
 
         // IH19 is undefined
-        new TilingTypeConfig(),
+        new TilingTypeConfig(
+        // tiling_name: "IH19"
+        // symmetry_group: "p3m1",
+        // grid: "Hexagon",
+        
+        ),
 
         // IH20
         new TilingTypeConfig(
             tiling_name: "IH20",
+            symmetry_group: "p6m",
+            grid: "Hexagon",
             num_params: 0,
             num_aspects: 1,
             num_vertices: 6,
@@ -1241,6 +1285,8 @@ public class IsohedralTilingHelpers
         // IH21
         new TilingTypeConfig(
             tiling_name: "IH21",
+            symmetry_group: "p6",
+            grid: "Pentagon",
             num_params: 2,
             num_aspects: 6,
             num_vertices: 5,
@@ -1258,6 +1304,8 @@ public class IsohedralTilingHelpers
         // IH22
         new TilingTypeConfig(
             tiling_name: "IH22",
+            symmetry_group: "cm",
+            grid: "Pentagon",
             num_params: 3,
             num_aspects: 2,
             num_vertices: 5,
@@ -1275,6 +1323,8 @@ public class IsohedralTilingHelpers
         // IH23
         new TilingTypeConfig(
             tiling_name: "IH23",
+            symmetry_group: "p2",
+            grid: "Pentagon",
             num_params: 4,
             num_aspects: 2,
             num_vertices: 5,
@@ -1292,6 +1342,8 @@ public class IsohedralTilingHelpers
         // IH24
         new TilingTypeConfig(
             tiling_name: "IH24",
+            symmetry_group: "pmg",
+            grid: "Pentagon",
             num_params: 4,
             num_aspects: 4,
             num_vertices: 5,
@@ -1309,6 +1361,8 @@ public class IsohedralTilingHelpers
         // IH25
         new TilingTypeConfig(
             tiling_name: "IH25",
+            symmetry_group: "pgg",
+            grid: "Pentagon",
             num_params: 3,
             num_aspects: 4,
             num_vertices: 5,
@@ -1326,6 +1380,8 @@ public class IsohedralTilingHelpers
         // IH26
         new TilingTypeConfig(
             tiling_name: "IH26",
+            symmetry_group: "cmm",
+            grid: "Pentagon",
             num_params: 2,
             num_aspects: 2,
             num_vertices: 5,
@@ -1343,6 +1399,8 @@ public class IsohedralTilingHelpers
         // IH27
         new TilingTypeConfig(
             tiling_name: "IH27",
+            symmetry_group: "pgg",
+            grid: "Pentagon",
             num_params: 3,
             num_aspects: 4,
             num_vertices: 5,
@@ -1360,6 +1418,8 @@ public class IsohedralTilingHelpers
         // IH28
         new TilingTypeConfig(
             tiling_name: "IH28",
+            symmetry_group: "p4",
+            grid: "Pentagon",
             num_params: 2,
             num_aspects: 4,
             num_vertices: 5,
@@ -1377,6 +1437,8 @@ public class IsohedralTilingHelpers
         // IH29
         new TilingTypeConfig(
             tiling_name: "IH29",
+            symmetry_group: "p4g",
+            grid: "Pentagon",
             num_params: 1,
             num_aspects: 4,
             num_vertices: 5,
@@ -1394,6 +1456,8 @@ public class IsohedralTilingHelpers
         // IH30
         new TilingTypeConfig(
             tiling_name: "IH30",
+            symmetry_group: "p31m",
+            grid: "Quadrilateral",
             num_params: 1,
             num_aspects: 6,
             num_vertices: 4,
@@ -1411,6 +1475,8 @@ public class IsohedralTilingHelpers
         // IH31
         new TilingTypeConfig(
             tiling_name: "IH31",
+            symmetry_group: "p6",
+            grid: "Quadrilateral",
             num_params: 0,
             num_aspects: 6,
             num_vertices: 4,
@@ -1428,6 +1494,8 @@ public class IsohedralTilingHelpers
         // IH32
         new TilingTypeConfig(
             tiling_name: "IH32",
+            symmetry_group: "p6m",
+            grid: "Quadrilateral",
             num_params: 0,
             num_aspects: 6,
             num_vertices: 4,
@@ -1445,6 +1513,8 @@ public class IsohedralTilingHelpers
         // IH33
         new TilingTypeConfig(
             tiling_name: "IH33",
+            symmetry_group: "p3",
+            grid: "Quadrilateral",
             num_params: 0,
             num_aspects: 3,
             num_vertices: 4,
@@ -1462,6 +1532,8 @@ public class IsohedralTilingHelpers
         // IH34
         new TilingTypeConfig(
             tiling_name: "IH34",
+            symmetry_group: "p6",
+            grid: "Quadrilateral",
             num_params: 0,
             num_aspects: 3,
             num_vertices: 4,
@@ -1477,11 +1549,18 @@ public class IsohedralTilingHelpers
         ),
 
         // IH35 is undefined
-        new TilingTypeConfig(),
+        new TilingTypeConfig(
+        // tiling_name: "IH35"
+        // symmetry_group: "p3m1",
+        // grid: "Quadrilateral",
+        
+        ),
 
         // IH36
         new TilingTypeConfig(
             tiling_name: "IH36",
+            symmetry_group: "p31m",
+            grid: "Quadrilateral",
             num_params: 0,
             num_aspects: 3,
             num_vertices: 4,
@@ -1499,6 +1578,8 @@ public class IsohedralTilingHelpers
         // IH37
         new TilingTypeConfig(
             tiling_name: "IH37",
+            symmetry_group: "p6m",
+            grid: "Quadrilateral",
             num_params: 0,
             num_aspects: 3,
             num_vertices: 4,
@@ -1516,6 +1597,8 @@ public class IsohedralTilingHelpers
         // IH38
         new TilingTypeConfig(
             tiling_name: "IH38",
+            symmetry_group: "p31m",
+            grid: "Triangle",
             num_params: 0,
             num_aspects: 6,
             num_vertices: 3,
@@ -1533,6 +1616,8 @@ public class IsohedralTilingHelpers
         // IH39
         new TilingTypeConfig(
             tiling_name: "IH39",
+            symmetry_group: "p6",
+            grid: "Triangle",
             num_params: 0,
             num_aspects: 6,
             num_vertices: 3,
@@ -1550,6 +1635,8 @@ public class IsohedralTilingHelpers
         // IH40
         new TilingTypeConfig(
             tiling_name: "IH40",
+            symmetry_group: "p6m",
+            grid: "Triangle",
             num_params: 0,
             num_aspects: 6,
             num_vertices: 3,
@@ -1567,6 +1654,8 @@ public class IsohedralTilingHelpers
         // IH41
         new TilingTypeConfig(
             tiling_name: "IH41",
+            symmetry_group: "p1",
+            grid: "Quadrilateral",
             num_params: 2,
             num_aspects: 1,
             num_vertices: 4,
@@ -1584,6 +1673,8 @@ public class IsohedralTilingHelpers
         // IH42
         new TilingTypeConfig(
             tiling_name: "IH42",
+            symmetry_group: "pm",
+            grid: "Quadrilateral",
             num_params: 2,
             num_aspects: 2,
             num_vertices: 4,
@@ -1601,6 +1692,8 @@ public class IsohedralTilingHelpers
         // IH43
         new TilingTypeConfig(
             tiling_name: "IH43",
+            symmetry_group: "pg",
+            grid: "Quadrilateral",
             num_params: 2,
             num_aspects: 2,
             num_vertices: 4,
@@ -1618,6 +1711,8 @@ public class IsohedralTilingHelpers
         // IH44
         new TilingTypeConfig(
             tiling_name: "IH44",
+            symmetry_group: "pg",
+            grid: "Quadrilateral",
             num_params: 2,
             num_aspects: 2,
             num_vertices: 4,
@@ -1635,6 +1730,8 @@ public class IsohedralTilingHelpers
         // IH45
         new TilingTypeConfig(
             tiling_name: "IH45",
+            symmetry_group: "cm",
+            grid: "Quadrilateral",
             num_params: 2,
             num_aspects: 2,
             num_vertices: 4,
@@ -1652,6 +1749,8 @@ public class IsohedralTilingHelpers
         // IH46
         new TilingTypeConfig(
             tiling_name: "IH46",
+            symmetry_group: "p2",
+            grid: "Quadrilateral",
             num_params: 4,
             num_aspects: 2,
             num_vertices: 4,
@@ -1669,6 +1768,8 @@ public class IsohedralTilingHelpers
         // IH47
         new TilingTypeConfig(
             tiling_name: "IH47",
+            symmetry_group: "p2",
+            grid: "Quadrilateral",
             num_params: 2,
             num_aspects: 2,
             num_vertices: 4,
@@ -1684,11 +1785,18 @@ public class IsohedralTilingHelpers
         ),
 
         // IH48 is undefined
-        new TilingTypeConfig(),
+        new TilingTypeConfig(
+        // tiling_name: "IH48"
+        // symmetry_group: "pmm",
+        // grid: "Quadrilateral",
+        
+        ),
 
         // IH49
         new TilingTypeConfig(
             tiling_name: "IH49",
+            symmetry_group: "pmg",
+            grid: "Quadrilateral",
             num_params: 3,
             num_aspects: 4,
             num_vertices: 4,
@@ -1706,6 +1814,8 @@ public class IsohedralTilingHelpers
         // IH50
         new TilingTypeConfig(
             tiling_name: "IH50",
+            symmetry_group: "pmg",
+            grid: "Quadrilateral",
             num_params: 2,
             num_aspects: 4,
             num_vertices: 4,
@@ -1723,6 +1833,8 @@ public class IsohedralTilingHelpers
         // IH51
         new TilingTypeConfig(
             tiling_name: "IH51",
+            symmetry_group: "pgg",
+            grid: "Quadrilateral",
             num_params: 3,
             num_aspects: 4,
             num_vertices: 4,
@@ -1740,6 +1852,8 @@ public class IsohedralTilingHelpers
         // IH52
         new TilingTypeConfig(
             tiling_name: "IH52",
+            symmetry_group: "pgg",
+            grid: "Quadrilateral",
             num_params: 1,
             num_aspects: 4,
             num_vertices: 4,
@@ -1757,6 +1871,8 @@ public class IsohedralTilingHelpers
         // IH53
         new TilingTypeConfig(
             tiling_name: "IH53",
+            symmetry_group: "pgg",
+            grid: "Quadrilateral",
             num_params: 3,
             num_aspects: 4,
             num_vertices: 4,
@@ -1774,6 +1890,8 @@ public class IsohedralTilingHelpers
         // IH54
         new TilingTypeConfig(
             tiling_name: "IH54",
+            symmetry_group: "cmm",
+            grid: "Quadrilateral",
             num_params: 2,
             num_aspects: 4,
             num_vertices: 4,
@@ -1791,6 +1909,8 @@ public class IsohedralTilingHelpers
         // IH55
         new TilingTypeConfig(
             tiling_name: "IH55",
+            symmetry_group: "p4",
+            grid: "Quadrilateral",
             num_params: 0,
             num_aspects: 4,
             num_vertices: 4,
@@ -1808,6 +1928,8 @@ public class IsohedralTilingHelpers
         // IH56
         new TilingTypeConfig(
             tiling_name: "IH56",
+            symmetry_group: "p4g",
+            grid: "Quadrilateral",
             num_params: 1,
             num_aspects: 8,
             num_vertices: 4,
@@ -1825,6 +1947,8 @@ public class IsohedralTilingHelpers
         // IH57
         new TilingTypeConfig(
             tiling_name: "IH57",
+            symmetry_group: "p2",
+            grid: "Quadrilateral",
             num_params: 2,
             num_aspects: 1,
             num_vertices: 4,
@@ -1842,6 +1966,8 @@ public class IsohedralTilingHelpers
         // IH58
         new TilingTypeConfig(
             tiling_name: "IH58",
+            symmetry_group: "pmg",
+            grid: "Quadrilateral",
             num_params: 2,
             num_aspects: 2,
             num_vertices: 4,
@@ -1859,6 +1985,8 @@ public class IsohedralTilingHelpers
         // IH59
         new TilingTypeConfig(
             tiling_name: "IH59",
+            symmetry_group: "pgg",
+            grid: "Quadrilateral",
             num_params: 1,
             num_aspects: 2,
             num_vertices: 4,
@@ -1874,11 +2002,18 @@ public class IsohedralTilingHelpers
         ),
 
         // IH60 is undefined
-        new TilingTypeConfig(),
+        new TilingTypeConfig(
+        // tiling_name: "IH60"
+        // symmetry_group: "cmm",
+        // grid: "Quadrilateral",
+        
+        ),
 
         // IH61
         new TilingTypeConfig(
             tiling_name: "IH61",
+            symmetry_group: "p4",
+            grid: "Quadrilateral",
             num_params: 0,
             num_aspects: 2,
             num_vertices: 4,
@@ -1896,6 +2031,8 @@ public class IsohedralTilingHelpers
         // IH62
         new TilingTypeConfig(
             tiling_name: "IH62",
+            symmetry_group: "p4",
+            grid: "Quadrilateral",
             num_params: 0,
             num_aspects: 1,
             num_vertices: 4,
@@ -1911,11 +2048,18 @@ public class IsohedralTilingHelpers
         ),
 
         // IH63 is undefined
-        new TilingTypeConfig(),
+        new TilingTypeConfig(
+        // tiling_name: "IH63"
+        // symmetry_group: "p4g",
+        // grid: "Quadrilateral",
+        
+        ),
 
         // IH64
         new TilingTypeConfig(
             tiling_name: "IH64",
+            symmetry_group: "pm",
+            grid: "Quadrilateral",
             num_params: 1,
             num_aspects: 1,
             num_vertices: 4,
@@ -1931,11 +2075,18 @@ public class IsohedralTilingHelpers
         ),
 
         // IH65 is undefined
-        new TilingTypeConfig(),
+        new TilingTypeConfig(
+        // tiling_name: "IH65"
+        // symmetry_group: "pmm",
+        // grid: "Quadrilateral",
+        
+        ),
 
         // IH66
         new TilingTypeConfig(
             tiling_name: "IH66",
+            symmetry_group: "pmg",
+            grid: "Quadrilateral",
             num_params: 1,
             num_aspects: 2,
             num_vertices: 4,
@@ -1953,6 +2104,8 @@ public class IsohedralTilingHelpers
         // IH67
         new TilingTypeConfig(
             tiling_name: "IH67",
+            symmetry_group: "cmm",
+            grid: "Quadrilateral",
             num_params: 2,
             num_aspects: 2,
             num_vertices: 4,
@@ -1970,6 +2123,8 @@ public class IsohedralTilingHelpers
         // IH68
         new TilingTypeConfig(
             tiling_name: "IH68",
+            symmetry_group: "cm",
+            grid: "Quadrilateral",
             num_params: 1,
             num_aspects: 1,
             num_vertices: 4,
@@ -1987,6 +2142,8 @@ public class IsohedralTilingHelpers
         // IH69
         new TilingTypeConfig(
             tiling_name: "IH69",
+            symmetry_group: "pmg",
+            grid: "Quadrilateral",
             num_params: 2,
             num_aspects: 2,
             num_vertices: 4,
@@ -2002,11 +2159,18 @@ public class IsohedralTilingHelpers
         ),
 
         // IH70 is undefined
-        new TilingTypeConfig(),
+        new TilingTypeConfig(
+        // tiling_name: "IH70"
+        // symmetry_group: "p4m",
+        // grid: "Quadrilateral",
+        
+        ),
 
         // IH71
         new TilingTypeConfig(
             tiling_name: "IH71",
+            symmetry_group: "p4g",
+            grid: "Quadrilateral",
             num_params: 0,
             num_aspects: 4,
             num_vertices: 4,
@@ -2024,6 +2188,8 @@ public class IsohedralTilingHelpers
         // IH72
         new TilingTypeConfig(
             tiling_name: "IH72",
+            symmetry_group: "pmm",
+            grid: "Quadrilateral",
             num_params: 1,
             num_aspects: 1,
             num_vertices: 4,
@@ -2041,6 +2207,8 @@ public class IsohedralTilingHelpers
         // IH73
         new TilingTypeConfig(
             tiling_name: "IH73",
+            symmetry_group: "p4g",
+            grid: "Quadrilateral",
             num_params: 0,
             num_aspects: 2,
             num_vertices: 4,
@@ -2058,6 +2226,8 @@ public class IsohedralTilingHelpers
         // IH74
         new TilingTypeConfig(
             tiling_name: "IH74",
+            symmetry_group: "cmm",
+            grid: "Quadrilateral",
             num_params: 1,
             num_aspects: 1,
             num_vertices: 4,
@@ -2073,11 +2243,18 @@ public class IsohedralTilingHelpers
         ),
 
         // IH75 is undefined
-        new TilingTypeConfig(),
+        new TilingTypeConfig(
+        // tiling_name: "IH75"
+        // symmetry_group: "p4m",
+        // grid: "Quadrilateral",
+        
+        ),
 
         // IH76
         new TilingTypeConfig(
             tiling_name: "IH76",
+            symmetry_group: "p4m",
+            grid: "Quadrilateral",
             num_params: 0,
             num_aspects: 1,
             num_vertices: 4,
@@ -2095,6 +2272,8 @@ public class IsohedralTilingHelpers
         // IH77
         new TilingTypeConfig(
             tiling_name: "IH77",
+            symmetry_group: "p6m",
+            grid: "Triangle",
             num_params: 0,
             num_aspects: 12,
             num_vertices: 3,
@@ -2112,6 +2291,8 @@ public class IsohedralTilingHelpers
         // IH78
         new TilingTypeConfig(
             tiling_name: "IH78",
+            symmetry_group: "cmm",
+            grid: "Triangle",
             num_params: 1,
             num_aspects: 4,
             num_vertices: 3,
@@ -2129,6 +2310,8 @@ public class IsohedralTilingHelpers
         // IH79
         new TilingTypeConfig(
             tiling_name: "IH79",
+            symmetry_group: "p4",
+            grid: "Triangle",
             num_params: 0,
             num_aspects: 4,
             num_vertices: 3,
@@ -2144,11 +2327,18 @@ public class IsohedralTilingHelpers
         ),
 
         // IH80 is undefined
-        new TilingTypeConfig(),
+        new TilingTypeConfig(
+        // tiling_name: "IH80"
+        // symmetry_group: "p4m",
+        // grid: "Triangle",
+        
+        ),
 
         // IH81
         new TilingTypeConfig(
             tiling_name: "IH81",
+            symmetry_group: "p4g",
+            grid: "Triangle",
             num_params: 0,
             num_aspects: 8,
             num_vertices: 3,
@@ -2166,6 +2356,8 @@ public class IsohedralTilingHelpers
         // IH82
         new TilingTypeConfig(
             tiling_name: "IH82",
+            symmetry_group: "p4m",
+            grid: "Triangle",
             num_params: 0,
             num_aspects: 4,
             num_vertices: 3,
@@ -2183,6 +2375,8 @@ public class IsohedralTilingHelpers
         // IH83
         new TilingTypeConfig(
             tiling_name: "IH83",
+            symmetry_group: "cm",
+            grid: "Triangle",
             num_params: 1,
             num_aspects: 2,
             num_vertices: 3,
@@ -2200,6 +2394,8 @@ public class IsohedralTilingHelpers
         // IH84
         new TilingTypeConfig(
             tiling_name: "IH84",
+            symmetry_group: "p2",
+            grid: "Triangle",
             num_params: 2,
             num_aspects: 2,
             num_vertices: 3,
@@ -2217,6 +2413,8 @@ public class IsohedralTilingHelpers
         // IH85
         new TilingTypeConfig(
             tiling_name: "IH85",
+            symmetry_group: "pmg",
+            grid: "Triangle",
             num_params: 2,
             num_aspects: 4,
             num_vertices: 3,
@@ -2234,6 +2432,8 @@ public class IsohedralTilingHelpers
         // IH86
         new TilingTypeConfig(
             tiling_name: "IH86",
+            symmetry_group: "pgg",
+            grid: "Triangle",
             num_params: 1,
             num_aspects: 4,
             num_vertices: 3,
@@ -2249,11 +2449,18 @@ public class IsohedralTilingHelpers
         ),
 
         // IH87 is undefined
-        new TilingTypeConfig(),
+        new TilingTypeConfig(
+        // tiling_name: "IH87"
+        // symmetry_group: "p3m1",
+        // grid: "Triangle",
+        
+        ),
 
         // IH88
         new TilingTypeConfig(
             tiling_name: "IH88",
+            symmetry_group: "p6",
+            grid: "Triangle",
             num_params: 0,
             num_aspects: 6,
             num_vertices: 3,
@@ -2269,11 +2476,18 @@ public class IsohedralTilingHelpers
         ),
 
         // IH89 is undefined
-        new TilingTypeConfig(),
+        new TilingTypeConfig(
+        // tiling_name: "IH89"
+        // symmetry_group: "p31m",
+        // grid: "Triangle",
+        
+        ),
 
         // IH90
         new TilingTypeConfig(
             tiling_name: "IH90",
+            symmetry_group: "p6",
+            grid: "Triangle",
             num_params: 0,
             num_aspects: 2,
             num_vertices: 3,
@@ -2291,6 +2505,8 @@ public class IsohedralTilingHelpers
         // IH91
         new TilingTypeConfig(
             tiling_name: "IH91",
+            symmetry_group: "cmm",
+            grid: "Triangle",
             num_params: 1,
             num_aspects: 2,
             num_vertices: 3,
@@ -2306,11 +2522,18 @@ public class IsohedralTilingHelpers
         ),
 
         // IH92 is undefined
-        new TilingTypeConfig(),
+        new TilingTypeConfig(
+        // tiling_name: "IH92"
+        // symmetry_group: "p6m",
+        // grid: "Triangle",
+        
+        ),
 
         // IH93
         new TilingTypeConfig(
             tiling_name: "IH93",
+            symmetry_group: "p6m",
+            grid: "Triangle",
             num_params: 0,
             num_aspects: 2,
             num_vertices: 3,
@@ -2326,100 +2549,4 @@ public class IsohedralTilingHelpers
         )
     };
     
-    public static (string, string, string)[] symmetry = {
-        ("IH1", "p1", "Hexagon"),
-        ("IH2", "pg", "Hexagon"),
-        ("IH3", "pg", "Hexagon"),
-        ("IH4", "p2", "Hexagon"),
-        ("IH5", "pgg", "Hexagon"),
-        ("IH6", "pgg", "Hexagon"),
-        ("IH7", "p3", "Hexagon"),
-        ("IH8", "p2", "Hexagon"),
-        ("IH9", "pgg", "Hexagon"),
-        ("IH10", "p3", "Hexagon"),
-        ("IH11", "p6", "Hexagon"),
-        ("IH12", "cm", "Hexagon"),
-        ("IH13", "pmg", "Hexagon"),
-        ("IH14", "cm", "Hexagon"),
-        ("IH15", "pmg", "Hexagon"),
-        ("IH16", "p31m", "Hexagon"),
-        ("IH17", "cmm", "Hexagon"),
-        ("IH18", "p31m", "Hexagon"),
-        ("IH19", "p3m1", "Hexagon"),
-        ("IH20", "p6m", "Hexagon"),
-        ("IH21", "p6", "Pentagon"),
-        ("IH22", "cm", "Pentagon"),
-        ("IH23", "p2", "Pentagon"),
-        ("IH24", "pmg", "Pentagon"),
-        ("IH25", "pgg", "Pentagon"),
-        ("IH26", "cmm", "Pentagon"),
-        ("IH27", "pgg", "Pentagon"),
-        ("IH28", "p4", "Pentagon"),
-        ("IH29", "p4g", "Pentagon"),
-        ("IH30", "p31m", "Quadrilateral"),
-        ("IH31", "p6", "Quadrilateral"),
-        ("IH32", "p6m", "Quadrilateral"),
-        ("IH33", "p3", "Quadrilateral"),
-        ("IH34", "p6", "Quadrilateral"),
-        ("IH35", "p3m1", "Quadrilateral"),
-        ("IH36", "p31m", "Quadrilateral"),
-        ("IH37", "p6m", "Quadrilateral"),
-        ("IH38", "p31m", "Triangle"),
-        ("IH39", "p6", "Triangle"),
-        ("IH40", "p6m", "Triangle"),
-        ("IH41", "p1", "Quadrilateral"),
-        ("IH42", "pm", "Quadrilateral"),
-        ("IH43", "pg", "Quadrilateral"),
-        ("IH44", "pg", "Quadrilateral"),
-        ("IH45", "cm", "Quadrilateral"),
-        ("IH46", "p2", "Quadrilateral"),
-        ("IH47", "p2", "Quadrilateral"),
-        ("IH48", "pmm", "Quadrilateral"),
-        ("IH49", "pmg", "Quadrilateral"),
-        ("IH50", "pmg", "Quadrilateral"),
-        ("IH51", "pgg", "Quadrilateral"),
-        ("IH52", "pgg", "Quadrilateral"),
-        ("IH53", "pgg", "Quadrilateral"),
-        ("IH54", "cmm", "Quadrilateral"),
-        ("IH55", "p4", "Quadrilateral"),
-        ("IH56", "p4g", "Quadrilateral"),
-        ("IH57", "p2", "Quadrilateral"),
-        ("IH58", "pmg", "Quadrilateral"),
-        ("IH59", "pgg", "Quadrilateral"),
-        ("IH60", "cmm", "Quadrilateral"),
-        ("IH61", "p4", "Quadrilateral"),
-        ("IH62", "p4", "Quadrilateral"),
-        ("IH63", "p4g", "Quadrilateral"),
-        ("IH64", "pm", "Quadrilateral"),
-        ("IH65", "pmm", "Quadrilateral"),
-        ("IH66", "pmg", "Quadrilateral"),
-        ("IH67", "cmm", "Quadrilateral"),
-        ("IH68", "cm", "Quadrilateral"),
-        ("IH69", "pmg", "Quadrilateral"),
-        ("IH70", "p4m", "Quadrilateral"),
-        ("IH71", "p4g", "Quadrilateral"),
-        ("IH72", "pmm", "Quadrilateral"),
-        ("IH73", "p4g", "Quadrilateral"),
-        ("IH74", "cmm", "Quadrilateral"),
-        ("IH75", "p4m", "Quadrilateral"),
-        ("IH76", "p4m", "Quadrilateral"),
-        ("IH77", "p6m", "Triangle"),
-        ("IH78", "cmm", "Triangle"),
-        ("IH79", "p4", "Triangle"),
-        ("IH80", "p4m", "Triangle"),
-        ("IH81", "p4g", "Triangle"),
-        ("IH82", "p4m", "Triangle"),
-        ("IH83", "cm", "Triangle"),
-        ("IH84", "p2", "Triangle"),
-        ("IH85", "pmg", "Triangle"),
-        ("IH86", "pgg", "Triangle"),
-        ("IH87", "p3m1", "Triangle"),
-        ("IH88", "p6", "Triangle"),
-        ("IH89", "p31m", "Triangle"),
-        ("IH90", "p6", "Triangle"),
-        ("IH91", "cmm", "Triangle"),
-        ("IH92", "p6m", "Triangle"),
-        ("IH93", "p6m", "Triangle")
-    };
-
 }

@@ -1,5 +1,8 @@
+using System;
+
 namespace Conway
 {
+    [Serializable]
     public enum FaceSelections
     {
         All,

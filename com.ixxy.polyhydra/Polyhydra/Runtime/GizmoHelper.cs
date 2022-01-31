@@ -1,14 +1,17 @@
 using Conway;
-using UnityEditor;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public static class GizmoHelper
 {
+#if UNITY_EDITOR
     public static void DrawGizmos(ConwayPoly poly, Transform transform,
 	    bool vertexGizmos = false, bool faceGizmos = false, bool edgeGizmos = false, bool faceCenterGizmos = false,
 	    bool faceOrientationGizmos = false, float scale = 1.0f)
     {
-		float GizmoRadius = .03f * scale;
+		float GizmoRadius = .1f * scale;
 
 		if (vertexGizmos && poly!=null)
 		{
@@ -20,7 +23,7 @@ public static class GizmoHelper
 					Vector3 vert = poly.Vertices[i].Position;
 					Vector3 pos = transform.TransformPoint(vert);
 					Gizmos.DrawWireSphere(pos, GizmoRadius);
-					Handles.Label(pos + new Vector3(0, 0, 0), i.ToString());
+					// Handles.Label(pos + new Vector3(0, 0, 0), i.ToString());
 				}
 			}
 		}
@@ -36,7 +39,6 @@ public static class GizmoHelper
 		}
 		if (faceGizmos)
 		{
-			int gizmoColor = 0;
 			var faces = poly.Faces;
 			for (int f = 0; f < faces.Count; f++)
 			{
@@ -95,4 +97,5 @@ public static class GizmoHelper
 			}
 		}
     }
+    #endif
 }

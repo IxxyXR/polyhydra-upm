@@ -45,25 +45,6 @@ public static class PolyHydraEnums
 		Other
 	}
 
-	public enum GridShapes
-	{
-		Plane,
-		Torus,
-		Cylinder,
-		Cone,
-		Sphere,
-		Polar,
-//		Conic_Frustum,
-//		Mobius,
-//		Torus_Trefoil,
-//		Klein,
-//		Klein2,
-//		Roman,
-//		Roman_Boy,
-//		Cross_Cap,
-//		Cross_Cap2,
-	}
-
 	public enum JohnsonPolyTypes
     {
         Prism,
@@ -93,22 +74,7 @@ public static class PolyHydraEnums
         GyroelongatedBirotunda,
     }
 
-	public enum GridTypes
-	{
-		Square,
-		Isometric,
-		Hex,
-		Polar,
 
-		U_3_6_3_6,
-		U_3_3_3_4_4,
-		U_3_3_4_3_4,
-//		U_3_3_3_3_6, TODO Fix
-		U_3_12_12,
-		U_4_8_8,
-		U_3_4_6_4,
-		U_4_6_12,
-	}
 
 	public enum OtherPolyTypes
 	{
@@ -156,12 +122,12 @@ public static class PolyHydraEnums
 	    );
     }
 
-    public static Dictionary<Ops, OpConfig> OpConfigs = new Dictionary<Ops, OpConfig>
+    public static readonly Dictionary<Ops, OpConfig> OpConfigs = new Dictionary<Ops, OpConfig>
 	{
 		{Ops.Identity, new OpConfig
 		{
 			usesAmount = false,
-			matrix = new int[,]{{1,0,0},{0,1,0},{0,0,1}}
+			matrix = new [,]{{1,0,0},{0,1,0},{0,0,1}}
 		}},
 		{
 			Ops.Kis,
@@ -683,6 +649,46 @@ public static class PolyHydraEnums
 //			{Ops.FaceRotateX, new OpConfig{usesFaces=true, amountDefault=0.1f, amountMin=-180, amountMax=180}},
 //			{Ops.FaceRotateY, new OpConfig{usesFaces=true, amountDefault=0.1f, amountMin=-180, amountMax=180}},
 		{Ops.FaceRemove, new OpConfig {usesFaces = true, usesAmount = false}},
+		{Ops.FaceRemoveX, new OpConfig
+			{
+				amountDefault = 0.5f,
+				amountMin = -1, amountMax = 1, amountSafeMin = -1f, amountSafeMax = 1f,
+				usesAmount2 = true,
+				amount2Min = -1, amount2Max = 1, amount2SafeMin = -1f, amount2SafeMax = 1,
+			}
+		},
+		{Ops.FaceRemoveY, new OpConfig
+			{
+				amountDefault = 0.5f,
+				amountMin = -1, amountMax = 1, amountSafeMin = -1f, amountSafeMax = 1f,
+				usesAmount2 = true,
+				amount2Min = -1, amount2Max = 1, amount2SafeMin = -1f, amount2SafeMax = 1,
+			}
+		},
+		{Ops.FaceRemoveZ, new OpConfig
+			{
+				amountDefault = 0.5f,
+				amountMin = -1, amountMax = 1, amountSafeMin = -1f, amountSafeMax = 1f,
+				usesAmount2 = true,
+				amount2Min = -1, amount2Max = 1, amount2SafeMin = -1f, amount2SafeMax = 1,
+			}
+		},
+		{Ops.FaceRemoveDistance, new OpConfig
+			{
+				amountDefault = 0.5f,
+				amountMin = -1, amountMax = 1, amountSafeMin = -1f, amountSafeMax = 1f,
+				usesAmount2 = true,
+				amount2Min = -1, amount2Max = 1, amount2SafeMin = -1f, amount2SafeMax = 1,
+			}
+		},
+		{Ops.FaceRemovePolar, new OpConfig
+			{
+				amountDefault = 0.5f,
+				amountMin = -360, amountMax = 360, amountSafeMin = -360f, amountSafeMax = 360f,
+				usesAmount2 = true,
+				amount2Min = -360, amount2Max = 360, amount2SafeMin = -360f, amount2SafeMax = 360,
+			}
+		},
 		{Ops.FillHoles, new OpConfig {usesAmount = false}},
 		{
 			Ops.ExtendBoundaries,
@@ -885,16 +891,6 @@ public static class PolyHydraEnums
 			{
 				amountDefault = 1.0f,
 				amountMin = -6f, amountMax = 6f, amountSafeMin = -3f, amountSafeMax = 3f
-			}
-		},
-		{
-			Ops.Slice,
-			new OpConfig
-			{
-				amountDefault = 0.5f,
-				amountMin = 0f, amountMax = 1f, amountSafeMin = 0f, amountSafeMax = 1f,
-				usesAmount2 = true,
-				amount2Min = -3, amount2Max = 3, amount2SafeMin = -1, amount2SafeMax = 1
 			}
 		},
 		{Ops.Recenter, new OpConfig {usesAmount = false}},
