@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using Grids;
 using NaughtyAttributes;
 using UnityEngine.Rendering;
 
@@ -33,9 +34,9 @@ public class WallPaperTest : ExampleBase
     [ShowIf("ShapeIsJohnson")]
     public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridTypes GridType;
+    public GridEnums.GridTypes GridType;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridShapes GridShape;
+    public GridEnums.GridShapes GridShape;
     [ShowIf("ShapeIsOther")]
     public PolyHydraEnums.OtherPolyTypes OtherPolyType;
     

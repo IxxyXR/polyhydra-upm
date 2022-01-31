@@ -616,7 +616,7 @@ namespace Conway
 
 		public void InitOctree()
 		{
-			octree = new PointOctree<Vertex>(1, Vector3.zero, 32);
+			octree = new PointOctree<Vertex>(1, Vector3.zero, 1);
 			for (var i = 0; i < Vertices.Count; i++)
 			{
 				var v = Vertices[i];
@@ -929,8 +929,17 @@ namespace Conway
 				case Ops.Stretch:
 					polyResult = Stretch(opParams.valueA);
 					break;
-				case Ops.Slice:
-					polyResult = Slice(opParams.valueA, opParams.valueB);
+				case Ops.FaceRemoveX:
+					polyResult = FaceRemoveLinear(opParams.valueA, opParams.valueB, 0, opParams.facesel, opParams.tags);
+					break;
+				case Ops.FaceRemoveY:
+					polyResult = FaceRemoveLinear(opParams.valueA, opParams.valueB, 1, opParams.facesel, opParams.tags);
+					break;
+				case Ops.FaceRemoveZ:
+					polyResult = FaceRemoveLinear(opParams.valueA, opParams.valueB, 2, opParams.facesel, opParams.tags);
+					break;
+				case Ops.FaceRemoveDistance:
+					polyResult = FaceRemoveDistance(opParams.valueA, opParams.valueB, opParams.facesel, opParams.tags);
 					break;
 				case Ops.Stack:
 					polyResult = Stack(Vector3.up, opParams.valueA, opParams.valueB, 0.1f, opParams.facesel, opParams.tags);

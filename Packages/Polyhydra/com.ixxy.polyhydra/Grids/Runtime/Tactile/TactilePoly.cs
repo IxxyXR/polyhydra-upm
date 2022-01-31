@@ -31,7 +31,7 @@ public class TactilePoly
         var faceRoles = new List<ConwayPoly.Roles>();
 
         List<double> ps = tiling.getParameters();
-        if (tiling.numParameters() > 1)
+        if (tiling.numParameters() > 0)
         {
             for (int i = 0; i < ps.Count; i++)
             {
@@ -40,8 +40,7 @@ public class TactilePoly
         }
 
         tiling.setParameters(ps);
-
-
+        
         // Make some edge shapes.  Note that here, we sidestep the
         // potential complexity of using .shape() vs. .parts() by checking
         // ahead of time what the intrinsic edge shape is and building
@@ -107,11 +106,11 @@ public class TactilePoly
         
         ConwayPoly.Roles[] availableRoles =
         {
-            ConwayPoly.Roles.Existing,
-            ConwayPoly.Roles.ExistingAlt,
             ConwayPoly.Roles.New,
             ConwayPoly.Roles.NewAlt,
             ConwayPoly.Roles.Ignored,
+            ConwayPoly.Roles.Existing,
+            ConwayPoly.Roles.ExistingAlt,
         };
 
         foreach (IEnumerable<IEnumerable<IsohedralTiling.Tile>> tileGroupGroup in tiles)

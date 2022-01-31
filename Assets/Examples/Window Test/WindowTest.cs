@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Conway;
+using Grids;
 using Johnson;
 using NaughtyAttributes;
 using UnityEngine;
@@ -49,9 +50,9 @@ public class WindowTest : ExampleBase
     [ShowIf("ShapeIsJohnson")]
     public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridTypes GridType;
+    public GridEnums.GridTypes GridType;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridShapes GridShape;
+    public GridEnums.GridShapes GridShape;
     [ShowIf("ShapeIsOther")]
     public PolyHydraEnums.OtherPolyTypes Other;
 

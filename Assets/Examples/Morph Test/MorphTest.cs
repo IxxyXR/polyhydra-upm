@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Conway;
+using Grids;
 using Johnson;
 using NaughtyAttributes;
 using UnityEditor;
@@ -38,11 +39,11 @@ public class MorphTest : MonoBehaviour
     public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType2;
     
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridTypes GridType;
+    public GridEnums.GridTypes GridType;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridShapes GridShape1;
+    public GridEnums.GridShapes GridShape1;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridShapes GridShape2;
+    public GridEnums.GridShapes GridShape2;
 
     [Range(1,40)] public int P1 = 6;
     [Range(1,40)] public int P2 = 6;

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Conway;
+using Grids;
 using Johnson;
 using UnityEngine;
 using Wythoff;
@@ -18,8 +19,8 @@ public class VrUiPoly : MonoBehaviour
     public PolyHydraEnums.ColorMethods ColorMethod;
     public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
     public PolyHydraEnums.OtherPolyTypes OtherPolyType;
-    public PolyHydraEnums.GridTypes GridType;
-    public PolyHydraEnums.GridShapes GridShape;
+    public GridEnums.GridTypes GridType;
+    public GridEnums.GridShapes GridShape;
     public int PrismP;
     public int PrismQ;
 
@@ -230,6 +231,8 @@ public class VrUiPoly : MonoBehaviour
         void OnDrawGizmos ()
         {
             if (_conwayPoly == null) return;
+#if UNITY_EDITOR
             GizmoHelper.DrawGizmos(_conwayPoly, transform, vertexGizmos, faceGizmos, edgeGizmos, faceCenterGizmos, false, 0.3f);
+#endif
         }
 }

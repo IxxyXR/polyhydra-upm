@@ -1,3 +1,4 @@
+using Grids;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -7,14 +8,14 @@ using UnityEngine.Serialization;
 public class KeplerTilingTest : ExampleBase
 {
 
-    public Grids.Grids.KeplerTypes type;
+    public GridEnums.KeplerTypes type;
     [Range(1, 64)] public int xRepeat;
     [Range(1, 64)] public int yRepeat;
-    public PolyHydraEnums.GridShapes gridShape;
+    public GridEnums.GridShapes gridShape;
 
     public override void Generate()
     {
-        poly = Grids.Grids.MakeKepler(type, xRepeat, yRepeat, gridShape);
+        poly = Grids.Grids.MakeKepler(type, gridShape, xRepeat, yRepeat);
         base.Generate();
     }
 }

@@ -11,8 +11,8 @@ public class PolyBuilder
     private PolyHydraEnums.ShapeTypes ShapeType;
     private PolyTypes PolyType;
     private PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
-    private PolyHydraEnums.GridTypes GridType;
-    private PolyHydraEnums.GridShapes GridShape;
+    private GridEnums.GridTypes GridType;
+    private GridEnums.GridShapes GridShape;
     private PolyHydraEnums.OtherPolyTypes OtherPolyType;
     private int P, Q;
 
@@ -20,8 +20,8 @@ public class PolyBuilder
         PolyHydraEnums.ShapeTypes shapeType,
         PolyTypes polyType,
         PolyHydraEnums.JohnsonPolyTypes johnsonPolyType,
-        PolyHydraEnums.GridTypes gridType,
-        PolyHydraEnums.GridShapes gridShape,
+        GridEnums.GridTypes gridType,
+        GridEnums.GridShapes gridShape,
         PolyHydraEnums.OtherPolyTypes otherPolyType
     )
     {

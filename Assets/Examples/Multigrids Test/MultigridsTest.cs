@@ -128,7 +128,9 @@ public class MultigridsTest : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
     }
 
-    void OnDrawGizmos () {
+    void OnDrawGizmos ()
+    {
+#if UNITY_EDITOR
         GizmoHelper.DrawGizmos(poly, transform, vertexGizmos, faceGizmos, edgeGizmos, faceCenterGizmos, false, 0.3f);
         if (shapeGizmos)
         {
@@ -150,6 +152,7 @@ public class MultigridsTest : MonoBehaviour
                 }
             }
         }
+#endif
     }
 
 }

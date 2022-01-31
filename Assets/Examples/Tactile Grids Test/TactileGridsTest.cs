@@ -10,6 +10,8 @@ public class TactileGridsTest : ExampleBase
     [Range(1,93)]
     public int TilingType = 1;
     [ReadOnly] public string TilingName;
+    [ReadOnly] public string Symmetry;
+    [ReadOnly] public string Grid;
     public List<Vector2> NewVerts;
     [Range(0f, 1f)]
     public List<double> tilingParameters;
@@ -30,6 +32,8 @@ public class TactileGridsTest : ExampleBase
         {
             tactilePoly = new TactilePoly(TilingType);
             TilingName = tactilePoly.TilingName;
+            Symmetry = IsohedralTilingHelpers.tiling_types[tactilePoly.TilingType].symmetry_group;
+            Grid = IsohedralTilingHelpers.tiling_types[tactilePoly.TilingType].grid;
             previousTilingType = TilingType;
             tilingParameters = tactilePoly.GetDefaultTilingParameters();
         }

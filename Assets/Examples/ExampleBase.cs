@@ -19,7 +19,8 @@ public class ExampleBase : MonoBehaviour
     [BoxGroup("Op 1")] [Range(1, 5)] public int op1iterations = 1;
     [BoxGroup("Op 1")] public bool op1Randomize = false;
     [BoxGroup("Op 1")] public bool op1Animate;
-    
+    [BoxGroup("Op 1")] public bool op1Disabled;
+
     [BoxGroup("Op 2")] public Ops op2;
     [BoxGroup("Op 2")] public FaceSelections op2Facesel;
     [BoxGroup("Op 2")] public float op2Amount1 = 0;
@@ -27,7 +28,8 @@ public class ExampleBase : MonoBehaviour
     [BoxGroup("Op 2")] public bool op2Randomize = false;
     [BoxGroup("Op 2")] public bool op2Animate;
     [BoxGroup("Op 2")] [Range(1, 5)] public int op2iterations = 1;
-    
+    [BoxGroup("Op 2")] public bool op2Disabled;
+
     [BoxGroup("Op 3")] public Ops op3;
     [BoxGroup("Op 3")] public FaceSelections op3Facesel;
     [BoxGroup("Op 3")] public float op3Amount1 = 0;
@@ -35,7 +37,8 @@ public class ExampleBase : MonoBehaviour
     [BoxGroup("Op 3")] public bool op3Randomize = false;
     [BoxGroup("Op 3")] public bool op3Animate;
     [BoxGroup("Op 3")] [Range(1, 5)] public int op3iterations = 1;
-    
+    [BoxGroup("Op 3")] public bool op3Disabled;
+
     [BoxGroup("Transform")] public Vector3 Position = Vector3.zero;
     [BoxGroup("Transform")] public Vector3 Rotation = Vector3.zero;
     [BoxGroup("Transform")] public Vector3 Scale = Vector3.one;
@@ -92,32 +95,46 @@ public class ExampleBase : MonoBehaviour
 
         if (ApplyOp)
         {
-            for (var i = 0; i < op1iterations; i++)
+            if (!op1Disabled)
             {
-                poly = poly.ApplyOp(op1, new OpParams {
-                    valueA = op1Amount1 * (op1Animate ? animMultiplier : 1),
-                    valueB = op1Amount2,
-                    facesel = op1Facesel,
-                    randomize = op1Randomize
-                });
+                for (var i = 0; i < op1iterations; i++)
+                {
+                    poly = poly.ApplyOp(op1, new OpParams
+                    {
+                        valueA = op1Amount1 * (op1Animate ? animMultiplier : 1),
+                        valueB = op1Amount2,
+                        facesel = op1Facesel,
+                        randomize = op1Randomize
+                    });
+                }
             }
-            for (var i = 0; i < op2iterations; i++)
+
+            if (!op2Disabled)
             {
-                poly = poly.ApplyOp(op2, new OpParams {
-                    valueA = op2Amount1 * (op2Animate ? animMultiplier : 1),
-                    valueB = op2Amount2,
-                    facesel = op2Facesel,
-                    randomize = op2Randomize
-                });
+                for (var i = 0; i < op2iterations; i++)
+                {
+                    poly = poly.ApplyOp(op2, new OpParams
+                    {
+                        valueA = op2Amount1 * (op2Animate ? animMultiplier : 1),
+                        valueB = op2Amount2,
+                        facesel = op2Facesel,
+                        randomize = op2Randomize
+                    });
+                }
             }
-            for (var i = 0; i < op3iterations; i++)
+
+            if (!op3Disabled)
             {
-                poly = poly.ApplyOp(op3, new OpParams {
-                    valueA = op3Amount1 * (op3Animate ? animMultiplier : 1),
-                    valueB = op3Amount2,
-                    facesel = op3Facesel,
-                    randomize = op3Randomize
-                });
+                for (var i = 0; i < op3iterations; i++)
+                {
+                    poly = poly.ApplyOp(op3, new OpParams
+                    {
+                        valueA = op3Amount1 * (op3Animate ? animMultiplier : 1),
+                        valueB = op3Amount2,
+                        facesel = op3Facesel,
+                        randomize = op3Randomize
+                    });
+                }
             }
         }
 

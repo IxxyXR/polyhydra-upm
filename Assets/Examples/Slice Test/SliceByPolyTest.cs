@@ -116,7 +116,9 @@ public class SliceByPolyTest : MonoBehaviour
     }
     
     void OnDrawGizmos () {
+#if UNITY_EDITOR
         GizmoHelper.DrawGizmos(poly, transform, VertexGizmos, FaceGizmos, EdgeGizmos, FaceCenterGizmos);
+#endif
     }
 
 

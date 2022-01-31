@@ -79,7 +79,6 @@ public static class PolyMeshBuilder
 		var miscUVs2 = new List<Vector4>();
 
 		List<ConwayPoly.Roles> uniqueRoles = null;
-		List<int> uniqueSides = null;
 		List<string> uniqueTags = null;
 
 		var submeshTriangles = new List<List<int>>();

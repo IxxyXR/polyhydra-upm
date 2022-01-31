@@ -1,4 +1,5 @@
 ﻿using Conway;
+using Grids;
 using UnityEngine;
 
 
@@ -6,8 +7,8 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class ExtendTest : MonoBehaviour
 {
-    public PolyHydraEnums.GridTypes GridType;
-    public PolyHydraEnums.GridShapes GridShape;
+    public GridEnums.GridTypes GridType;
+    public GridEnums.GridShapes GridShape;
     [Range(1,40)] public int width = 4;
     [Range(1,40)] public int depth = 3;
     public float amount = 1;

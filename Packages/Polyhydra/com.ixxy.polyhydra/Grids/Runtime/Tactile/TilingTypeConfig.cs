@@ -11,6 +11,8 @@ using System.Collections;
 public struct TilingTypeConfig
 {
     public string tiling_name;
+    public string symmetry_group;
+    public string grid;
     public int num_params;
     public int num_aspects;
     public int num_vertices;
@@ -24,12 +26,14 @@ public struct TilingTypeConfig
     public double[] aspect_coeffs;
     public int[] colouring;
 
-    public TilingTypeConfig(string tiling_name, int num_params, int num_aspects, int num_vertices, int num_edge_shapes,
+    public TilingTypeConfig(string tiling_name, string symmetry_group, string grid, int num_params, int num_aspects, int num_vertices, int num_edge_shapes,
         EdgeShape[] edge_shapes, bool[] edge_orientations,
         int[] edge_shape_ids, double[] default_params, double[] vertex_coeffs,
         double[] translation_coeffs, double[] aspect_coeffs, int[] colouring)
     {
         this.tiling_name = tiling_name;
+        this.symmetry_group = symmetry_group;
+        this.grid = grid;
         this.num_params = num_params;
         this.num_aspects = num_aspects;
         this.num_vertices = num_vertices;

@@ -59,8 +59,11 @@ public class TowersTest : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
     }
     
-    void OnDrawGizmos () {
+    void OnDrawGizmos ()
+    {
+#if UNITY_EDITOR
         GizmoHelper.DrawGizmos(initialPoly, transform, true, false, false);
+#endif
     }
 
 }

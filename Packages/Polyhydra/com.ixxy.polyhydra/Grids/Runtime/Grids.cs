@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Conway;
@@ -7,56 +6,118 @@ using UnityEngine;
 
 namespace Grids
 {
-    public static class Grids
+	public static class GridEnums
+	{
+		public enum GridShapes
+		{
+			Plane,
+			Torus,
+			Cylinder,
+			Cone,
+			Sphere,
+			Polar,
+			// TODO
+			// Conic_Frustum,
+			// Mobius,
+			// Torus_Trefoil,
+			// Klein,
+			// Klein2,
+			// Roman,
+			// Roman_Boy,
+			// Cross_Cap,
+			// Cross_Cap2,
+		}
+	    
+		public enum GridTypes
+		{
+			Square,
+			Isometric,
+			Hex,
+			Polar,
+			U_3_6_3_6,
+			U_3_3_3_4_4,
+			U_3_3_4_3_4,
+			// U_3_3_3_3_6, TODO Fix
+			U_3_12_12,
+			U_4_8_8,
+			U_3_4_6_4,
+			U_4_6_12,
+		}
+		
+		public enum KeplerTypes
+		{
+			K_3_3_3_3_3_3 = 100,
+			K_4_4_4_4 = 101,
+			K_6_6_6 = 102,
+			K_3_3_3_3_6 = 0,
+			K_3_3_3_4_4 = 1,
+			K_3_3_4_3_4 = 2,
+			K_3_4_6_4 = 3,
+			K_3_6_3_6 = 4,
+			K_3_12_12 = 5,
+			K_4_6_12 = 6,
+			K_4_8_8 = 7,
+			K_3_3_4_12__3_3_3_3_3_3 = 8,
+			K_3_3_6_6__3_6_3_6 = 9,
+			K_3_4_3_12__3_12_12 = 10,
+			K_3_4_4_6__3_6_3_6 = 11,
+			Durer1 = 12,
+			Durer2 = 13
+			// Deca1
+		}
+		
+	}
+
+	public static class Grids
     {
-        public static ConwayPoly MakeGrid(PolyHydraEnums.GridTypes gridType, PolyHydraEnums.GridShapes gridShape, int p, int q, bool weld=true)
+	    public static ConwayPoly MakeGrid(GridEnums.GridTypes gridType, GridEnums.GridShapes gridShape, int p, int q, bool weld=true)
 		{
 			ConwayPoly conway = null;
 
 			switch (gridType)
 			{
-				case PolyHydraEnums.GridTypes.Square:
+				case GridEnums.GridTypes.Square:
 					conway = MakeUnitileGrid(1, (int)gridShape, p, q);
 					break;
-				case PolyHydraEnums.GridTypes.Isometric:
+				case GridEnums.GridTypes.Isometric:
 					conway = MakeUnitileGrid(2, (int)gridShape, p, q);
 					break;
-				case PolyHydraEnums.GridTypes.Hex:
+				case GridEnums.GridTypes.Hex:
 					conway = MakeUnitileGrid(3, (int)gridShape, p, q);
 					break;
 
-				case PolyHydraEnums.GridTypes.U_3_6_3_6:
+				case GridEnums.GridTypes.U_3_6_3_6:
 					conway = MakeUnitileGrid(4, (int)gridShape, p, q);
 					break;
-				case PolyHydraEnums.GridTypes.U_3_3_3_4_4:
+				case GridEnums.GridTypes.U_3_3_3_4_4:
 					conway = MakeUnitileGrid(5, (int)gridShape, p, q);
 					break;
-				case PolyHydraEnums.GridTypes.U_3_3_4_3_4:
+				case GridEnums.GridTypes.U_3_3_4_3_4:
 					conway = MakeUnitileGrid(6, (int)gridShape, p, q);
 					break;
-	//			case GridTypes.U_3_3_3_3_6:
+	//			case GridEnums.GridTypes.U_3_3_3_3_6:
 	//				conway = MakeUnitileGrid(7, (int)gridShape, p, q);
 	//				break;
-				case PolyHydraEnums.GridTypes.U_3_12_12:
+				case GridEnums.GridTypes.U_3_12_12:
 					conway = MakeUnitileGrid(8, (int)gridShape, p, q);
 					break;
-				case PolyHydraEnums.GridTypes.U_4_8_8:
+				case GridEnums.GridTypes.U_4_8_8:
 					conway = MakeUnitileGrid(9, (int)gridShape, p, q);
 					break;
-				case PolyHydraEnums.GridTypes.U_3_4_6_4:
+				case GridEnums.GridTypes.U_3_4_6_4:
 					conway = MakeUnitileGrid(10, (int)gridShape, p, q);
 					break;
-				case PolyHydraEnums.GridTypes.U_4_6_12:
+				case GridEnums.GridTypes.U_4_6_12:
 					conway = MakeUnitileGrid(11, (int)gridShape, p, q);
 					break;
 
-				case PolyHydraEnums.GridTypes.Polar:
+				case GridEnums.GridTypes.Polar:
 					conway = MakePolarGrid(p, q);
 					break;
 			}
 
 			// Welding only seems to work reliably on simpler shapes
-			if (weld && gridShape != PolyHydraEnums.GridShapes.Plane) conway = conway.Weld(0.001f);
+			if (weld && gridShape != GridEnums.GridShapes.Plane) conway = conway.Weld(0.001f);
 
 			return conway;
 		}
@@ -115,7 +176,7 @@ namespace Grids
 			}
 			var vertexRoles = Enumerable.Repeat(ConwayPoly.Roles.New, ut.raw_verts.Count);
 			var faceRoles = new List<ConwayPoly.Roles>();
-			int foo, isEven, width, height, coloringOffset;
+			int roleId, isEven, width, height, coloringOffset;
 
 			for (int i = 0; i < ut.raw_faces.Count; i++)
 			{
@@ -123,73 +184,73 @@ namespace Grids
 				{
 					case 1:
 						isEven = cols % 2==0 ? (Mathf.FloorToInt(i / (float) cols)) % 2 : 0;
-						foo = ((i + isEven) % 2) + 2;
-						faceRoles.Add((ConwayPoly.Roles)foo);
+						roleId = ((i + isEven) % 2) + 2;
+						faceRoles.Add((ConwayPoly.Roles)roleId);
 						break;
 					case 2:
 						// int width = Mathf.CeilToInt((rows / Mathf.Sqrt(3))) * 2 + 1;
 						// int height = ut.raw_faces.Count / width;
 						// isEven = 0;
 						// foo = ((i/4/width) + isEven) % 2;
-						foo = i < ut.raw_faces.Count / 2 ? 2 : 3;
-						faceRoles.Add((ConwayPoly.Roles)foo);
+						roleId = i < ut.raw_faces.Count / 2 ? 2 : 3;
+						faceRoles.Add((ConwayPoly.Roles)roleId);
 						break;
 					case 3:
 						width = Mathf.CeilToInt((rows / Mathf.Sqrt(3)));
 						height = ut.raw_faces.Count / width;
 						coloringOffset = i < ut.raw_faces.Count / 2 ? 0 : 1;
-						foo = i / (height / 2);
+						roleId = i / (height / 2);
 						if (coloringOffset==1 && width % 3 == 0) coloringOffset += 1;
 						if (coloringOffset==1 && width % 3 == 2) coloringOffset += 2;
-						foo += coloringOffset;
-						foo = (foo % 3) + 2;
-						faceRoles.Add((ConwayPoly.Roles)foo);
+						roleId += coloringOffset;
+						roleId = (roleId % 3) + 2;
+						faceRoles.Add((ConwayPoly.Roles)roleId);
 						break;
 					case 4:
-						foo = ut.raw_faces[i].Count == 3 ? 2 : 3;
-						faceRoles.Add((ConwayPoly.Roles)foo);
+						roleId = ut.raw_faces[i].Count == 3 ? 2 : 3;
+						faceRoles.Add((ConwayPoly.Roles)roleId);
 						break;
 					case 5:  // TODO
 						width = rows;
 						height = (Mathf.FloorToInt(cols / 4) + 1) * 4;
-						foo = i < ut.raw_faces.Count / 2 ? 2 : 3;
-						faceRoles.Add((ConwayPoly.Roles)foo);
+						roleId = i < ut.raw_faces.Count / 2 ? 2 : 3;
+						faceRoles.Add((ConwayPoly.Roles)roleId);
 						break;
 					case 6:  // TODO
-						foo = ut.raw_faces[i].Count == 3 ? 2 : 3;
-						faceRoles.Add((ConwayPoly.Roles)foo);
+						roleId = ut.raw_faces[i].Count == 3 ? 2 : 3;
+						faceRoles.Add((ConwayPoly.Roles)roleId);
 						break;
 					// case 7:
 					// 	foo = i < ut.raw_faces.Count / 2 ? 0 : 1;
 					// 	faceRoles.Add((Roles)foo);
 					// 	break;
 					case 8:  // TODO
-						foo = ut.raw_faces[i].Count == 3 ? 2 : 3;
-						faceRoles.Add((ConwayPoly.Roles)foo);
+						roleId = ut.raw_faces[i].Count == 3 ? 2 : 3;
+						faceRoles.Add((ConwayPoly.Roles)roleId);
 						break;
 					case 9:  // TODO
-						foo = ut.raw_faces[i].Count == 8 ? 2 : 3;
-						faceRoles.Add((ConwayPoly.Roles)foo);
+						roleId = ut.raw_faces[i].Count == 8 ? 2 : 3;
+						faceRoles.Add((ConwayPoly.Roles)roleId);
 						break;
 					case 10:
 						switch (ut.raw_faces[i].Count)
 						{
-							case 3: foo = 2; break;
-							case 4: foo = 3; break;
-							case 6: foo = 4; break;
-							default: foo = 5; break;
+							case 3: roleId = 2; break;
+							case 4: roleId = 3; break;
+							case 6: roleId = 4; break;
+							default: roleId = 5; break;
 						};
-						faceRoles.Add((ConwayPoly.Roles)foo);
+						faceRoles.Add((ConwayPoly.Roles)roleId);
 						break;
 					case 11:
 						switch (ut.raw_faces[i].Count)
 						{
-							case 4: foo = 2; break;
-							case 6: foo = 3; break;
-							case 12: foo = 4; break;
-							default: foo = 5; break;
+							case 4: roleId = 2; break;
+							case 6: roleId = 3; break;
+							case 12: roleId = 4; break;
+							default: roleId = 5; break;
 						};
-						faceRoles.Add((ConwayPoly.Roles)foo);
+						faceRoles.Add((ConwayPoly.Roles)roleId);
 						break;
 					default:
 						faceRoles.Add((ConwayPoly.Roles)((i % 2) + 2));
@@ -473,30 +534,9 @@ namespace Grids
 
 		}
 
-		public enum KeplerTypes
-		{
-			K_3_3_3_3_3_3 = 100,
-			K_4_4_4_4 = 101,
-			K_6_6_6 = 102,
-			K_3_3_3_3_6 = 0,
-			K_3_3_3_4_4 = 1,
-			K_3_3_4_3_4 = 2,
-			K_3_4_6_4 = 3,
-			K_3_6_3_6 = 4,
-			K_3_12_12 = 5,
-			K_4_6_12 = 6,
-			K_4_8_8 = 7,
-			K_3_3_4_12__3_3_3_3_3_3 = 8,
-			K_3_3_6_6__3_6_3_6 = 9,
-			K_3_4_3_12__3_12_12 = 10,
-			K_3_4_4_6__3_6_3_6 = 11,
-			Durer1 = 12,
-			Durer2 = 13,
-			Foo = 200,
-			// Deca1
-		}
+
 		
-		public static ConwayPoly MakeKepler(KeplerTypes type, int xRepeats, int yRepeats, PolyHydraEnums.GridShapes gridShape)
+		public static ConwayPoly MakeKepler(GridEnums.KeplerTypes type, GridEnums.GridShapes gridShape, int xRepeats, int yRepeats)
 		{
 
 			Vector3 xOffset, yOffset;
@@ -508,7 +548,7 @@ namespace Grids
 			
 			switch (type)
 			{
-				case KeplerTypes.K_3_3_3_3_3_3:
+				case GridEnums.KeplerTypes.K_3_3_3_3_3_3:
 					tile = ConwayPoly._MakePolygon(3, true);
 					tile = tile.Rotate(Vector3.up, 30);
 					tile.AugmentFace(0, 0, 3);
@@ -519,7 +559,7 @@ namespace Grids
 						new() { ConwayPoly.Roles.Existing, ConwayPoly.Roles.New},
 					}};
 					break;
-				case KeplerTypes.K_4_4_4_4:
+				case GridEnums.KeplerTypes.K_4_4_4_4:
 					tile = ConwayPoly._MakePolygon(4, true);
 					tile = tile.Rotate(Vector3.up, 45);
 					xOffset = tile.Vertices[0].Position - tile.Vertices[3].Position;
@@ -530,7 +570,7 @@ namespace Grids
 						new() { ConwayPoly.Roles.New, ConwayPoly.Roles.Existing},
 					}};
 					break;
-				case KeplerTypes.K_6_6_6:
+				case GridEnums.KeplerTypes.K_6_6_6:
 					tile = ConwayPoly._MakePolygon(6, true);
 					tile = tile.Rotate(Vector3.up, 30);
 					xOffset = tile.Vertices[1].Position - tile.Vertices[5].Position;
@@ -542,7 +582,7 @@ namespace Grids
 						new() { ConwayPoly.Roles.NewAlt, ConwayPoly.Roles.New, ConwayPoly.Roles.Existing},
 					}};
 					break;
-				case KeplerTypes.K_3_3_3_3_6:
+				case GridEnums.KeplerTypes.K_3_3_3_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
 					tile = tile.Rotate(Vector3.up, -19);
 					tile.AugmentFace(0, 0, 3);
@@ -571,7 +611,7 @@ namespace Grids
 							ConwayPoly.Roles.NewAlt
 						}}};
 					break;
-				case KeplerTypes.K_3_3_3_4_4:
+				case GridEnums.KeplerTypes.K_3_3_3_4_4:
 					tile = ConwayPoly._MakePolygon(4, true);
 					tile = tile.Rotate(Vector3.up, -45);
 					tile.AugmentFace(0, 1, 3);
@@ -597,7 +637,7 @@ namespace Grids
 					}};
 					offsetAlternateRows = false;
 					break;
-				case KeplerTypes.K_3_3_4_3_4:
+				case GridEnums.KeplerTypes.K_3_3_4_3_4:
 					tile = ConwayPoly._MakePolygon(3, true);
 					tile = tile.Rotate(Vector3.up, 30);
 					tile.AugmentFace(0, 2, 4);
@@ -618,7 +658,7 @@ namespace Grids
 							ConwayPoly.Roles.Existing,
 						}}};
 					break;
-				case KeplerTypes.K_3_4_6_4:
+				case GridEnums.KeplerTypes.K_3_4_6_4:
 					tile = ConwayPoly._MakePolygon(6, true);
 					tile = tile.Rotate(Vector3.up, 30);
 					tile.AugmentFace(0, 0, 4);
@@ -639,7 +679,7 @@ namespace Grids
 							ConwayPoly.Roles.Existing,
 						}}};
 					break;
-				case KeplerTypes.K_3_6_3_6:
+				case GridEnums.KeplerTypes.K_3_6_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
 					tile = tile.Rotate(Vector3.up, 30);
 					tile.AugmentFace(0, 0, 3);
@@ -661,7 +701,7 @@ namespace Grids
 					}};
 					offsetAlternateRows = false;
 					break;
-				case KeplerTypes.K_3_12_12:
+				case GridEnums.KeplerTypes.K_3_12_12:
 					tile = ConwayPoly._MakePolygon(12, true);
 					tile = tile.Rotate(Vector3.up, 45);
 					tile.AugmentFace(0, 7, 3);
@@ -676,7 +716,7 @@ namespace Grids
 							ConwayPoly.Roles.NewAlt,
 						}}};
 					break;
-				case KeplerTypes.K_4_6_12:
+				case GridEnums.KeplerTypes.K_4_6_12:
 					tile = ConwayPoly._MakePolygon(12, true);
 					tile = tile.Rotate(Vector3.up, 45);
 					tile.AugmentFace(0, 0, 4);
@@ -697,7 +737,7 @@ namespace Grids
 							ConwayPoly.Roles.NewAlt,
 						}}};
 					break;
-				case KeplerTypes.K_4_8_8:
+				case GridEnums.KeplerTypes.K_4_8_8:
 					tile = ConwayPoly._MakePolygon(8, true);
 					tile = tile.Rotate(Vector3.up, -22.5f);
 					tile.AugmentFace(0, 1, 4);
@@ -718,7 +758,7 @@ namespace Grids
 					}};
 					offsetAlternateRows = false;
 					break;
-				case KeplerTypes.K_3_3_4_12__3_3_3_3_3_3:
+				case GridEnums.KeplerTypes.K_3_3_4_12__3_3_3_3_3_3:
 					tile = ConwayPoly._MakePolygon(12, true);
 					tile = tile.Rotate(Vector3.up, 15);
 					tile.AugmentFace(0, 0, 3);
@@ -764,7 +804,7 @@ namespace Grids
 							ConwayPoly.Roles.NewAlt,
 						}}};
 					break;
-				case KeplerTypes.K_3_3_6_6__3_6_3_6:
+				case GridEnums.KeplerTypes.K_3_3_6_6__3_6_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
 					tile = tile.Rotate(Vector3.up, 0);
 					tile.AugmentFace(0, 5, 3);
@@ -787,7 +827,7 @@ namespace Grids
 					offsetAlternateRows = false;
 					alternateRows = true;
 					break;
-				case KeplerTypes.K_3_4_3_12__3_12_12:
+				case GridEnums.KeplerTypes.K_3_4_3_12__3_12_12:
 					tile = ConwayPoly._MakePolygon(12, true);
 					tile = tile.Rotate(Vector3.up, 15);
 					tile.AugmentFace(0, 1, 3);
@@ -819,7 +859,7 @@ namespace Grids
 					offsetAlternateRows = false;
 					alternateRows = true;
 					break;
-				case KeplerTypes.K_3_4_4_6__3_6_3_6:
+				case GridEnums.KeplerTypes.K_3_4_4_6__3_6_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
 					tile = tile.Rotate(Vector3.up, 0);
 					tile.AugmentFace(0, 5, 3);
@@ -838,7 +878,7 @@ namespace Grids
 							ConwayPoly.Roles.ExistingAlt,
 						}}};
 					break;
-				case KeplerTypes.Durer1:
+				case GridEnums.KeplerTypes.Durer1:
 					tile = ConwayPoly._MakePolygon(5, true);
 					tile = tile.Rotate(Vector3.up, 54);
 					tile.AugmentFace(0, 5, 5);
@@ -853,7 +893,7 @@ namespace Grids
 							ConwayPoly.Roles.NewAlt,
 						}}};
 					break;
-				case KeplerTypes.Durer2:
+				case GridEnums.KeplerTypes.Durer2:
 					tile = ConwayPoly._MakePolygon(5, true);
 					tile = tile.Rotate(Vector3.up, 54);
 					tile.AugmentFace(0, 5, 5);
@@ -870,7 +910,7 @@ namespace Grids
 							ConwayPoly.Roles.NewAlt,
 						}}};
 					break;
-				// case KeplerTypes.Deca1:
+				// case GridEnums.KeplerTypes.Deca1:
 				// 	tile = ConwayPoly._MakePolygon(10, true);
 				// tile = tile.Rotate(Vector3.up, angle);
 				// 	for (int i = 0; i < 10; i++)
@@ -917,14 +957,14 @@ namespace Grids
 			
 			switch (gridShape)
 			{
-				case PolyHydraEnums.GridShapes.Polar:
-				case PolyHydraEnums.GridShapes.Cylinder:
-				case PolyHydraEnums.GridShapes.Cone:
-				case PolyHydraEnums.GridShapes.Sphere:
+				case GridEnums.GridShapes.Polar:
+				case GridEnums.GridShapes.Cylinder:
+				case GridEnums.GridShapes.Cone:
+				case GridEnums.GridShapes.Sphere:
 					poly.Scale(new Vector3(1f/width, 1, 1));
 					poly = ShapeWrap(poly, gridShape, heightScale, maxHeight);
 					break;
-				case PolyHydraEnums.GridShapes.Plane:
+				case GridEnums.GridShapes.Plane:
 					poly = poly.Weld(0.01f);
 					break;
 			}
@@ -933,7 +973,7 @@ namespace Grids
 
 		}
 		
-		public static ConwayPoly ShapeWrap(ConwayPoly grid, PolyHydraEnums.GridShapes gridShape, float heightScale, float maxHeight)
+		public static ConwayPoly ShapeWrap(ConwayPoly grid, GridEnums.GridShapes gridShape, float heightScale, float maxHeight)
 		{
 		
 			// Cylinder
@@ -953,7 +993,7 @@ namespace Grids
 			grid = grid.Weld(0.01f);  
 
 			// Change cylinder profile for cone etc
-			if (gridShape != PolyHydraEnums.GridShapes.Plane)
+			if (gridShape != GridEnums.GridShapes.Plane)
 			{
 				var heightRange = (maxHeight / 2f);
 
@@ -961,17 +1001,17 @@ namespace Grids
 				{
 					var vert = grid.Vertices[i];
 					var newPos = vert.Position;
-					if (gridShape != PolyHydraEnums.GridShapes.Cylinder)
+					if (gridShape != GridEnums.GridShapes.Cylinder)
 					{
 						float pinch = 1f;
 						var y = 1 - Mathf.InverseLerp(0, heightRange, newPos.y);
 						switch (gridShape)
 						{
-							case PolyHydraEnums.GridShapes.Polar:
-							case PolyHydraEnums.GridShapes.Cone:
+							case GridEnums.GridShapes.Polar:
+							case GridEnums.GridShapes.Cone:
 								pinch = 1 - y;
 								break;
-							case PolyHydraEnums.GridShapes.Sphere:
+							case GridEnums.GridShapes.Sphere:
 								pinch = Mathf.Sqrt(1f - Mathf.Pow(-1 + 2 * y, 2));
 								y -= 0.5f;
 								break;
@@ -984,7 +1024,7 @@ namespace Grids
 						);
 					}
 
-					if (gridShape == PolyHydraEnums.GridShapes.Polar)
+					if (gridShape == GridEnums.GridShapes.Polar)
 					{
 						newPos.y = 0;
 					}

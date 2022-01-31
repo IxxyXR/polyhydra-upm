@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Conway;
+using Grids;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -10,10 +11,10 @@ using UnityEngine.Serialization;
 public class TilerTest : ExampleBase
 {
 
-    public Grids.Grids.KeplerTypes type;
+    public GridEnums.KeplerTypes type;
     [Range(1, 64)] public int xRepeat;
     [Range(1, 64)] public int yRepeat;
-    public PolyHydraEnums.GridShapes gridShape;
+    public GridEnums.GridShapes gridShape;
 
     public override void Generate()
     {

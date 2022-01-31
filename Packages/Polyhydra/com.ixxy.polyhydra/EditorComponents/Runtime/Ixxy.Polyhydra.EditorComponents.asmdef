@@ -1,0 +1,22 @@
+{
+    "name": "Ixxy.Polyhydra.EditorComponents",
+    "rootNamespace": "",
+    "references": [
+        "GUID:00a4cb4d06515dd41ac32e72da5d81b7",
+        "GUID:776d03a35f1b52c4a9aed9f56d7b4229",
+        "GUID:a48417eabcbbb45399a6a8a8bb558d31",
+        "GUID:04849aac9046c5f4694f4976eddb46c7",
+        "GUID:5ac01eb17a822e042888ae70669b13ab",
+        "GUID:d60e483dbdfd1ef4e91c34837bd71a7e",
+        "GUID:cdf225a54f573274b9ac247ae2a0120f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

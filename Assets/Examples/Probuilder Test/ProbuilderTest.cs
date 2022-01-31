@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Conway;
+using Grids;
 using Johnson;
 using NaughtyAttributes;
 using UnityEngine;
@@ -39,9 +40,9 @@ public class ProbuilderTest : MonoBehaviour
     [ShowIf("ShapeIsJohnson")]
     public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridTypes GridType;
+    public GridEnums.GridTypes GridType;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridShapes GridShape;
+    public GridEnums.GridShapes GridShape;
     
     [Range(1,40)] public int PrismP = 4;
     [ShowIf("ShapeIsGrid")] [Range(1,40)] public int PrismQ = 4;
@@ -172,10 +173,12 @@ public class ProbuilderTest : MonoBehaviour
             else
             {
                 var go = pbmesh.gameObject;
+#if UNITY_EDITOR
                 UnityEditor.EditorApplication.delayCall+=()=>
                 {
                     DestroyImmediate(go);
                 };
+#endif
             }
         }
         var colors = Enumerable.Range(0,8).Select(x => Colors.Evaluate(((x / 8f) * ColorRange + ColorOffset) % 1)).ToArray();

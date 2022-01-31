@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using Wythoff;
 using Conway;
+using Grids;
 using TMPro;
 using Button = UnityEngine.UI.Button;
 using Random = UnityEngine.Random;
@@ -382,8 +383,8 @@ public class VrUi : MonoBehaviour
                         break;
                     case ShapeCategories.Grids:
                         _ShapeIndex += direction;
-                        _ShapeIndex = Mathf.Clamp(_ShapeIndex, 0, Enum.GetNames(typeof(PolyHydraEnums.GridTypes)).Length - 1);
-                        _Poly.GridType = (PolyHydraEnums.GridTypes)_ShapeIndex;
+                        _ShapeIndex = Mathf.Clamp(_ShapeIndex, 0, Enum.GetNames(typeof(GridEnums.GridTypes)).Length - 1);
+                        _Poly.GridType = (GridEnums.GridTypes)_ShapeIndex;
                         break;
                     case ShapeCategories.Other:
                         _ShapeIndex += direction;
@@ -533,27 +534,32 @@ public class VrUi : MonoBehaviour
             {
                 case 0:
                     label = $"{Enum.GetNames(typeof(ShapeCategories))[_ShapeCategoryIndex]}";
+                    // buttonType = ButtonType.ShapeCategory;
                     break;
-                    buttonType = ButtonType.ShapeCategory;
                 case 1:
                     switch (_Poly.ShapeType)
                     {
                         case PolyHydraEnums.ShapeTypes.Uniform:
                             string uniformName = _Poly.UniformPolyType.ToString().Replace("_", " ");
-                            label = $"{uniformName}"; break;
-                            buttonType = ButtonType.UniformType;
+                            label = $"{uniformName}";
+                            // buttonType = ButtonType.UniformType;
+                            break;
                         case PolyHydraEnums.ShapeTypes.Grid:
-                            label = $"{_Poly.GridType}"; break;
-                            buttonType = ButtonType.GridType;
+                            label = $"{_Poly.GridType}";
+                            // buttonType = ButtonType.GridType;
+                            break;
                         case PolyHydraEnums.ShapeTypes.Johnson:
-                            label = $"{_Poly.JohnsonPolyType}"; break;
-                            buttonType = ButtonType.JohnsonType;
+                            label = $"{_Poly.JohnsonPolyType}";
+                            // buttonType = ButtonType.JohnsonType;
+                            break;
                         case PolyHydraEnums.ShapeTypes.Waterman:
-                            label = $""; break;
-                            buttonType = ButtonType.WatermanType;
+                            label = $"";
+                            // buttonType = ButtonType.WatermanType;
+                            break;
                         case PolyHydraEnums.ShapeTypes.Other:
-                            label = $"{_Poly.OtherPolyType}"; break;
-                            buttonType = ButtonType.OtherType;
+                            label = $"{_Poly.OtherPolyType}";
+                            // buttonType = ButtonType.OtherType;
+                            break;
                     }
                     break;
                 case 2:

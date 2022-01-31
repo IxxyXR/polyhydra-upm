@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Conway;
+using Grids;
 using Johnson;
 using NaughtyAttributes;
 using UnityEngine;
@@ -39,9 +40,9 @@ public class CollapseMultipleEdges : ExampleBase
     [ShowIf("ShapeIsJohnson")]
     public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridTypes GridType;
+    public GridEnums.GridTypes GridType;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridShapes GridShape;
+    public GridEnums.GridShapes GridShape;
     [ShowIf("ShapeIsOther")]
     public PolyHydraEnums.OtherPolyTypes Other;
 

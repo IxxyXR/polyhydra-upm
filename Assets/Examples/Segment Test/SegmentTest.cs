@@ -1,4 +1,5 @@
 ﻿using Conway;
+using Grids;
 using Johnson;
 using NaughtyAttributes;
 using UnityEngine;
@@ -28,9 +29,9 @@ public class SegmentTest : MonoBehaviour
     [ShowIf("ShapeIsJohnson")]
     public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridTypes GridType;
+    public GridEnums.GridTypes GridType;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridShapes GridShape;
+    public GridEnums.GridShapes GridShape;
     
     [Range(1,40)] public int PrismP = 4;
     [ShowIf("ShapeIsGrid")] [Range(1,40)] public int PrismQ = 4;

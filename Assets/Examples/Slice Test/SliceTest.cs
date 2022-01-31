@@ -107,8 +107,11 @@ public class SliceTest : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
     }
     
-    void OnDrawGizmos () {
+    void OnDrawGizmos ()
+    {
+#if UNITY_EDITOR
         GizmoHelper.DrawGizmos(cap, transform, true, false, false, false);
+#endif
     }
 
 

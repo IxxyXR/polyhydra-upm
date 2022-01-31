@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Conway;
+using Grids;
 using Johnson;
 using NaughtyAttributes;
 using UnityEditor;
@@ -32,9 +33,9 @@ public class RaycastToFace : MonoBehaviour
     [ShowIf("ShapeIsJohnson")]
     public PolyHydraEnums.JohnsonPolyTypes JohnsonPolyType;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridTypes GridType;
+    public GridEnums.GridTypes GridType;
     [ShowIf("ShapeIsGrid")]
-    public PolyHydraEnums.GridShapes GridShape;
+    public GridEnums.GridShapes GridShape;
 
     [Range(1,40)] public int P = 6;
     [ShowIf("ShapeIsGrid")] [Range(1,40)] public int Q = 6;
