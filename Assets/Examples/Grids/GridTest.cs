@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using Grids;
+using UnityEngine;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class GridTest : ExampleBase
 {
-    public PolyHydraEnums.GridTypes GridType;
-    public PolyHydraEnums.GridShapes GridShape;
+    public GridEnums.GridTypes GridType;
+    public GridEnums.GridShapes GridShape;
     [Range(1, 40)] public int width = 4;
     [Range(1, 40)] public int depth = 3;
     
