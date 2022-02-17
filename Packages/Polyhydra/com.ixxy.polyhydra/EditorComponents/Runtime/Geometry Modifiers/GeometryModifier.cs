@@ -2,7 +2,6 @@ using System;
 using Conway;
 using NaughtyAttributes;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [ExecuteInEditMode]
 public partial class GeometryModifier : BaseModifier
@@ -11,8 +10,9 @@ public partial class GeometryModifier : BaseModifier
     [ShowIf(nameof(UsesAmount))]public float Value1 = 0;
     [ShowIf(nameof(UsesAmount2))]public float Value2 = 0;
     [ShowIf(nameof(UsesRandomize)), Foldout("More")] public bool Randomize = false;
+    [ShowIf(nameof(UsesRandomize)), Foldout("More")] public int RandomSeed = 0;
     [Foldout("More"), Range(1, 5)] public int iterations = 1;
-    
+
     private bool UsesAmount() => PolyHydraEnums.OpConfigs[op].usesAmount;
     private bool UsesAmount2() => PolyHydraEnums.OpConfigs[op].usesAmount2;
     private bool UsesFaces() => PolyHydraEnums.OpConfigs[op].usesFaces;
@@ -20,6 +20,7 @@ public partial class GeometryModifier : BaseModifier
 
     public override ConwayPoly Modify(ConwayPoly poly)
     {
+        
         Func<FilterParams, bool> filter = EnableFilter ? GetFilter(poly) : null;
         for (var i = 0; i < iterations; i++)
         {
