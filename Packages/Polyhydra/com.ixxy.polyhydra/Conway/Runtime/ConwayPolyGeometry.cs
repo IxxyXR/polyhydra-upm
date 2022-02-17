@@ -87,27 +87,23 @@ namespace Conway
             }
         }
 
-        public ConwayPoly Transform(Vector3 pos, Vector3? rot = null, Vector3? scale = null)
+        public void Transform(Vector3 pos, Vector3? rot = null, Vector3? scale = null)
         {
             var matrix = Matrix4x4.TRS(
                 pos,
                 Quaternion.Euler(rot ?? Vector3.zero),
                 scale ?? Vector3.one
             );
-            return Transform(matrix);
+            Transform(matrix);
         }
 
-        public ConwayPoly Transform(Matrix4x4 matrix)
+        public void Transform(Matrix4x4 matrix)
         {
-
-            var copy = Duplicate();
-            for (var i = 0; i < copy.Vertices.Count; i++)
+            for (var i = 0; i < Vertices.Count; i++)
             {
-                var v = copy.Vertices[i];
+                var v = Vertices[i];
                 v.Position = matrix.MultiplyPoint3x4(v.Position);
             }
-
-            return copy;
         }
 
         public ConwayPoly Rotate(Vector3 axis, float amount)
@@ -1440,6 +1436,11 @@ namespace Conway
             Append(other, position, rotation, Vector3.one);
         }
 
+        public void Append(ConwayPoly other, Vector3 position, Vector3 rotation, Vector3 scale)
+        {
+            Append(other, position, Quaternion.Euler(rotation), scale);
+        }
+
         public void Append(ConwayPoly other, Vector3 position, float scale)
         {
             Append(other, position, Quaternion.identity, Vector3.one * scale);
@@ -1489,12 +1490,26 @@ namespace Conway
             return new ConwayPoly(verts, ListFacesByVertexIndices(), FaceRoles, VertexRoles, FaceTags);
         }
         
+        public ConwayPoly Duplicate(Vector3 transform, Quaternion rotation)
+        {
+            return Duplicate(Matrix4x4.TRS(transform, rotation, Vector3.one));
+        }
         
-        private ConwayPoly Duplicate(Vector3 transform, float scale)
+        public ConwayPoly Duplicate(Vector3 transform, float scale)
         {
             return Duplicate(Matrix4x4.TRS(transform, Quaternion.identity, Vector3.one * scale));
         }
+        
+        public ConwayPoly Duplicate(Vector3 transform)
+        {
+            return Duplicate(Matrix4x4.TRS(transform, Quaternion.identity, Vector3.one));
+        }
 
+        public ConwayPoly Duplicate(Vector3 transform, Vector3 rotation, Vector3 scale)
+        {
+            return Duplicate(Matrix4x4.TRS(transform, Quaternion.Euler(rotation), scale));
+        }
+        
         public ConwayPoly Duplicate(Vector3 transform, Quaternion rotation, Vector3 scale)
         {
             return Duplicate(Matrix4x4.TRS(transform, rotation, scale));
@@ -2782,7 +2797,7 @@ namespace Conway
             }
         }
 
-        public int AugmentFace(Halfedge edgeToAugment, int newPolySides)
+        public int ExtendFace(Halfedge edgeToAugment, int newPolySides)
         {
             if (edgeToAugment.Pair == null)
             {
@@ -2821,12 +2836,12 @@ namespace Conway
             return -1;
         }
 
-        public int AugmentFace(int faceIndex, int edgeIndex, int sides)
+        public int ExtendFace(int faceIndex, int edgeIndex, int sides)
         {
-            return AugmentFace(Faces[faceIndex], edgeIndex, sides);
+            return ExtendFace(Faces[faceIndex], edgeIndex, sides);
         }
 
-        public List<int> AugmentFace(IEnumerable<int> faceIndices, IEnumerable<int> edgeIndices, int sides)
+        public List<int> ExtendFace(IEnumerable<int> faceIndices, IEnumerable<int> edgeIndices, int sides)
         {
             var results = new List<int>();
             foreach (var faceIndex in faceIndices)
@@ -2835,43 +2850,43 @@ namespace Conway
                 foreach (var edgeIndex in edgeIndices)
                 {
                     Halfedge edgeToAugment = face.GetHalfEdge(edgeIndex);
-                    results.Add(AugmentFace(edgeToAugment, sides));
+                    results.Add(ExtendFace(edgeToAugment, sides));
                 }
             }
 
             return results;
         }
 
-        public List<int> AugmentFace(IEnumerable<int> faceIndices, int edgeIndex, int sides)
+        public List<int> ExtendFace(IEnumerable<int> faceIndices, int edgeIndex, int sides)
         {
             var results = new List<int>();
             foreach (var faceIndex in faceIndices)
             {
                 var face = Faces[faceIndex];
                 Halfedge edgeToAugment = face.GetHalfEdge(edgeIndex);
-                results.Add(AugmentFace(edgeToAugment, sides));
+                results.Add(ExtendFace(edgeToAugment, sides));
             }
 
             return results;
         }
 
-        public List<int> AugmentFace(int faceIndex, IEnumerable<int> edgeIndices, int sides)
+        public List<int> ExtendFace(int faceIndex, IEnumerable<int> edgeIndices, int sides)
         {
             var face = Faces[faceIndex];
             var results = new List<int>();
             foreach (var edgeIndex in edgeIndices)
             {
                 Halfedge edgeToAugment = face.GetHalfEdge(edgeIndex);
-                results.Add(AugmentFace(edgeToAugment, sides));
+                results.Add(ExtendFace(edgeToAugment, sides));
             }
 
             return results;
         }
 
-        public int AugmentFace(Face face, int edgeIndex, int sides)
+        public int ExtendFace(Face face, int edgeIndex, int sides)
         {
             Halfedge edgeToAugment = face.GetHalfEdge(edgeIndex);
-            return AugmentFace(edgeToAugment, sides);
+            return ExtendFace(edgeToAugment, sides);
         }
 
         public void AddKite(int faceIndexA, int edgeIndexA, int faceIndexB, int edgeIndexB)
