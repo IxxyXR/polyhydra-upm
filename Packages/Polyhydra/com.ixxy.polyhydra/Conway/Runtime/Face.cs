@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using QuickHull3D;
 using Wythoff;
 using UnityEngine;
 
@@ -156,6 +157,76 @@ namespace Conway
 
         public int Sides {
             get { return GetVertices().Count; }
+        }
+        
+        public Vector3 GetTangent(Vector3? dir=null)
+        {
+            if (!dir.HasValue) dir = Vector3.forward;
+            var normal = Normal;
+            Vector3 tangent = Vector3.Cross(normal, dir.Value);
+            if (tangent.magnitude == 0)
+            {
+                tangent = Vector3.Cross( normal, Quaternion.Euler(90,0,0) * dir.Value);
+            }
+            return tangent;
+        }
+
+        // Gets the vertices of this face as a list of Vector2s
+        // in the plane of the face relative to it's centroid
+        private List<Vector2> Get2DVertices()
+        {
+            var centroid = Centroid;
+            var verts = GetVertices();
+            var planeX = GetTangent(Normal);
+            var planeY = Quaternion.Euler(0, 90, 0) * planeX;
+            return verts.Select(v => new Vector2(
+                Vector3.Dot(v.Position - centroid, planeX),
+                Vector3.Dot(v.Position - centroid, planeY)
+            )).ToList();
+        }
+        
+        public bool IsClockwise
+        {
+            get
+            {
+                var verts = Get2DVertices();
+                float total = 0;
+                for (var i = 0; i < verts.Count; i++)
+                {
+                    var vert1 = verts[i];
+                    var vert2 = verts[(i + 1) % verts.Count];
+                    total += (vert2.x - vert1.x) * (vert2.y - vert1.y);
+                }
+                return total >= 0;
+            }
+        }
+
+        public bool IsConvex
+        {
+            get
+            {
+                List<Vector2> verts = Get2DVertices();
+                if (verts.Count < 4) return true;
+                bool sign = false;
+                int n = verts.Count;
+                for(int i = 0; i < n; i++)
+                {
+                    float dx1 = verts[(i + 2) % n].x - verts[(i + 1) % n].x;
+                    float dy1 = verts[(i + 2) % n].y - verts[(i + 1) % n].y;
+                    float dx2 = verts[i].x - verts[(i + 1) % n].x;
+                    float dy2 = verts[i].y - verts[(i + 1) % n].y;
+                    float zcrossproduct = dx1 * dy2 - dy1 * dx2;
+
+                    if (i == 0) sign = zcrossproduct > 0;
+                    else if (sign != zcrossproduct > 0)
+                    {
+                        Debug.Log($"break loop. not convex");
+                        return false;
+                    }
+                }
+                Debug.Log($"end loop. is convex");
+                return true;
+            }
         }
 
         #endregion
