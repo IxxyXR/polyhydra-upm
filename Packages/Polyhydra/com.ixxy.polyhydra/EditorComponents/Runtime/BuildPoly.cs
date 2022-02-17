@@ -84,7 +84,7 @@ class BuildPoly : MonoBehaviour
             {
                 NeedsGenerate = modifier.Animate && EnableAnimation;
                 modifier.animMultiplier = animMultiplier;
-                polyStack.Push(modifier.Modify(polyStack.Pop()));
+                if (polyStack.Count > 0) polyStack.Push(modifier.Modify(polyStack.Pop()));
             }
         }
 
@@ -142,7 +142,7 @@ class BuildPoly : MonoBehaviour
     {
         if (Position != Vector3.zero || Rotation != Vector3.zero || Scale != Vector3.one)
         {
-            finalPoly = finalPoly.Transform(Position, Rotation, Scale);
+            finalPoly.Transform(Position, Rotation, Scale);
         }
     }
     private void OnDrawGizmos()

@@ -29,9 +29,12 @@ public class BaseStackModifier : BaseComponent
         // Remove them from stack
         polyStack = new Stack<ConwayPoly>();
         var mergedPoly = new ConwayPoly();
-        for (int i = 0; i < Copies; i++)
+        if (sourceStack.Count > 0)
         {
-            mergedPoly.Append(sourceStack[i % sourceStack.Count], transforms[i % transforms.Count]);
+            for (int i = 0; i < Copies; i++)
+            {
+                mergedPoly.Append(sourceStack[i % sourceStack.Count], transforms[i % transforms.Count]);
+            }
         }
         polyStack.Push(DoWeld(mergedPoly));
         return polyStack;
