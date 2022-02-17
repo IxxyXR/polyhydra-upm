@@ -66,7 +66,7 @@ public class SineSliceTest : MonoBehaviour
     public void Generate()
     {
         poly = JohnsonPoly.Build(JohnsonPolyType, Sides);
-        poly = poly.Transform(PositionBefore, RotationBefore, ScaleBefore);
+        poly.Transform(PositionBefore, RotationBefore, ScaleBefore);
         
         if (ApplyOp)
         {
@@ -94,10 +94,10 @@ public class SineSliceTest : MonoBehaviour
                 var planePos = new Vector3(offset*axis.x, offset*axis.y, offset*axis.z);
                 var sliced = input.SliceByPlane(new Plane(Quaternion.Euler(SliceAngle) * axis, planePos), Cap);
                 var gapVector = new Vector3(-SliceGap*axis.x, -SliceGap*axis.y, -SliceGap*axis.z);
-                result = result.Transform(gapVector);
+                result.Transform(gapVector);
                 var lerp = Mathf.InverseLerp(SliceStart, SliceEnd, offset);
                 var shift = new Vector3(Mathf.Sin(lerp*frequency)*amplitude, 0, 0);
-                result.Append(sliced.bottom.Transform(shift));
+                result.Append(sliced.bottom.Duplicate(shift));
                 input = sliced.top;
                 failsafe--;
             } while (offset < SliceEnd && failsafe > 0);

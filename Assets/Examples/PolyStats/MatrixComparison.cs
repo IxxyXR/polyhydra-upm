@@ -67,10 +67,10 @@ public class MatrixComparison : MonoBehaviour
 
         var allPoly = new ConwayPoly();
             
-        x = x.Transform(-Vector3.left);
-        xd = xd.Transform(Vector3.left * 2);
-        dx = dx.Transform(Vector3.left * 4);
-        dxd = dxd.Transform(Vector3.left * 6);
+        x.Transform(-Vector3.left);
+        xd.Transform(Vector3.left * 2);
+        dx.Transform(Vector3.left * 4);
+        dxd.Transform(Vector3.left * 6);
         
         allPoly.Append(x);
         allPoly.Append(xd);
@@ -78,7 +78,7 @@ public class MatrixComparison : MonoBehaviour
         allPoly.Append(dxd);
         allPoly.Recenter();
 
-        allPoly = allPoly.Transform(Position, Rotation, Scale);
+        allPoly.Transform(Position, Rotation, Scale);
         
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(allPoly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;

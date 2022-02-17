@@ -80,7 +80,7 @@ public class SliceByPolyTest : MonoBehaviour
             poly = poly.Canonicalize(0.01, 0.01);
         }
         
-        poly = poly.Transform(Position, Rotation, Scale);
+        poly.Transform(Position, Rotation, Scale);
 
         var rot = SliceRotation;
         if (animateSlice > 0)
@@ -92,10 +92,10 @@ public class SliceByPolyTest : MonoBehaviour
         var sliceWythoff = new WythoffPoly(SlicePolyType, 3, 3);
         sliceWythoff.BuildFaces();
         var slicePoly = new ConwayPoly(sliceWythoff);
-        slicePoly = slicePoly.Transform(SlicePosition, SliceRotation, Vector3.one * SliceScale);
+        slicePoly.Transform(SlicePosition, SliceRotation, Vector3.one * SliceScale);
         var result = poly.SliceByPoly(slicePoly, Cap, FaceCount);
         poly = result.outside;
-        var inside = result.inside.Transform(insideTransform);
+        var inside = result.inside.Duplicate(insideTransform);
         poly.Append(inside);
         
         if (ShowSlicePoly) poly.Append(slicePoly);

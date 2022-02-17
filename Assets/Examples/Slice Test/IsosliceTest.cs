@@ -67,7 +67,7 @@ public class IsosliceTest : MonoBehaviour
     public void Generate()
     {
         poly = JohnsonPoly.Build(JohnsonPolyType, Sides);
-        poly = poly.Transform(PositionBefore, RotationBefore, ScaleBefore);
+        poly.Transform(PositionBefore, RotationBefore, ScaleBefore);
         
         if (ApplyOp)
         {

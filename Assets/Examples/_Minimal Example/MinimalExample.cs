@@ -19,7 +19,7 @@ public class MinimalExample : MonoBehaviour
         ConwayPoly poly2 = JohnsonPoly.Build(PolyHydraEnums.JohnsonPolyTypes.Pyramid, 4);
 
         // 4. Move our second shape down by 0.5
-        poly2 = poly1.Transform(new Vector3(0, .5f, 0));
+        poly2 = poly1.Duplicate(new Vector3(0, .5f, 0));
 
         // 5. Join the two shapes
         poly1.Append(poly2);

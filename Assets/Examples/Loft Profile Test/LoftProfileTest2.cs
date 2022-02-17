@@ -85,7 +85,7 @@ public class LoftProfileTest2 : MonoBehaviour
         ground = ground.Medial(new OpParams(3f));
         
         // Add some edging around buildings
-        var edging = floors.Transform(new Vector3(0, .03f, 0));
+        var edging = floors.Duplicate(new Vector3(0, .03f, 0));
         edging = edging.FaceScale(new OpParams(0.25f));
         edging.SetFaceRoles(ConwayPoly.Roles.Existing);
         

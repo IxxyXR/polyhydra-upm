@@ -71,7 +71,7 @@ public class SliceSegmentTest : MonoBehaviour
             poly = poly.Canonicalize(0.01, 0.01);
         }
         
-        poly = poly.Transform(Position, Rotation, Scale);
+        poly.Transform(Position, Rotation, Scale);
 
         var pos = SlicePosition;
         if (animateSlice > 0)
@@ -86,7 +86,7 @@ public class SliceSegmentTest : MonoBehaviour
         var slicePoint = slicePlane.normal * (-slicePlane.distance + SegmentHeight);
         slicePlane.SetNormalAndPosition(slicePlane.normal, slicePoint);
         var (top, segment, _) = result.top.SliceByPlane(slicePlane, Cap, includeTop, includeBottom);
-        segment = segment.Transform(SegmentTransform);
+        segment.Transform(SegmentTransform);
         poly.Append(top);
         poly.Append(segment);
         

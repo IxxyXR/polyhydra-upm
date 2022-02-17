@@ -179,7 +179,7 @@ public class ExampleBase : MonoBehaviour
 
         if (Position != Vector3.zero || Rotation != Vector3.zero || Scale != Vector3.one)
         {
-            poly = poly.Transform(Position, Rotation, Scale);
+            poly.Transform(Position, Rotation, Scale);
         }
     }
 

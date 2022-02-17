@@ -38,7 +38,7 @@ public class ExampleTemplate : MonoBehaviour
     [ContextMenu("Generate")]
     public void Generate()
     {
-        poly = poly.Transform(Position, Rotation, Scale);
+        poly.Transform(Position, Rotation, Scale);
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;
     }

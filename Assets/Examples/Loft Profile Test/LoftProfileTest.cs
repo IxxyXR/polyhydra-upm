@@ -66,7 +66,7 @@ public class LoftProfileTest : MonoBehaviour
             var o2 = new OpParams {valueA = op2Amount1 * Mathf.Abs(op2Animate ? Mathf.Cos(Time.time * .6f) : 1), valueB = op2Amount2, facesel = op2Facesel};
             poly = poly.ApplyOp(op2, o2);
         }
-        poly = poly.Transform(Position, Rotation, Scale);
+        poly.Transform(Position, Rotation, Scale);
 
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;

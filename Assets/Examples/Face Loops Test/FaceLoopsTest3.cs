@@ -82,7 +82,7 @@ public class FaceLoopsTest3 : MonoBehaviour
             poly = poly.Canonicalize(0.1, 0.1);
         }
 
-        poly = poly.Transform(Position, Rotation, Scale);
+        poly.Transform(Position, Rotation, Scale);
         
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;

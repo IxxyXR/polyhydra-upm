@@ -230,7 +230,7 @@ public class RandomSpaceshipGenerator : MonoBehaviour
             float radius = Random.Range(0.01f, 0.05f);
             float height = Random.Range(0.25f, 2f);
             float offset = Random.value < .5 ? 0 : Random.value < 0.5 ? .5f : -.5f;
-            antennaGroup.Append(antenna.Transform(
+            antennaGroup.Append(antenna.Duplicate(
                 face.GetPolarPoint(90, offset),
                 Vector3.zero,
                 new Vector3(radius, height, radius)

@@ -71,7 +71,7 @@ public class SliceTest : MonoBehaviour
             poly = poly.Canonicalize(0.01, 0.01);
         }
         
-        poly = poly.Transform(Position, Rotation, Scale);
+        poly.Transform(Position, Rotation, Scale);
 
         var pos = SlicePosition;
         if (animateSlice > 0)
@@ -81,7 +81,7 @@ public class SliceTest : MonoBehaviour
         
         var result = poly.SliceByPlane(new Plane(Quaternion.Euler(SliceRotation) * Vector3.up, pos), Cap, includeTop, includeBottom);
         poly = result.bottom;
-        var top = result.top.Transform(topTransform);
+        var top = result.top.Duplicate(topTransform);
         poly.Append(top);
 
         // var sliceWythoff = new WythoffPoly(PolyTypes.Cube, 3, 3);

@@ -34,14 +34,14 @@ public class PolarPointsTest : MonoBehaviour
         var poly = JohnsonPoly.Antiprism(4);
         var cube = JohnsonPoly.Prism(4);
         var decorations = new ConwayPoly();
-        cube = cube.Transform(Vector3.zero, Vector3.zero, Vector3.one * cubeScale);
+        cube.Transform(Vector3.zero, Vector3.zero, Vector3.one * cubeScale);
         foreach (var face in poly.Faces)
         {
             for (float angle = 0; angle < 360; angle += theta)
             {
                 var pos = face.GetPolarPoint(angle, distance);
                 var look = Quaternion.LookRotation(face.Normal, Vector3.up).eulerAngles + new Vector3(90, 0, 0);
-                decorations.Append(cube.Transform(pos, look, Vector3.one));
+                decorations.Append(cube, pos, look, Vector3.one);
             }
         }
         //poly.Append(decorations);

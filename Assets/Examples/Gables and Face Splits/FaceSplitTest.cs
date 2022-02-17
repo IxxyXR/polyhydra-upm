@@ -64,7 +64,7 @@ public class FaceSplitTest : MonoBehaviour
             poly = poly.FaceSlide(new OpParams(amount2, direction2 * i, selectByTags: "split2"));
         }
         
-        poly = poly.Transform(Position, Rotation, Scale);
+        poly.Transform(Position, Rotation, Scale);
         var mesh = PolyMeshBuilder.BuildMeshFromConwayPoly(poly, false, null, ColorMethod);
         GetComponent<MeshFilter>().mesh = mesh;
     }

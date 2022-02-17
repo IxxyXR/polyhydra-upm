@@ -699,7 +699,7 @@ namespace Johnson
 			{
 				box = box.ExtendBoundaries(new OpParams(i==0 ? -1 : 1, i==0 ? 90f : 0f));
 			}
-			cap = cap.Transform(new Vector3(0, -PrismP, 0));
+			cap.Transform(new Vector3(0, -PrismP, 0));
 			box.Append(cap);
 			box = box.Weld(0.001f);
 			box.Recenter();

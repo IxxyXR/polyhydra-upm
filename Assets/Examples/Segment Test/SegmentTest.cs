@@ -116,7 +116,7 @@ public class SegmentTest : MonoBehaviour
             preOpPoly = preOpPoly.Canonicalize(0.01, 0.01);
         }
         
-        var postOpPoly = preOpPoly.Transform(Position, Rotation, Scale);
+        var postOpPoly = preOpPoly.Duplicate(Position, Rotation, Scale);
 
         var animValue2 = Mathf.Sin(Time.time / AnimateAmountRate);
         // var animValue2 = Mathf.PerlinNoise(Time.time / AnimateAmountRate, 0) * Mathf.PerlinNoise(Time.time / AnimateAmountRate * .3f, 10) -.5f;

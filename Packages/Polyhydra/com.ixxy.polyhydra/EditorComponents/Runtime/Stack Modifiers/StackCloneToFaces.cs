@@ -25,7 +25,6 @@ public class StackCloneToFaces : BaseStackModifier
         if (ScaleStrength > 0)
         {
             faceAreas = templatePoly.Faces.Select(x => x.GetArea()).ToList();
-            Debug.Log($"faces: {templatePoly.Faces.Count} areas: {faceAreas.Count}");
             var validFaceAreas = faceAreas.Where(x => x > 0).ToList();
             // Find min/max ignoring degenerate faces
             minFaceArea = validFaceAreas.Min();

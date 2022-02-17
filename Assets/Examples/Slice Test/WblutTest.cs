@@ -69,7 +69,7 @@ public class WblutTest : MonoBehaviour
         if (Random.seed != 0) Random.seed = RandomSeed;
         
         poly = JohnsonPoly.Build(JohnsonPolyType, Sides);
-        poly = poly.Transform(PositionBefore, RotationBefore, ScaleBefore);
+        poly.Transform(PositionBefore, RotationBefore, ScaleBefore);
         
         if (ApplyOp)
         {
@@ -95,10 +95,10 @@ public class WblutTest : MonoBehaviour
                 var planePos = new Vector3(offset*axis.x, offset*axis.y, offset*axis.z);
                 var sliced = input.SliceByPlane(new Plane(Quaternion.Euler(SliceAngle) * axis, planePos), Cap);
                 var gapVector = new Vector3(-Gap*axis.x, -Gap*axis.y, -Gap*axis.z);
-                result = result.Transform(gapVector);
+                result.Transform(gapVector);
                 float randomShift = Random.Range(ShiftMin, ShiftMax);
                 var randomShiftVector = new Vector3(randomShift*axis.y, randomShift*axis.z, randomShift*axis.x);
-                result.Append(sliced.bottom.Transform(randomShiftVector));
+                result.Append(sliced.bottom.Duplicate(randomShiftVector));
                 input = sliced.top;
             } while (offset < SliceEnd);
 
