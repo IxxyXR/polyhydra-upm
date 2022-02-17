@@ -4,19 +4,17 @@ using NaughtyAttributes;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class StackRotate : BaseStackModifier
+public class StackSwap : BaseStackModifier
 {
     public override Stack<ConwayPoly> Modify(Stack<ConwayPoly> polyStack)
     {
-        if (polyStack.Count >= 3)
+        if (polyStack.Count >= 2)
         {
             var top = polyStack.Pop();
             var next = polyStack.Pop();
-            var nextNext = polyStack.Pop();
-            polyStack.Push(next);
             polyStack.Push(top);
-            polyStack.Push(nextNext);
+            polyStack.Push(next);
         }
         return polyStack;
-    }
+    }    
 }
