@@ -14,7 +14,7 @@ public class BaseComponent : MonoBehaviour
         GetComponent<BuildPoly>().NeedsGenerate = true;
     }
     
-    [Button][ContextMenu("MoveUp")]
+    [Button]
     private void MoveUp()
     {
 #if UNITY_EDITOR
@@ -22,7 +22,7 @@ public class BaseComponent : MonoBehaviour
 #endif
     }
     
-    [Button][ContextMenu("MoveDown")]
+    [Button]
     private void MoveDown()
     {
 #if UNITY_EDITOR
