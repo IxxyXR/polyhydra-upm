@@ -551,7 +551,7 @@ namespace Grids
 				case GridEnums.KeplerTypes.K_3_3_3_3_3_3:
 					tile = ConwayPoly._MakePolygon(3, true);
 					tile = tile.Rotate(Vector3.up, 30);
-					tile.AugmentFace(0, 0, 3);
+					tile.ExtendFace(0, 0, 3);
 					xOffset = tile.Vertices[0].Position - tile.Vertices[2].Position;
 					yOffset = tile.Vertices[3].Position - tile.Vertices[0].Position;
 					roleSet = new List<List<List<ConwayPoly.Roles>>>
@@ -585,14 +585,14 @@ namespace Grids
 				case GridEnums.KeplerTypes.K_3_3_3_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
 					tile = tile.Rotate(Vector3.up, -19);
-					tile.AugmentFace(0, 0, 3);
-					tile.AugmentFace(0, 1, 3);
-					tile.AugmentFace(0, 2, 3);
-					tile.AugmentFace(1, 2, 3);
-					tile.AugmentFace(1, 3, 3);
-					tile.AugmentFace(2, 2, 3);
-					tile.AugmentFace(2, 3, 3);
-					tile.AugmentFace(3, 2, 3);
+					tile.ExtendFace(0, 0, 3);
+					tile.ExtendFace(0, 1, 3);
+					tile.ExtendFace(0, 2, 3);
+					tile.ExtendFace(1, 2, 3);
+					tile.ExtendFace(1, 3, 3);
+					tile.ExtendFace(2, 2, 3);
+					tile.ExtendFace(2, 3, 3);
+					tile.ExtendFace(3, 2, 3);
 					xOffset = tile.Vertices[8].Position - tile.Vertices[10].Position;
 					yOffset = tile.Vertices[10].Position - tile.Vertices[4].Position;
 					roleSet = new List<List<List<ConwayPoly.Roles>>>
@@ -614,8 +614,8 @@ namespace Grids
 				case GridEnums.KeplerTypes.K_3_3_3_4_4:
 					tile = ConwayPoly._MakePolygon(4, true);
 					tile = tile.Rotate(Vector3.up, -45);
-					tile.AugmentFace(0, 1, 3);
-					tile.AugmentFace(0, 3, 3);
+					tile.ExtendFace(0, 1, 3);
+					tile.ExtendFace(0, 3, 3);
 					xOffset = tile.Vertices[2].Position - tile.Vertices[3].Position;
 					yOffset = tile.Vertices[4].Position - tile.Vertices[2].Position;
 					roleSet = new List<List<List<ConwayPoly.Roles>>>
@@ -640,11 +640,11 @@ namespace Grids
 				case GridEnums.KeplerTypes.K_3_3_4_3_4:
 					tile = ConwayPoly._MakePolygon(3, true);
 					tile = tile.Rotate(Vector3.up, 30);
-					tile.AugmentFace(0, 2, 4);
-					tile.AugmentFace(0, 1, 4);
-					tile.AugmentFace(1, 2, 3);
-					tile.AugmentFace(2, 0, 3);
-					tile.AugmentFace(2, 3, 3);
+					tile.ExtendFace(0, 2, 4);
+					tile.ExtendFace(0, 1, 4);
+					tile.ExtendFace(1, 2, 3);
+					tile.ExtendFace(2, 0, 3);
+					tile.ExtendFace(2, 3, 3);
 					xOffset = tile.Vertices[5].Position - tile.Vertices[4].Position;
 					yOffset = tile.Vertices[5].Position - tile.Vertices[7].Position;	
 					roleSet = new List<List<List<ConwayPoly.Roles>>>
@@ -661,11 +661,11 @@ namespace Grids
 				case GridEnums.KeplerTypes.K_3_4_6_4:
 					tile = ConwayPoly._MakePolygon(6, true);
 					tile = tile.Rotate(Vector3.up, 30);
-					tile.AugmentFace(0, 0, 4);
-					tile.AugmentFace(0, 1, 4);
-					tile.AugmentFace(0, 2, 4);
-					tile.AugmentFace(1, 0, 3);
-					tile.AugmentFace(2, 0, 3);
+					tile.ExtendFace(0, 0, 4);
+					tile.ExtendFace(0, 1, 4);
+					tile.ExtendFace(0, 2, 4);
+					tile.ExtendFace(1, 0, 3);
+					tile.ExtendFace(2, 0, 3);
 					xOffset = tile.Vertices[11].Position - tile.Vertices[4].Position;
 					yOffset = tile.Vertices[9].Position - tile.Vertices[3].Position;
 					roleSet = new List<List<List<ConwayPoly.Roles>>>
@@ -682,8 +682,8 @@ namespace Grids
 				case GridEnums.KeplerTypes.K_3_6_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
 					tile = tile.Rotate(Vector3.up, 30);
-					tile.AugmentFace(0, 0, 3);
-					tile.AugmentFace(0, 1, 3);
+					tile.ExtendFace(0, 0, 3);
+					tile.ExtendFace(0, 1, 3);
 					xOffset = tile.Vertices[1].Position - tile.Vertices[4].Position;
 					yOffset = tile.Vertices[7].Position - tile.Vertices[2].Position;	
 					roleSet = new List<List<List<ConwayPoly.Roles>>>
@@ -704,8 +704,8 @@ namespace Grids
 				case GridEnums.KeplerTypes.K_3_12_12:
 					tile = ConwayPoly._MakePolygon(12, true);
 					tile = tile.Rotate(Vector3.up, 45);
-					tile.AugmentFace(0, 7, 3);
-					tile.AugmentFace(0, 9, 3);
+					tile.ExtendFace(0, 7, 3);
+					tile.ExtendFace(0, 9, 3);
 					xOffset = tile.Vertices[4].Position - tile.Vertices[9].Position;
 					yOffset = tile.Vertices[2].Position - tile.Vertices[7].Position;
 					roleSet = new List<List<List<ConwayPoly.Roles>>>
@@ -719,11 +719,11 @@ namespace Grids
 				case GridEnums.KeplerTypes.K_4_6_12:
 					tile = ConwayPoly._MakePolygon(12, true);
 					tile = tile.Rotate(Vector3.up, 45);
-					tile.AugmentFace(0, 0, 4);
-					tile.AugmentFace(0, 2, 4);
-					tile.AugmentFace(0, 4, 4);
-					tile.AugmentFace(1, 4, 6);
-					tile.AugmentFace(2, 4, 6);
+					tile.ExtendFace(0, 0, 4);
+					tile.ExtendFace(0, 2, 4);
+					tile.ExtendFace(0, 4, 4);
+					tile.ExtendFace(1, 4, 6);
+					tile.ExtendFace(2, 4, 6);
 					xOffset = tile.Vertices[16].Position - tile.Vertices[10].Position;
 					yOffset = tile.Vertices[15].Position - tile.Vertices[7].Position;	
 					roleSet = new List<List<List<ConwayPoly.Roles>>>
@@ -740,7 +740,7 @@ namespace Grids
 				case GridEnums.KeplerTypes.K_4_8_8:
 					tile = ConwayPoly._MakePolygon(8, true);
 					tile = tile.Rotate(Vector3.up, -22.5f);
-					tile.AugmentFace(0, 1, 4);
+					tile.ExtendFace(0, 1, 4);
 					xOffset = tile.Vertices[2].Position - tile.Vertices[8].Position;
 					yOffset = tile.Vertices[9].Position - tile.Vertices[4].Position;
 					roleSet = new List<List<List<ConwayPoly.Roles>>>
@@ -761,24 +761,24 @@ namespace Grids
 				case GridEnums.KeplerTypes.K_3_3_4_12__3_3_3_3_3_3:
 					tile = ConwayPoly._MakePolygon(12, true);
 					tile = tile.Rotate(Vector3.up, 15);
-					tile.AugmentFace(0, 0, 3);
-					tile.AugmentFace(0, 1, 4);
-					tile.AugmentFace(0, 2, 3);
-					tile.AugmentFace(0, 3, 4);
-					tile.AugmentFace(0, 4, 3);
-					tile.AugmentFace(0, 5, 4);
-					tile.AugmentFace(0, 6, 3);
-					tile.AugmentFace(0, 8, 3);
-					tile.AugmentFace(0, 10, 3);
+					tile.ExtendFace(0, 0, 3);
+					tile.ExtendFace(0, 1, 4);
+					tile.ExtendFace(0, 2, 3);
+					tile.ExtendFace(0, 3, 4);
+					tile.ExtendFace(0, 4, 3);
+					tile.ExtendFace(0, 5, 4);
+					tile.ExtendFace(0, 6, 3);
+					tile.ExtendFace(0, 8, 3);
+					tile.ExtendFace(0, 10, 3);
 
-					tile.AugmentFace(2, 0, 3);
-					tile.AugmentFace(2, 2, 3);
+					tile.ExtendFace(2, 0, 3);
+					tile.ExtendFace(2, 2, 3);
 
-					tile.AugmentFace(4, 0, 3);
-					tile.AugmentFace(4, 2, 3);
+					tile.ExtendFace(4, 0, 3);
+					tile.ExtendFace(4, 2, 3);
 
-					tile.AugmentFace(6, 0, 3);
-					tile.AugmentFace(6, 2, 3);
+					tile.ExtendFace(6, 0, 3);
+					tile.ExtendFace(6, 2, 3);
 
 					xOffset = tile.Vertices[20].Position - tile.Vertices[10].Position;
 					yOffset = tile.Vertices[17].Position - tile.Vertices[8].Position;
@@ -807,8 +807,8 @@ namespace Grids
 				case GridEnums.KeplerTypes.K_3_3_6_6__3_6_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
 					tile = tile.Rotate(Vector3.up, 0);
-					tile.AugmentFace(0, 5, 3);
-					tile.AugmentFace(0, 0, 3);
+					tile.ExtendFace(0, 5, 3);
+					tile.ExtendFace(0, 0, 3);
 					xOffset = tile.Vertices[2].Position - tile.Vertices[5].Position;
 					yOffset = tile.Vertices[1].Position - tile.Vertices[3].Position;
 					roleSet = new List<List<List<ConwayPoly.Roles>>>
@@ -830,11 +830,11 @@ namespace Grids
 				case GridEnums.KeplerTypes.K_3_4_3_12__3_12_12:
 					tile = ConwayPoly._MakePolygon(12, true);
 					tile = tile.Rotate(Vector3.up, 15);
-					tile.AugmentFace(0, 1, 3);
-					tile.AugmentFace(0, 0, 3);
-					tile.AugmentFace(1, 2, 4);
-					tile.AugmentFace(3, 0, 3);
-					tile.AugmentFace(3, 3, 3);
+					tile.ExtendFace(0, 1, 3);
+					tile.ExtendFace(0, 0, 3);
+					tile.ExtendFace(1, 2, 4);
+					tile.ExtendFace(3, 0, 3);
+					tile.ExtendFace(3, 3, 3);
 					xOffset = tile.Vertices[5].Position - tile.Vertices[10].Position;
 					yOffset = tile.Vertices[2].Position - tile.Vertices[7].Position;
 					roleSet = new List<List<List<ConwayPoly.Roles>>>
@@ -862,10 +862,10 @@ namespace Grids
 				case GridEnums.KeplerTypes.K_3_4_4_6__3_6_3_6:
 					tile = ConwayPoly._MakePolygon(6, true);
 					tile = tile.Rotate(Vector3.up, 0);
-					tile.AugmentFace(0, 5, 3);
-					tile.AugmentFace(0, 0, 3);
-					tile.AugmentFace(0, 1, 4);
-					tile.AugmentFace(2, 0, 4);
+					tile.ExtendFace(0, 5, 3);
+					tile.ExtendFace(0, 0, 3);
+					tile.ExtendFace(0, 1, 4);
+					tile.ExtendFace(2, 0, 4);
 					xOffset = tile.Vertices[2].Position - tile.Vertices[5].Position;
 					yOffset = tile.Vertices[9].Position - tile.Vertices[3].Position;
 					roleSet = new List<List<List<ConwayPoly.Roles>>>
@@ -881,7 +881,7 @@ namespace Grids
 				case GridEnums.KeplerTypes.Durer1:
 					tile = ConwayPoly._MakePolygon(5, true);
 					tile = tile.Rotate(Vector3.up, 54);
-					tile.AugmentFace(0, 5, 5);
+					tile.ExtendFace(0, 5, 5);
 					tile.AddKite(0, 3, 1, 1);
 					xOffset = tile.Vertices[1].Position - tile.Vertices[3].Position;
 					yOffset = tile.Vertices[7].Position - tile.Vertices[2].Position;
@@ -896,7 +896,7 @@ namespace Grids
 				case GridEnums.KeplerTypes.Durer2:
 					tile = ConwayPoly._MakePolygon(5, true);
 					tile = tile.Rotate(Vector3.up, 54);
-					tile.AugmentFace(0, 5, 5);
+					tile.ExtendFace(0, 5, 5);
 					tile.AddKite(0, 3, 1, 1);
 					tile.AddRhombus(0, 2, 72);
 					xOffset = tile.Vertices[1].Position - tile.Vertices[3].Position;
