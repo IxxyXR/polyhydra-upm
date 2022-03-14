@@ -13,7 +13,7 @@ A toolkit for the procedural generation of geometric forms in Unity. The above i
 2. Open it via Unity Hub in an appropriate Unity version (same or slightly newer should be fine)
 3. Open any of the example scenes and have a play
 
-Alternatively you can install just the neccesary package using the Unity Package Manager and this url: https://github.com/IxxyXR/polyhydra-upm.git
+Alternatively you can install just the necessary package using the Unity Package Manager and this url: https://github.com/IxxyXR/polyhydra-upm.git
 
 (See https://docs.unity3d.com/Manual/upm-ui-giturl.html for more info )
 
