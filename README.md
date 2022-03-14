@@ -46,19 +46,17 @@ As far as possible I'd like to licence this under the MIT licence or similar but
 
 Obviously the original work by Willem Wythoff and John Conway. And also countless other mathematicians who have formed a base for, contributed to and extended the work in this area. A special shout out to George Hart who is often co-credited with Conway due to the large amount of work he did exploring and extending Conway's original operators. 
 
-The actual Wythoff code was based on https://github.com/kaonasi (which in turn is based on the work of Zvi Har’El: http://www.math.technion.ac.il/S/rl/kaleido/ ).
+The actual Wythoff code was based on https://github.com/kaonasi (which in turn is based on the work of Zvi Har’El: http://www.math.technion.ac.il/S/rl/kaleido/ Zvi Har'El has sadly passed away. I've tried to contact all potential copyright holders to see if it's OK to make use of their work as a basis for this but I've had no luck in getting a response. Please get in touch if you're an interested party)
 
-(Zvi Har'El has sadly passed away. I've tried to contact all potential copyright holders to see if it's OK to make use of their work as a basis for this but I've had no luck in getting a response. Please get in touch if you're an interested party.
-
-Conway operator code was based on work by Will Pearson @mcneel which can be found here: https://github.com/pearswj/buckminster
-
-Again - I tried to get in touch and didn't get a response. I'm not sure what the intended licence of that code is. It seems to be a standard copyright attribution but I wonder if this is an oversight more than the real intention of the author.
+Conway operator code and the core halfedge mesh is based on work by Will Pearson @mcneel which can be found here: https://github.com/pearswj/buckminster
 
 Multigrids is ported from work by Wolthera van Hövell tot Westerflier for https://github.com/kde/krita - they generously agreed that my version could be MIT licenced.
 
 Portions of grids.cs is from Antiprism and is MIT but should be attributed to Adrian Rossiter and Roger Kaufman: https://github.com/antiprism/antiprism/blob/master/COPYING
 
 Isohedral tilings are from tactile.js https://github.com/isohedral/tactile-js Thanks to Craig Kaplan @TriggerLoop
+
+Triangulation code is from https://github.com/gpvigano/AsImpL
 
 My original inspiration was 3DS Max's Hedra plugin which kept me entertained for quite a while nearly 2 decades ago. I think credit for that is due to Tom Hudson :-)
 
